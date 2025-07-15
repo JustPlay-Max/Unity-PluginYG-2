@@ -11,14 +11,14 @@ namespace YG
         [Serializable]
         public partial class AuthorizationSettings
         {
-#if UNITY_EDITOR
-            [Tooltip(Langs.t_scopes), Space(5)]
-#endif
-            public bool scopes = true;
+            //#if UNITY_EDITOR
+            //            [Tooltip(Langs.t_scopes), Space(5)]
+            //#endif
+            //            public bool scopes = true;
             public enum PlayerPhotoSize { small, medium, large };
-#if UNITY_EDITOR
-            [NestedYG(nameof(scopes)), Tooltip(Langs.t_playerPhotoSize)]
-#endif
+            //#if UNITY_EDITOR
+            //            [NestedYG(nameof(scopes)), Tooltip(Langs.t_playerPhotoSize)]
+            //#endif
             public PlayerPhotoSize playerPhotoSize = PlayerPhotoSize.medium;
 
 #if UNITY_EDITOR

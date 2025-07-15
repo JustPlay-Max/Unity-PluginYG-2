@@ -23,17 +23,10 @@ namespace YG
         }
 
         [DllImport("__Internal")]
-        private static extern void SetState_js(string key, int value);
-        public void SetState(string key, int value)
+        private static extern void SetStats_js(string jsonStats);
+        public void SetStats(Dictionary<string, int> stats)
         {
-            SetState_js(key, value);
-        }
-
-        [DllImport("__Internal")]
-        private static extern void SetAllStats_js(string jsonStats);
-        public void SetAllStats(Dictionary<string, int> stats)
-        {
-            SetAllStats_js(JsonYG.SerializeDictionary(stats));
+            SetStats_js(JsonYG.SerializeDictionary(stats));
         }
     }
 }

@@ -12,11 +12,7 @@ mergeInto(LibraryManager.library,
         GetStats();
     },
 	
-	SetState_js: function (key, value) {
-        SetState(UTF8ToString(key), value);
-    },
-	
-	SetAllStats_js: function (jsonStats) {
-        SetAllStats(UTF8ToString(jsonStats));
+	SetStats_js: function (jsonStats) {
+        SetStats(UTF8ToString(jsonStats));
     }
 });

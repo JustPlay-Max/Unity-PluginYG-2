@@ -61,6 +61,10 @@ namespace YG.LanguageLegacy
                 return true;
             if (lang == "hi" && inf.languages.hi)
                 return true;
+            if (lang == "it" && inf.languages.it)
+                return true;
+            if (lang == "pt" && inf.languages.pt)
+                return true;
 
             return false;
         }

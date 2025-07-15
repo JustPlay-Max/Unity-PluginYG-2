@@ -29,12 +29,11 @@ namespace YG.Example
         public void DrawText()
         {
             string platformName = $"platform = <color=#cd5200>{YG2.platform}</color>";
-            string focusWindowGame = $"is Focus Window Game = {YG2.isFocusWindowGame.ToString()}";
             string isFirstGameSession = $"is First Game Session = {YG2.isFirstGameSession.ToString()}";
             string gameplaying = $"is Gameplaying = {YG2.isGameplaying.ToString()}";
             string pauseGame = $"is Pause Game = {YG2.isPauseGame.ToString()}";
 
-            dataText.text = $"{platformName}\n{isFirstGameSession}\n{focusWindowGame}\n{gameplaying}\n{pauseGame}";
+            dataText.text = $"{platformName}\n{isFirstGameSession}\n{gameplaying}\n{pauseGame}";
         }
 
         private void OnDrawTextHostBool(bool b)

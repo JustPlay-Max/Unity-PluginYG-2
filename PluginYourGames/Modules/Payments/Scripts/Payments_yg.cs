@@ -35,20 +35,12 @@ namespace YG
 
         public static void BuyPayments(string id)
         {
-            GameplayStop(true);
+            PauseGame(true);
 #if !UNITY_EDITOR
             iPlatform.BuyPayments(id);
 #else
             Message($"Buy Payment. ID: {id}");
-            if (!infoYG.Payments.testBuyFail)
-            {
-                YGInsides.OnPurchaseSuccess(id);
-            }
-            else
-            {
-                Message($"Buy Payment - Fail Test");
-                YGInsides.OnPurchaseFailed(id);
-            }
+            AdvCallingSimulation.PaymentsBuy(id);
 #endif
         }
 

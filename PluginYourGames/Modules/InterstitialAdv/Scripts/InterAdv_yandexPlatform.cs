@@ -6,11 +6,11 @@ namespace YG
     public partial class PlatformYG2 : IPlatformsYG2
     {
         [DllImport("__Internal")]
-        private static extern void InterAdvShow_js();
+        private static extern void InterstitialAdvShow_js();
 
         public void InterstitialAdvShow()
         {
-            InterAdvShow_js();
+            InterstitialAdvShow_js();
         }
     }
 }

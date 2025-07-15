@@ -12,9 +12,6 @@ namespace YG
         [InitYG]
         private static void InitStats()
         {
-            if (playerStats == null)
-                playerStats = new Dictionary<string, int>();
-
 #if UNITY_EDITOR
             ReceiveStatsJson(PlayerPrefs.GetString(KEY_STATES));
 #else
@@ -28,26 +25,6 @@ namespace YG
             ReceiveStatsJson(PlayerPrefs.GetString(KEY_STATES));
 #else
             iPlatform.LoadStats();
-#endif
-        }
-
-        public static void SetState(string key, int value)
-        {
-            if (!_SDKEnabled)
-            {
-                Debug.LogError("State cannot be saved. The SDK has not been initialized yet!");
-                return;
-            }
-
-            if (playerStats.ContainsKey(key))
-                playerStats[key] = value;
-            else
-                playerStats.Add(key, value);
-
-#if UNITY_EDITOR
-            PlayerPrefs.SetString(KEY_STATES, JsonYG.SerializeDictionary(playerStats));
-#else
-            iPlatform.SetState(key, value);
 #endif
         }
 
@@ -67,20 +44,50 @@ namespace YG
 
         public static Dictionary<string, int> GetAllStats() => playerStats;
 
+
+        public static void SetState(string key, int value)
+        {
+            if (!_SDKEnabled)
+            {
+                Debug.LogError("State cannot be saved. The SDK has not been initialized yet!");
+                return;
+            }
+
+            if (playerStats.ContainsKey(key))
+                playerStats[key] = value;
+            else
+                playerStats.Add(key, value);
+
+#if UNITY_EDITOR
+            PlayerPrefs.SetString(KEY_STATES, JsonYG.SerializeDictionary(playerStats));
+#else
+            iPlatform.SetStats(playerStats);
+#endif
+        }
+
         public static void SetAllStats(Dictionary<string, int> stats)
         {
+            if (!_SDKEnabled)
+            {
+                Debug.LogError("State cannot be saved. The SDK has not been initialized yet!");
+                return;
+            }
+
             playerStats = stats;
 #if UNITY_EDITOR
             PlayerPrefs.SetString(KEY_STATES, JsonYG.SerializeDictionary(stats));
 #else
-            iPlatform.SetAllStats(stats);
+            iPlatform.SetStats(stats);
 #endif
         }
 
         public static void ReceiveStatsJson(string jsonStats)
         {
             if (jsonStats == InfoYG.NO_DATA)
+            {
+                playerStats = new Dictionary<string, int>();
                 return;
+            }
 
             playerStats = JsonYG.DeserializeDictionary(jsonStats);
             GetDataInvoke();

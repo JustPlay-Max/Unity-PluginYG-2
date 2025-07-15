@@ -27,20 +27,29 @@ namespace YG.EditorScr.BuildModify
 
             if (infoYG.Templates.fixedAspectRatio && infoYG.Templates.fillBackground)
             {
-                string textCopy = ManualFileTextCopy(pathCSS);
-
-                textCopy = textCopy.Replace("___CLASS___", "body");
-
-                textCopy = textCopy.Replace("color1", ConvertToRGBA(infoYG.Templates.gradientBackgroundByAspectRatio.color1));
-                textCopy = textCopy.Replace("color2", ConvertToRGBA(infoYG.Templates.gradientBackgroundByAspectRatio.color2));
-
-                if (infoYG.Templates.gradientBackgroundByAspectRatio.radial == false)
+                if (infoYG.Templates.imageBackground)
                 {
-                    textCopy = textCopy.Replace("radial-gradient", "linear-gradient");
-                    textCopy = textCopy.Replace("circle", $"{infoYG.Templates.gradientBackgroundByAspectRatio.angleInclination}deg");
+                    string imageName = infoYG.Templates.imageName;
+                    string line = $"document.body.style.background = \"url('Images/{imageName}') center / cover no-repeat\";";
+                    indexFile = indexFile.Replace("// Fill Background [Build Modify]", line);
                 }
+                else
+                {
+                    string textCopy = ManualFileTextCopy(pathCSS);
 
-                styleFile += $"\n\n\n{textCopy}";
+                    textCopy = textCopy.Replace("___CLASS___", "body");
+
+                    textCopy = textCopy.Replace("color1", ConvertToRGBA(infoYG.Templates.gradientBackgroundByAspectRatio.color1));
+                    textCopy = textCopy.Replace("color2", ConvertToRGBA(infoYG.Templates.gradientBackgroundByAspectRatio.color2));
+
+                    if (infoYG.Templates.gradientBackgroundByAspectRatio.radial == false)
+                    {
+                        textCopy = textCopy.Replace("radial-gradient", "linear-gradient");
+                        textCopy = textCopy.Replace("circle", $"{infoYG.Templates.gradientBackgroundByAspectRatio.angleInclination}deg");
+                    }
+
+                    styleFile += $"\n\n\n{textCopy}";
+                }
             }
         }
     }

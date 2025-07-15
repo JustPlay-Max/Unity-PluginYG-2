@@ -12,9 +12,9 @@ namespace YG
         public partial class InterstitialAdvSettings
         {
 #if RU_YG2
-            [Tooltip("Показывать рекламу при загрузке игры? (Первая реклама при открытии игры). В Unity Editor первая реклама симулироваться не будет - чтобы не мешала.")]
+            [Tooltip("Показывать рекламу при загрузке игры? (Первая реклама при открытии игры). В Unity Editor первая реклама симулироваться не будет - чтобы не мешала. В Яндекс Играх первый показ рекламы регулируется платформой, по этому данная опция для Яндекс Игр отключена.")]
 #else
-            [Tooltip("Should I show ads when loading the game? (The first advertisement when opening the game). In Unity Editor, the first advertisement will not be simulated - so as not to interfere.")]
+            [Tooltip("Should I show ads when loading the game? (The first advertisement when opening the game). In Unity Editor, the first advertisement will not be simulated - so as not to interfere. In Yandex Games, the first display of ads is regulated by the platform, so this option is disabled for Yandex Games.")]
 #endif
             public bool showFirstAdv = true;
 #if RU_YG2

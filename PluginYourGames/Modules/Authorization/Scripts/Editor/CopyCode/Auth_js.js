@@ -1,49 +1,29 @@
 ﻿var playerData = NO_DATA;
 let player = null;
 
-function InitPlayer() {
-    return new Promise((resolve) => {
+async function InitPlayer() {
+    return new Promise(async (resolve) => {
         try {
-            if (ysdk == null) {
-                Final(NotAuthorized());
-            }
-            else {
-                let _scopes = ___scopes___;
-                ysdk.getPlayer({ scopes: _scopes })
-                    .then(_player => {
-                        player = _player;
+            if (!ysdk)
+                return Final(NotAuthorized(false));
 
-                        let playerName = player.getName();
-                        let playerPhoto = player.getPhoto('___photoSize___');
+            player = await ysdk.getPlayer();
 
-                        if (!_scopes) {
-                            playerName = "anonymous";
-                            playerPhoto = "NO_DATA";
-                        }
+            if (!player.isAuthorized())
+                return Final(NotAuthorized());
 
-                        if (player.getMode() === 'lite') {
-                            LogStyledMessage('Not Authorized');
-                            Final(NotAuthorized());
-                        }
-                        else {
-                            let authJson = {
-                                "playerAuth": "resolved",
-                                "playerName": playerName,
-                                "playerId": player.getUniqueID(),
-                                "playerPhoto": playerPhoto,
-                                "payingStatus": player.getPayingStatus()
-                            };
-                            Final(JSON.stringify(authJson));
-                        }
-                    }).catch(e => {
-                        console.error('Authorized err: ', e.message);
-                        Final(NotAuthorized());
-                    });
-            }
-        }
-        catch (e) {
+            const authJson = {
+                "playerAuth": "resolved",
+                "playerName": player.getName(),
+                "playerId": player.getUniqueID(),
+                "playerPhoto": player.getPhoto('___photoSize___'),
+                "payingStatus": player.getPayingStatus()
+            };
+
+            return Final(JSON.stringify(authJson));
+        } catch (e) {
             console.error('CRASH init Player: ', e.message);
-            Final(NotAuthorized());
+            return Final(NotAuthorized(false));
         }
 
         function Final(res) {
@@ -54,12 +34,13 @@ function InitPlayer() {
     });
 }
 
-function NotAuthorized() {
+
+function NotAuthorized(isInitSDK = true) {
     let authJson = {
         "playerAuth": "rejected",
         "playerName": "unauthorized",
-        "playerId": "unauthorized",
-        "playerPhoto": "null",
+        "playerId": isInitSDK ? player.getUniqueID() : "unauthorized",
+        "playerPhoto": "no data",
         "payingStatus": "unknown"
     };
     return JSON.stringify(authJson);
@@ -69,9 +50,9 @@ function OpenAuthDialog() {
     if (ysdk !== null) {
         try {
             ysdk.auth.openAuthDialog().then(() => {
-                InitPlayer(true)
+                InitPlayer()
                     .then(() => {
-                        YG2Instance('GetDataInvoke');
+                        YG2Instance('LoggedIn');
                     });
             });
         }

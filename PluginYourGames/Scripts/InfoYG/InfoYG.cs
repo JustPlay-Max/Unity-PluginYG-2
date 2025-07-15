@@ -60,7 +60,7 @@ namespace YG
                         instance.Basic.platform = null;
                         instance.Basic.autoApplySettings = false;
                         instance.Basic.archivingBuild = false;
-                        CleanPlatforms();
+                        SetPlatform();
                         CompilationPipeline.RequestScriptCompilation();
                     }
                 }
@@ -96,32 +96,39 @@ namespace YG
             }
         }
 
-        public static void CleanPlatforms(string ignorePlatform = null)
+        public static void SetPlatform(string selectPlatform = null)
         {
             string[] platfFolders = Directory.GetDirectories(PATCH_PC_PLATFORMS);
 
             for (int i = 0; i < platfFolders.Length; i++)
             {
-                platfFolders[i] = platfFolders[i].Replace("\\", "/");
-                string folder = platfFolders[i] + "/SDK";
-
+                string folder = Path.Combine(platfFolders[i], "SDK").Replace("\\", "/");
                 if (!Directory.Exists(folder))
                     continue;
 
-                string[] files = Directory.GetFiles(folder);
-                IEnumerable<string> asmdefFiles = files.Where(file => Path.GetExtension(file).Equals(".asmdef", StringComparison.OrdinalIgnoreCase));
-                List<string> asmdefList = asmdefFiles.ToList();
-
-                for (int a = 0; a < asmdefList.Count; a++)
-                    EditorScr.FileYG.Delete(asmdefList[a]);
-
                 string platformName = Path.GetFileName(platfFolders[i]) + "Platform";
+                string asmdefPath = Path.Combine(folder, platformName + ".asmdef").Replace("\\", "/");
 
-                if (!string.IsNullOrEmpty(ignorePlatform) && platformName != ignorePlatform)
+                bool shouldHaveAsmdef = !string.IsNullOrEmpty(selectPlatform) && platformName != selectPlatform;
+
+                bool asmdefExists = File.Exists(asmdefPath);
+
+                if (shouldHaveAsmdef)
                 {
-                    string content = File.ReadAllText($"{PATCH_PC_YG2}/Scripts/Platform/Editor/AsmdefPlatformCreate.txt");
-                    content = content.Replace("___PLATFORM_NAME___", platformName);
-                    File.WriteAllText($"{folder}/{platformName}.asmdef", content);
+                    if (!asmdefExists)
+                    {
+                        string templatePath = $"{PATCH_PC_YG2}/Scripts/Platform/Editor/AsmdefPlatformCreate.txt";
+                        string content = File.ReadAllText(templatePath);
+                        content = content.Replace("___PLATFORM_NAME___", platformName);
+                        File.WriteAllText(asmdefPath, content);
+                    }
+                }
+                else
+                {
+                    if (asmdefExists)
+                    {
+                        File.Delete(asmdefPath);
+                    }
                 }
             }
         }

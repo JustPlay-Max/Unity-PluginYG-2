@@ -16,11 +16,9 @@ namespace YG.EditorScr
         {
             EditorApplication.delayCall += () =>
             {
-                if (PlayerPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY, 0) == 1)
+                if (PluginPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY, 0) == 1)
                 {
-                    PlayerPrefs.SetInt(InfoYG.FIRST_STARTUP_KEY, 2);
-                    PlayerPrefs.Save();
-
+                    PluginPrefs.SetInt(InfoYG.FIRST_STARTUP_KEY, 2);
                     ShowWindow();
                 }
             };

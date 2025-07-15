@@ -26,19 +26,17 @@ namespace YG
         [SerializeField] private UnityEvent onHideTimer;
 
         private int objSecCounter;
+        private Coroutine checkTimerAdCoroutine, timerAdShowCoroutine, backupTimerClosureCoroutine;
 
-        private void Start()
+        private void OnEnable()
         {
-            if (secondsPanelObject)
-                secondsPanelObject.SetActive(false);
+            YG2.onOpenAnyAdv += RestartTimer;
+            RestartTimer();
+        }
 
-            for (int i = 0; i < secondObjects.Length; i++)
-                secondObjects[i].SetActive(false);
-
-            if (secondObjects.Length > 0)
-                StartCoroutine(CheckTimerAd());
-            else
-                Debug.LogError("Fill in the array 'secondObjects'");
+        private void OnDisable()
+        {
+            YG2.onOpenAnyAdv -= RestartTimer;
         }
 
         IEnumerator CheckTimerAd()
@@ -57,7 +55,8 @@ namespace YG
 
                     YG2.PauseGame(true);
 
-                    StartCoroutine(TimerAdShow());
+                    timerAdShowCoroutine = StartCoroutine(TimerAdShow());
+                    checkTimerAdCoroutine = null;
                     yield break;
                 }
             }
@@ -81,12 +80,12 @@ namespace YG
                 if (objSecCounter == secondObjects.Length)
                 {
                     YG2.InterstitialAdvShow();
-                    StartCoroutine(BackupTimerClosure());
+                    backupTimerClosureCoroutine = StartCoroutine(BackupTimerClosure());
 
                     while (!YG2.nowInterAdv)
                         yield return null;
 
-                    Restart();
+                    RestartTimer();
                     yield break;
                 }
             }
@@ -98,17 +97,41 @@ namespace YG
 
             if (objSecCounter != 0)
             {
-                Restart();
+                RestartTimer();
                 YG2.PauseGame(false);
             }
+
+            backupTimerClosureCoroutine = null;
         }
 
-        private void Restart()
+        private void RestartTimer()
         {
             secondsPanelObject.SetActive(false);
+            foreach (var obj in secondObjects)
+                obj.SetActive(false);
+
             onHideTimer?.Invoke();
             objSecCounter = 0;
-            StartCoroutine(CheckTimerAd());
+
+            if (checkTimerAdCoroutine == null)
+            {
+                if (secondObjects.Length > 0)
+                    checkTimerAdCoroutine = StartCoroutine(CheckTimerAd());
+                else
+                    Debug.LogError("Fill in the array 'secondObjects'");
+            }
+
+            if (timerAdShowCoroutine != null)
+            {
+                StopCoroutine(timerAdShowCoroutine);
+                timerAdShowCoroutine = null;
+            }
+
+            if (backupTimerClosureCoroutine != null)
+            {
+                StopCoroutine(backupTimerClosureCoroutine);
+                backupTimerClosureCoroutine = null;
+            }
         }
     }
 }

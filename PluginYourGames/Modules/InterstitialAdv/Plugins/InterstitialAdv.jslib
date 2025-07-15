@@ -1,6 +1,6 @@
 mergeInto(LibraryManager.library,
 {
-	InterAdvShow_js: function ()
+	InterstitialAdvShow_js: function ()
 	{
 		InterAdvShow();
 	}

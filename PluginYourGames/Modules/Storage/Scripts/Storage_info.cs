@@ -11,28 +11,19 @@ namespace YG
         public partial class StorageSettings
         {
 #if RU_YG2
-            [Tooltip("Вкл/Выкл локальные сохранения. При включённых облачных сохранениях локальные и облачные синхронизируются!")]
+            [Tooltip("Локальные сохранения. При включённых облачных сохранениях, локальные и облачные синхронизируются! Для платформы Yandex Games лучше выключить локальные сохранения и использовать только облачные! Для других платформ, локальные сохранения могут хорошо подойти. В WebGL сохранение будет производиться в локальное хранилище браузера. Для остальных устройств в PlayerPrefs.")]
 #else
-            [Tooltip("On/Off local saves. When cloud saves are enabled, local and cloud saves are synchronized!")]
+            [Tooltip("Local saves. When cloud saves are enabled, local and cloud are synchronized! For the Yandex Games platform, it is better to turn off local saves and use only cloud ones! For other platforms, local saves may be well suited. In WebGL, saving will be done to the browser's local storage. For all other devices in PlayerPrefs.")]
 #endif
-            public bool saveLocal = true;
+            public bool saveLocal;
 #if RU_YG2
-            [Tooltip("Вкл/Выкл облачные сохранения (облачные сохранения платформы). При включении облачных сохранений, локальные сохранения всё равно будут работать (если включены). При использовании метода сохранения «SaveProgress», сохранения будут происходить локально - если таймер не достиг значения «Save Cloud Interval». Если же таймер достиг интервала - то сохранения запишутся в облако. При загрузке сохранений, будут загружены более актуальные данные (из локальных или облачных сохранений).")]
-#else
-            [Tooltip("On/Off cloud saves (cloud platform saves). When cloud saves are enabled, local saves will still work (if enabled). When using the «SaveProgress» save method, saves will occur locally - if the timer has not reached the «Save Cloud Interval» value. If the timer has reached the interval, then the saves will be recorded in the cloud. When uploading saves, more up-to-date data will be uploaded (from local or cloud saves).")]
+            [Tooltip("Облачные сохранения.")]
 #endif
             public bool saveCloud = true;
 #if RU_YG2
-            [Tooltip("Интервал облачных сохранений.\n При использовании метода сохранения «SaveProgress», сохранения будут происходить локально (если вклчены), если таймер не достиг значения (Save Cloud Interval. По умолчанию = 5). Если же таймер достиг интервала, то сохранения запишутся в облако.\n При загрузке сохранений, будут загружены более актуальные данные (из локальных или облачных сохранений).")]
+            [Tooltip("Flush — определяет очередность отправки данных. При значении «true» данные будут отправлены на сервер немедленно; «false» (значение по умолчанию) — запрос на отправку данных будет поставлен в очередь. (Рекомендуется оставить данный параметр выключенным)")]
 #else
-            [Tooltip("The interval of cloud saves.\n When using the save method «SaveProgress», saves will occur locally (if enabled) if the timer has not reached the value (Save Cloud Interval. By default = 5). If the timer has reached the interval, then the saves will be recorded in the cloud.\n When uploading saves, more up-to-date data will be uploaded (from local or cloud saves).")]
-#endif
-            [NestedYG(nameof(saveCloud)), Min(0)]
-            public int saveCloudInterval;
-#if RU_YG2
-            [Tooltip("Flush — определяет очередность отправки данных. При значении «true» данные будут отправлены на сервер немедленно; «false» (значение по умолчанию) — запрос на отправку данных будет поставлен в очередь.")]
-#else
-            [Tooltip("Flush — determines the order in which data is sent. If the value is «true», the data will be sent to the server immediately; «false» (default value) — the request to send data will be queued.")]
+            [Tooltip("Flush — determines the order in which data is sent. If the value is «true», the data will be sent to the server immediately; «false» (default value) — the request to send data will be queued. (It is recommended to leave this option disabled)")]
 #endif
             [NestedYG(nameof(saveCloud))]
             public bool flush;

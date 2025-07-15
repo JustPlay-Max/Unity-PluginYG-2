@@ -8,7 +8,7 @@ namespace YG.Insides
     {
         private static AdvCallingSimulation CreateCallSimulation()
         {
-            GameObject obj = new GameObject { name = "Adv Calling Simulation" };
+            GameObject obj = new GameObject { name = "Calling Simulation" };
             DontDestroyOnLoad(obj);
             return obj.AddComponent(typeof(AdvCallingSimulation)) as AdvCallingSimulation;
         }

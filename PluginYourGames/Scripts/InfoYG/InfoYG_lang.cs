@@ -28,7 +28,13 @@ namespace YG.Insides
 
         public const string t_pixelRatio = "Снижение качества изображения игры в угоду оптимизации для мобильных устройств.\nЧем выше число, тем выше качество. Диапазон от 1 до 2. Попробуйте поставить 1.3.";
         public const string t_developerBuild = "Тестовая сборка. Отображает номер билда в углу экрана (нажмите на текст чтобы скрыть). Помогает убедиться в том, что на сервере черновика актуальный билд. Служит напоминанием, что перед сборкой релизного билда необходимо установить соответствующие значения для параметра Code Optimization в Build Settings.";
-        public const string t_fixedAspectRatio = "Фиксировать соотношение сторон? Например 16/9 - это горизонтальный экран. 9/16 - вертикальный. Для мобильных устройств изображение будет растягиваться на полный экран.";
+        public const string t_fixedAspectRatio = "Фиксировать соотношение сторон, чтобы предотвратить произвольное растягивание экрана.";
+        public const string t_aspectRatio = "Пример: 16/9 - это горизонтальный экран, 9/16 - вертикальный.";
+        public const string t_disableForMobile = "Для мобильных устройств фиксация экрана будет отключена. Экран на мобильных устройств зачастую и так будет зафиксирован в удобном формате, по этому данная опция может быть полезна.";
+        public const string t_fillBackground = "Заполнить задний фон изображением, цветом или градиентом.\n• Поставьте флаг Use Background Image, чтобы использовать изображение от загрузочного экрана игры.\n• Чтобы использовать заполняющий цвет или градиент, уберите флаг и настройте структуру Gradient Background By Aspect Ratio.";
+        public const string t_imageBackground = "Включите данную опцию если хотите установить изображение на задний фон.";
+        public const string t_imageName = "Название изображения для отображения на заднем фоне расположенное в папке:\nWebGLTemplates/YandexGames/Images\n\nНапример: background.jpg\n\nМожно использовать изображение загрузочного экрана.";
+
         public const string t_simulationInEditor = "Настройки для симуляции в Unity Editor. Можете тестировать игру, например, на разных языках.";
         public const string advSimHeader = "Реклама";
         public const string advSimLabel = "Настройки симуляции в General Simulation";
@@ -78,7 +84,14 @@ namespace YG.Insides
 
         public const string t_pixelRatio = "Reducing the image quality of the game for the sake of optimization for mobile devices.\nThe higher the number, the higher the quality. The range is from 1 to 2. Try to put 1.3.";
         public const string t_developerBuild = "Test build. Displays the build number in the corner of the screen (click on the text to hide it). It helps to make sure that the current build is on the draft server. It serves, apparently, in order for the assembly unit to be able to set the appropriate values for optimizing the program code in the assembly settings.";
-        public const string t_fixedAspectRatio = "Fix the aspect ratio? For example, 16/9 is a horizontal screen. 9/16 is vertical. For mobile devices, the image will stretch to full screen.";
+
+        public const string t_fixedAspectRatio = "Fix the aspect ratio to prevent arbitrary stretching of the screen.";
+        public const string t_aspectRatio = "Example: 16/9 is a horizontal screen, 9/16 is a vertical screen.";
+        public const string t_disableForMobile = "Screen locking will be disabled for mobile devices. The screen on mobile devices will often be fixed in a convenient format anyway, so this option can be useful.";
+        public const string t_fillBackground = "Fill the background with an image, color, or gradient.\n• Set the Use Background Image flag to use the image from the game's loading screen.\n• To use a fill color or gradient, remove the flag and adjust the Gradient Background By Aspect Ratio structure.";
+        public const string t_imageBackground = "Enable this option if you want to set the image to the background.";
+        public const string t_imageName = "The name of the image to display in the background located in the folder:\nWebGLTemplates/YandexGames/Images\n\nexample: background.jpg\n\n You can use the image of the loading screen.";
+
         public const string t_simulationInEditor = "Simulation settings in Unity Editor. You can test the game, for example, in different languages.";
         public const string advSimHeader = "Advertisement";
         public const string advSimLabel = "Ad Simulation Settings in General Simulation";

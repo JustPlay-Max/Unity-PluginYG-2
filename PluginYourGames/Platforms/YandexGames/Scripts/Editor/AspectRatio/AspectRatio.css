@@ -14,8 +14,3 @@ body {
   width: min(calc(100vh*(___ASPECT_RATIO___)), 100vw);
   height: auto;
 }
-
-#unity-container.unity-mobile {
-  width: 100%;
-  height: 100%;
-}

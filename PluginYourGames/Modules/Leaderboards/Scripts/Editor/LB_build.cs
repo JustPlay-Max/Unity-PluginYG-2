@@ -5,8 +5,6 @@ namespace YG.EditorScr.BuildModify
     {
         public static void Leaderboards()
         {
-            InitFunction("InitLeaderboards");
-
             string copyCode = FileTextCopy("LB_js.js");
             AddIndexCode(copyCode, CodeType.JS);
         }

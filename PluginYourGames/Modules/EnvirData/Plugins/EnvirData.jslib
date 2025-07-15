@@ -40,7 +40,7 @@ mergeInto(LibraryManager.library,
 		var urlParams = new URLSearchParams(window.location.search);
 		var payload = urlParams.has('payload') ? urlParams.get('payload') : "";
 
-		var browser = 'Other';
+        var browser = navigator.userAgent;
         if (browser.includes('YaBrowser') || browser.includes('YaSearchBrowser'))
             browser = 'Yandex';
         else if (browser.includes('Opera') || browser.includes('OPR'))
@@ -55,6 +55,8 @@ mergeInto(LibraryManager.library,
             browser = 'Chrome';
         else if (browser.includes('Safari'))
             browser = 'Safari';
+        else
+            browser = 'Other';
 
 		var envirData = {
 			"language": language,
@@ -74,6 +76,5 @@ mergeInto(LibraryManager.library,
 		var buffer = _malloc(bufferSize);
 		stringToUTF8(returnStr, buffer, bufferSize);
 		return buffer;
-		return returnStr;
 	}
 });

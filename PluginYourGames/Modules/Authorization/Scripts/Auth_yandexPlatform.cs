@@ -28,17 +28,23 @@ namespace YG
 
         public void OpenAuthDialog()
         {
-            if (YG2.player.auth)
+            if (!YG2.player.auth)
+            {
                 YG2.Message("Open Auth Dialog");
+            }
             else
+            {
 #if RU_YG2
                 YG2.Message("SDK Яндекс Игр предлагает войти в аккаунт только тем пользователям, которые ещё не вошли.");
 #else
                 YG2.Message("The Yandex Games SDK offers to log in to your account only to those users who have not logged in yet.");
 #endif
-
+            }
 #if !UNITY_EDITOR
             OpenAuthDialog_js();
+#else
+            YG2.player.auth = true;
+            Insides.YGInsides.LoggedIn();
 #endif
         }
 
@@ -78,12 +84,17 @@ namespace YG.Insides
             else if (jsonAuth.playerAuth.ToString() == "rejected")
                 YG2.player.auth = false;
 
-            YG2.player.name = jsonAuth.playerName.ToString();
-            YG2.player.id = jsonAuth.playerId.ToString();
-            YG2.player.photo = jsonAuth.playerPhoto.ToString();
+            if (!string.IsNullOrEmpty(YG2.player.name))
+                YG2.player.name = jsonAuth.playerName.ToString();
+            else
+                YG2.player.name = InfoYG.ANONYMOUS;
 
-            if (YG2.player.photo == InfoYG.NO_DATA)
+            if (YG2.player.photo != InfoYG.NO_DATA)
+                YG2.player.photo = jsonAuth.playerPhoto.ToString();
+            else
                 YG2.player.photo = null;
+
+            YG2.player.id = jsonAuth.playerId.ToString();
 
             YG2.PayingStatus payingStatus;
             switch (jsonAuth.payingStatus.ToString())

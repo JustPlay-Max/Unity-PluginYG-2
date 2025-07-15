@@ -1,20 +1,6 @@
 ﻿
 var statsSaves = NO_DATA;
 
-function SetState(key, value) {
-    if (player == null) {
-        console.error('SetStats: Player is not defined');
-        return;
-    }
-    try {
-        var increments = {};
-        increments[key] = value;
-        player.incrementStats(increments);
-    } catch (e) {
-        console.error('CRASH Set Stats: ', e.message);
-    }
-}
-
 function GetStats() {
     return new Promise((resolve) => {
         if (ysdk == null) {
@@ -26,12 +12,12 @@ function GetStats() {
                 .then(stats => {
                     Final(JSON.stringify(stats));
                 }).catch(e => {
-                    console.error('Get Stats Error!', e.message);
+                    console.error('GetStats Error!', e.message);
                     Final(NO_DATA);
                 });
         }
         catch (e) {
-            console.error('CRASH Get Stats Cloud: ', e.message);
+            console.error('CRASH GetStats: ', e.message);
             Final(NO_DATA);
         }
 
@@ -43,14 +29,14 @@ function GetStats() {
     });
 }
 
-function SetAllStats(jsonStats) {
+function SetStats(jsonStats) {
     if (ysdk == null || player == null) {
-        console.error('SetAllStats: Error initialization');
+        console.error('SetStats: Error initialization');
         return;
     }
     try {
         player.setStats(JSON.parse(jsonStats));
     } catch (e) {
-        console.error('CRASH Set All Stats: ', e.message);
+        console.error('CRASH SetStats:', e.message);
     }
 }

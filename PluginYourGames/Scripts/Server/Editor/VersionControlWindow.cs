@@ -37,7 +37,7 @@ namespace YG.EditorScr
 
         private void OnEnable()
         {
-            if (PlayerPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY) == 0)
+            if (PluginPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY) == 0)
                 return;
 
             removeBeforeImport = EditorPrefs.GetBool(REMOVE_BEFORE_IMPORT_TOGGLE_KEY, true);
@@ -54,7 +54,7 @@ namespace YG.EditorScr
 
         private void OnDisable()
         {
-            if (PlayerPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY) == 0)
+            if (PluginPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY) == 0)
                 return;
 
             ServerInfo.onLoadServerInfo -= OnLoadServerInfo;

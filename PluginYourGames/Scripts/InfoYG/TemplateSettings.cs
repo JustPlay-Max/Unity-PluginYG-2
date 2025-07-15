@@ -73,13 +73,18 @@ namespace YG
 
             [Tooltip(Langs.t_fixedAspectRatio)]
             public bool fixedAspectRatio;
-            [NestedYG(nameof(fixedAspectRatio))]
+            [NestedYG(nameof(fixedAspectRatio)), Tooltip(Langs.t_aspectRatio)]
             public string aspectRatio = "16/9";
-
-            [NestedYG(nameof(fixedAspectRatio))]
+            [NestedYG(nameof(fixedAspectRatio)), Tooltip(Langs.t_disableForMobile)]
+            public bool disableForMobile = true;
+            [NestedYG(nameof(fixedAspectRatio)), Tooltip(Langs.t_fillBackground)]
             public bool fillBackground;
 
-            [Tooltip(Langs.t_gradient), NestedYG(8, 15, nameof(fixedAspectRatio), nameof(fillBackground))]
+            [Tooltip(Langs.t_imageBackground), NestedYG(nameof(fixedAspectRatio), nameof(fillBackground))]
+            public bool imageBackground;
+            [Tooltip(Langs.t_imageName), NestedYG(nameof(fixedAspectRatio), nameof(fillBackground), nameof(imageBackground))]
+            public string imageName = "background.jpg";
+            [Tooltip(Langs.t_gradient), NestedYG(8, 11, nameof(fixedAspectRatio), nameof(fillBackground), "!imageBackground")]
             public Gradient gradientBackgroundByAspectRatio;
 
             [Tooltip(Langs.t_pixelRatio)]

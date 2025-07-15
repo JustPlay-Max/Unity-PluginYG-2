@@ -5,6 +5,7 @@ namespace YG
 #if UNITY_WEBGL
     using System.Runtime.InteropServices;
 #endif
+    using YG.Insides;
 
     public partial interface IPlatformsYG2
     {
@@ -15,7 +16,9 @@ namespace YG
         void InitEnirData()
         {
 #if PLATFORM_WEBGL
-            string jsonString = Marshal.PtrToStringUTF8(GeneralEnvirData_js());
+            IntPtr ptr = GeneralEnvirData_js();
+            string jsonString = Marshal.PtrToStringUTF8(ptr);
+            YGInsides.FreeBuffer(ptr);
             YG2.envir = JsonUtility.FromJson<YG2.EnvirData>(jsonString);
 #else
             YG2.envir.language = "en";
@@ -30,6 +33,10 @@ namespace YG
 #endif
         }
 
-        void GetEnvirData() { }
+        void GetEnvirData()
+        {
+            InitEnirData();
+            YG2.GetDataInvoke();
+        }
     }
 }

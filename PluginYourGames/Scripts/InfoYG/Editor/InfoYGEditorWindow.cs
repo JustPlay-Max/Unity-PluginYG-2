@@ -315,7 +315,7 @@ namespace YG.EditorScr
 
             if (lastPlatform != currentPlatform)
             {
-                InfoYG.CleanPlatforms(currentPlatform);
+                InfoYG.SetPlatform(currentPlatform);
 
                 if (currentPlatform == "NullPlatform")
                 {

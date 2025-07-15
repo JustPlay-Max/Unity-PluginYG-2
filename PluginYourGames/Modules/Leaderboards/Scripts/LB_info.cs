@@ -26,11 +26,7 @@ namespace YG
 
             // Simulation
 #if UNITY_EDITOR
-#if RU_YG2
             [HeaderYG(Langs.simulation, 5)]
-#else
-            [HeaderYG("Leaderboards")]
-#endif
             public LBData[] listLBSim = new LBData[]
             {
                 new LBData

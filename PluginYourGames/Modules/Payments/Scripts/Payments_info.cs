@@ -13,11 +13,11 @@ namespace YG
         [Serializable]
         public partial class PaymentsSettings
         {
+            [HeaderYG(Langs.simulation, 5), Min(0)]
+            public float durationPayPanel = 1;
 #if RU_YG2
-            [HeaderYG(Langs.simulation, 5)]
             [Tooltip("Провека неудачной покупки. Консумирование в Unity Editor не симулируется!")]
 #else
-            [HeaderYG("Payments")]
             [Tooltip("Verification of a failed purchase. Consummation in Unity Editor is not simulated!")]
 #endif
             public bool testBuyFail;

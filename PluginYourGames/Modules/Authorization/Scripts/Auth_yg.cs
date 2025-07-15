@@ -50,10 +50,10 @@ namespace YG
             }
             else
             {
-                if (!infoYG.Authorization.scopes)
-                    player.name = InfoYG.ANONYMOUS;
-                else
-                    player.name = infoYG.Authorization.playerName;
+                //if (!infoYG.Authorization.scopes)
+                //    player.name = InfoYG.ANONYMOUS;
+                //else
+                player.name = infoYG.Authorization.playerName;
             }
 
             if (infoYG.Authorization.playerPhoto == InfoYG.DEMO_IMAGE)
@@ -69,5 +69,25 @@ namespace YG
         {
             iPlatform.OpenAuthDialog();
         }
+    }
+}
+
+namespace YG.Insides
+{
+    public static partial class YGInsides
+    {
+        public static void LoggedIn()
+        {
+#if Storage_yg
+            LoadProgress();
+#else
+            YG2.GetDataInvoke();
+#endif
+        }
+    }
+
+    public partial class YGSendMessage
+    {
+        public void LoggedIn() => YGInsides.LoggedIn();
     }
 }

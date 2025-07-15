@@ -20,6 +20,8 @@ MonoBehaviour:
     useYandexMetrica: 1
     metricaCounterID: 99005242
     skipInterAdvAfterReward: 0
+    saveLocal: 1
+    saveCloud: 1
     selectWebGLTemplate: 1
     runInBackground: 0
     enableExceptions: 2

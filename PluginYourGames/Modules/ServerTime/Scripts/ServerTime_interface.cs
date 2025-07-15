@@ -1,9 +1,12 @@
-using UnityEngine;
+using System;
 
 namespace YG
 {
     public partial interface IPlatformsYG2
     {
-        public long ServerTime() { return (long)Time.realtimeSinceStartup * 1000; }
+        public long ServerTime()
+        {
+            return DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        }
     }
 }

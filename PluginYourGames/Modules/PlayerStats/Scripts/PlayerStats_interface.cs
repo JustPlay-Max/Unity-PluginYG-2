@@ -11,8 +11,6 @@ namespace YG
 
         void LoadStats() => YG2.ReceiveStatsJson(LocalStorage.GetKey(KEY_STATES));
 
-        void SetState(string key, int value) => LocalStorage.SetKey(KEY_STATES, JsonYG.SerializeDictionary(YG2.GetAllStats()));
-
-        void SetAllStats(Dictionary<string, int> stats) => LocalStorage.SetKey(KEY_STATES, JsonYG.SerializeDictionary(YG2.GetAllStats()));
+        void SetStats(Dictionary<string, int> stats) => LocalStorage.SetKey(KEY_STATES, JsonYG.SerializeDictionary(YG2.GetAllStats()));
     }
 }

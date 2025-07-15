@@ -11,11 +11,7 @@ namespace YG
         [Serializable]
         public partial class ServerTimeSettings
         {
-#if RU_YG2
             [HeaderYG(Langs.simulation, 5)]
-#else
-            [HeaderYG("Server time")]
-#endif
             public long serverTime = 1721201231000;
         }
     }
