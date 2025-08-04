@@ -231,18 +231,16 @@ namespace YG.EditorScr
                 GUI.matrix = originalMatrix;
                 GUILayout.Space(8);
 
-                if (iconPlatform)
-                {
-                    Rect textureLastRect = GUILayoutUtility.GetRect(40, 40, GUILayout.ExpandWidth(false));
-                    GUI.DrawTexture(textureLastRect, iconPlatform);
-                    GUILayout.Space(10);
-                }
+
+                Rect textureLastRect = GUILayoutUtility.GetRect(40, 40, GUILayout.ExpandWidth(false));
+                GUI.DrawTexture(textureLastRect, iconPlatform);
+                GUILayout.Space(10);
             }
-                else
-                {
-                    styleHeader.alignment = TextAnchor.MiddleCenter;
-                    styleHeader2.alignment = TextAnchor.MiddleCenter;
-                }
+            else
+            {
+                styleHeader.alignment = TextAnchor.MiddleCenter;
+                styleHeader2.alignment = TextAnchor.MiddleCenter;
+            }
 
             GUILayout.BeginVertical();
             EditorGUILayout.LabelField("PLUGIN YG2", styleHeader);
