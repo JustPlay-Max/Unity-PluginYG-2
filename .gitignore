@@ -40,6 +40,7 @@
 !Assets/WebGLTemplates/
 !Assets/WebGLTemplates/YandexGames/
 
+
 # Разрешить только следующие файлы
 !LICENSE
 !README.md
