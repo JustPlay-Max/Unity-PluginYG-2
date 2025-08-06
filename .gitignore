@@ -5,7 +5,7 @@
 !.gitattributes
 
 # Разрешить папки
-!Packages/
+!Packages/manifest.json
 !ProjectSettings/
 !Assets/
 !Assets/PluginYourGames/
@@ -49,7 +49,6 @@
 !Assets/PluginYourGames/Version.txt
 
 # Разрешаем содержимое этих папок
-!Packages/**
 !ProjectSettings/**
 !Assets/PluginYourGames/Example/**
 !Assets/PluginYourGames/Scripts/**
