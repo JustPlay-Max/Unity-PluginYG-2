@@ -5,8 +5,6 @@
 !.gitattributes
 
 # Разрешить папки
-!Packages/manifest.json
-!ProjectSettings/
 !Assets/
 !Assets/PluginYourGames/
 !Assets/PluginYourGames/Example/
@@ -16,6 +14,7 @@
 !Assets/PluginYourGames/Modules/
 !Assets/PluginYourGames/Modules/Authorization/
 !Assets/PluginYourGames/Modules/AutoTranslateLangs/
+!Assets/PluginYourGames/Modules/BannerAdv/
 !Assets/PluginYourGames/Modules/BannerAdv/
 !Assets/PluginYourGames/Modules/Clipboard/
 !Assets/PluginYourGames/Modules/EnvirData/
@@ -50,12 +49,12 @@
 !Assets/PluginYourGames/Version.txt
 
 # Разрешаем содержимое этих папок
-!ProjectSettings/**
 !Assets/PluginYourGames/Example/**
 !Assets/PluginYourGames/Scripts/**
 !Assets/PluginYourGames/Platforms/YandexGames/**
 !Assets/PluginYourGames/Modules/Authorization/**
 !Assets/PluginYourGames/Modules/AutoTranslateLangs/**
+!Assets/PluginYourGames/Modules/BannerAdv/**
 !Assets/PluginYourGames/Modules/BannerAdv/**
 !Assets/PluginYourGames/Modules/Clipboard/**
 !Assets/PluginYourGames/Modules/EnvirData/**
