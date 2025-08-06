@@ -238,11 +238,11 @@ namespace YG.EditorScr
                     GUILayout.Space(10);
                 }
             }
-                else
-                {
-                    styleHeader.alignment = TextAnchor.MiddleCenter;
-                    styleHeader2.alignment = TextAnchor.MiddleCenter;
-                }
+            else
+            {
+                styleHeader.alignment = TextAnchor.MiddleCenter;
+                styleHeader2.alignment = TextAnchor.MiddleCenter;
+            }
 
             GUILayout.BeginVertical();
             EditorGUILayout.LabelField("PLUGIN YG2", styleHeader);
