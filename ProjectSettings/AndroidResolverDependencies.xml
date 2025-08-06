@@ -1,0 +1,115 @@
+<dependencies>
+  <packages>
+    <package>com.applovin.mediation:amazon-tam-adapter:11.0.0.0</package>
+    <package>com.applovin.mediation:bidmachine-adapter:3.2.1.0</package>
+    <package>com.applovin.mediation:bidon-adapter:0.8.1.0</package>
+    <package>com.applovin.mediation:bigoads-adapter:5.3.0.1</package>
+    <package>com.applovin.mediation:bytedance-adapter:7.1.0.4.0</package>
+    <package>com.applovin.mediation:facebook-adapter:6.20.0.0</package>
+    <package>com.applovin.mediation:fyber-adapter:8.3.7.0</package>
+    <package>com.applovin.mediation:google-adapter:24.3.0.0</package>
+    <package>com.applovin.mediation:google-ad-manager-adapter:24.3.0.0</package>
+    <package>com.applovin.mediation:inmobi-adapter:10.8.3.0</package>
+    <package>com.applovin.mediation:ironsource-adapter:8.8.0.0.1</package>
+    <package>com.applovin.mediation:mintegral-adapter:16.9.71.0</package>
+    <package>com.applovin.mediation:mobilefuse-adapter:1.9.2.1</package>
+    <package>com.applovin.mediation:moloco-adapter:3.9.0.0</package>
+    <package>com.applovin.mediation:mytarget-adapter:5.27.1.2</package>
+    <package>com.applovin.mediation:ogury-presage-adapter:6.0.1.1</package>
+    <package>com.applovin.mediation:pubmatic-adapter:4.5.2.0</package>
+    <package>com.applovin.mediation:smaato-adapter:22.7.2.0</package>
+    <package>com.applovin.mediation:unityads-adapter:4.14.2.0</package>
+    <package>com.applovin.mediation:verve-adapter:3.3.0.0</package>
+    <package>com.applovin.mediation:vungle-adapter:7.5.0.0</package>
+    <package>com.applovin.mediation:yandex-adapter:7.9.0.1</package>
+    <package>com.appodeal.ads.sdk.networks:admob:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:amazon:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:applovin:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:applovin_max:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:bidmachine:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:bidon:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:bigo_ads:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:dt_exchange:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:iab:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:inmobi:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:ironsource:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:level_play:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:meta:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:mintegral:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:mobilefuse:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:moloco:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:my_target:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:ogury:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:pangle:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:pubmatic:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:smaato:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:unity_ads:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:verve:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:vungle:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.networks:yandex:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.services:adjust:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.services:appsflyer:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.services:facebook_analytics:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.services:firebase:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk.services:sentry_analytics:3.8.0.0</package>
+    <package>com.appodeal.ads.sdk:core:3.8.0</package>
+    <package>com.ironsource.adapters:bidon-adapter:0.8.1.0</package>
+    <package>com.unity3d.ads-mediation:admob-adapter:4.3.50</package>
+    <package>com.unity3d.ads-mediation:applovin-adapter:4.3.53</package>
+    <package>com.unity3d.ads-mediation:aps-adapter:4.3.17</package>
+    <package>com.unity3d.ads-mediation:bidmachine-adapter:4.3.12</package>
+    <package>com.unity3d.ads-mediation:bigo-adapter:4.3.9</package>
+    <package>com.unity3d.ads-mediation:facebook-adapter:4.3.50</package>
+    <package>com.unity3d.ads-mediation:fyber-adapter:4.3.38</package>
+    <package>com.unity3d.ads-mediation:inmobi-adapter:4.3.30</package>
+    <package>com.unity3d.ads-mediation:mintegral-adapter:4.3.40</package>
+    <package>com.unity3d.ads-mediation:mobilefuse-adapter:4.3.7</package>
+    <package>com.unity3d.ads-mediation:moloco-adapter:4.3.17</package>
+    <package>com.unity3d.ads-mediation:mytarget-adapter:4.3.0</package>
+    <package>com.unity3d.ads-mediation:ogury-adapter:4.3.2</package>
+    <package>com.unity3d.ads-mediation:pangle-adapter:4.3.41</package>
+    <package>com.unity3d.ads-mediation:smaato-adapter:4.3.14</package>
+    <package>com.unity3d.ads-mediation:unityads-adapter:4.3.54</package>
+    <package>com.unity3d.ads-mediation:verve-adapter:4.3.5</package>
+    <package>com.unity3d.ads-mediation:vungle-adapter:4.3.30</package>
+    <package>com.unity3d.ads-mediation:yandex-adapter:4.3.8</package>
+    <package>io.bidmachine:ads.adapters.ironsource:3.2.1.8</package>
+    <package>io.bidmachine:ads.networks.amazon:3.2.1.17</package>
+    <package>io.bidmachine:ads.networks.meta_audience:3.2.1.17</package>
+    <package>io.bidmachine:ads.networks.mintegral:3.2.1.13</package>
+    <package>io.bidmachine:ads.networks.my_target:3.2.1.18</package>
+    <package>io.bidmachine:ads.networks.pangle:3.2.1.11</package>
+    <package>io.bidmachine:ads.networks.vungle:3.2.1.9</package>
+    <package>org.bidon:amazon-adapter:0.8.1.0</package>
+    <package>org.bidon:bidmachine-adapter:0.8.1.0</package>
+    <package>org.bidon:bigoads-adapter:0.8.1.0</package>
+    <package>org.bidon:chartboost-adapter:0.8.1.0</package>
+    <package>org.bidon:dtexchange-adapter:0.8.1.0</package>
+    <package>org.bidon:inmobi-adapter:0.8.1.0</package>
+    <package>org.bidon:meta-adapter:0.8.1.0</package>
+    <package>org.bidon:mintegral-adapter:0.8.1.0</package>
+    <package>org.bidon:mobilefuse-adapter:0.8.1.0</package>
+    <package>org.bidon:unityads-adapter:0.8.1.0</package>
+    <package>org.bidon:vkads-adapter:0.8.1.0</package>
+    <package>org.bidon:vungle-adapter:0.8.1.0</package>
+    <package>org.bidon:yandex-adapter:0.8.1.0</package>
+  </packages>
+  <files />
+  <settings>
+    <setting name="androidAbis" value="arm64-v8a" />
+    <setting name="bundleId" value="com.justplay.pluginyg" />
+    <setting name="explodeAars" value="True" />
+    <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradlePropertiesTemplateEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
+    <setting name="installAndroidPackages" value="True" />
+    <setting name="localMavenRepoDir" value="Assets/GeneratedLocalRepo" />
+    <setting name="packageDir" value="Assets/Plugins/Android" />
+    <setting name="patchAndroidManifest" value="True" />
+    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="projectExportEnabled" value="False" />
+    <setting name="useFullCustomMavenRepoPathWhenExport" value="True" />
+    <setting name="useFullCustomMavenRepoPathWhenNotExport" value="False" />
+    <setting name="useJetifier" value="True" />
+  </settings>
+</dependencies>
