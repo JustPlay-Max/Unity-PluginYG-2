@@ -231,10 +231,12 @@ namespace YG.EditorScr
                 GUI.matrix = originalMatrix;
                 GUILayout.Space(8);
 
-
-                Rect textureLastRect = GUILayoutUtility.GetRect(40, 40, GUILayout.ExpandWidth(false));
-                GUI.DrawTexture(textureLastRect, iconPlatform);
-                GUILayout.Space(10);
+                if (iconPlatform)
+                {
+                    Rect textureLastRect = GUILayoutUtility.GetRect(40, 40, GUILayout.ExpandWidth(false));
+                    GUI.DrawTexture(textureLastRect, iconPlatform);
+                    GUILayout.Space(10);
+                }
             }
             else
             {
