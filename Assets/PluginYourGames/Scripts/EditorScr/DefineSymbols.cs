@@ -318,7 +318,6 @@ namespace YG.EditorScr
                 BuildTargetGroup.WSA,
                 BuildTargetGroup.LinuxHeadlessSimulation,
                 BuildTargetGroup.tvOS,
-                BuildTargetGroup.VisionOS,
                 BuildTargetGroup.Switch,
                 BuildTargetGroup.XboxOne,
                 BuildTargetGroup.PS4,

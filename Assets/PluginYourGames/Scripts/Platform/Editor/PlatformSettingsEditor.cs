@@ -37,7 +37,7 @@ namespace YG.EditorScr
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            string iconPath = GetIconCurrentPlatformPach(modulName);
+            string iconPath = GetIconCurrentPlatformPath(modulName);
 
             if (File.Exists(iconPath))
             {
@@ -47,7 +47,7 @@ namespace YG.EditorScr
             }
         }
 
-        public static string GetIconCurrentPlatformPach(string modulName)
+        public static string GetIconCurrentPlatformPath(string modulName)
         {
             string iconPath = Path.Combine(InfoYG.PATCH_PC_WEBGLTEMPLATES, modulName, "thumbnail.png");
             if (File.Exists(iconPath))
