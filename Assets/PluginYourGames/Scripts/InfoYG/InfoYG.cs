@@ -63,8 +63,8 @@ namespace YG
             return instance;
         }
 
-        public ProjectSettings platformOptions { get => Basic.platform.projectSettings; }
 #if UNITY_EDITOR
+        public ProjectSettings platformOptions { get => Basic.platform.projectSettings; }
         public static void SetDefaultPlatform()
         {
             string standartPlatformSettingsPath = $"{PATCH_ASSETS_PLATFORMS}/YandexGames/YandexGames.asset";

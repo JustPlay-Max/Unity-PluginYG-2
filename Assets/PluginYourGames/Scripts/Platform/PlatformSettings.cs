@@ -26,7 +26,6 @@ namespace YG.Insides
             }
         }
 
-        public ProjectSettings projectSettings = new ProjectSettings();
 
         public string NameBase()
         {
@@ -34,6 +33,7 @@ namespace YG.Insides
         }
 
 #if UNITY_EDITOR
+        public ProjectSettings projectSettings = new ProjectSettings();
         public void ApplyProjectSettings()
         {
             projectSettings.ApplySettings();
