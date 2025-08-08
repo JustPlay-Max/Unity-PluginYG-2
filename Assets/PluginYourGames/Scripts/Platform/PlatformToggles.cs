@@ -22,7 +22,7 @@ namespace YG.Insides
         public bool compressionFormat = true;
         public bool decompressionFallback = true;
         public bool autoGraphicsAPI = true;
-        public bool minimalCodeCompression = true;
+        public bool managedStrippingLevel = true;
         public bool dataCaching;
         public bool colorSpace;
         public bool archivingBuild;
