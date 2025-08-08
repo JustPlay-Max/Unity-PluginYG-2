@@ -50,9 +50,7 @@ namespace YG.EditorScr.BuildModify
             // PluginYG version
             WritingLine(linesBasic[2], InfoYG.VERSION_YG2);
 
-
             File.WriteAllLines(FILE_PATCH, lines);
-
 
             void WritingLine(string searchString, string write)
             {
