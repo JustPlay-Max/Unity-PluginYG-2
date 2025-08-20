@@ -16,6 +16,7 @@ namespace YG.Insides
     public partial class PlatformToggles
     {
 #if UNITY_EDITOR
+        public bool autoPauseGame = false;
         public bool selectWebGLTemplate = true;
         public bool runInBackground = true;
         public bool enableExceptions = true;

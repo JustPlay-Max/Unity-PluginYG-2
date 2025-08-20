@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -101,6 +103,8 @@ namespace YG.EditorScr
                 await Task.Delay(100);
                 SessionState.SetBool(LOAD_COMPLETE_KEY, true);
                 ServerInfo.DoActionLoadServerInfo();
+
+                NotificationUpdateWindow.OpenWindowIfExistUpdate();
             }
         }
 

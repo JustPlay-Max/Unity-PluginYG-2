@@ -1,10 +1,20 @@
+using System;
+
 namespace YG.Insides
 {
     public partial class OptionalPlatform
     {
+        public Action onLoadedInterAdv;
+        public Action onClickedInterAdv;
+
         public void FirstInterAdvShow() => YG2.iPlatform.FirstInterAdvShow();
         public void OtherInterAdvShow() => YG2.iPlatform.OtherInterAdvShow();
-        public void LoadInterAdv() => YG2.iPlatform.LoadInterAdv();
+        public void LoadInterAdv()
+        {
+#if !UNITY_EDITOR
+            YG2.iPlatform.LoadInterAdv();
+#endif
+        }
 
         private static bool firstInterAd;
         public static void FirstInterAdvShow_RealizationSkip()

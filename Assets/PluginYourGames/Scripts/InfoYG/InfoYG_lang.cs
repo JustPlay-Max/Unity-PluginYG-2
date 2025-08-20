@@ -44,7 +44,7 @@ namespace YG.Insides
 
         public const string switchLang = "Русский";
         public const string documentation = "Документация";
-        public const string helpChat = "Помощь";
+        public const string community = "Сообщество";
         public const string video = "Видео";
 
         public const string versionsActual = "Все версии актуальные";
@@ -106,7 +106,7 @@ namespace YG.Insides
         public const string t_progressBar_color2 = "The secondary color of the loading bar (along the edges). To get a uniform color for the entire loading strip, specify the same color for color 1 and color 2.";
         public const string switchLang = "English";
         public const string documentation = "Documentation";
-        public const string helpChat = "Help";
+        public const string community = "Community";
         public const string video = "Video";
 
         public const string modulesSettings = "Modules settings";

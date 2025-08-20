@@ -9,6 +9,7 @@ namespace YG.Insides
     [Serializable]
     public partial class ProjectSettings
     {
+        public bool autoPauseGame = true;
         public bool selectWebGLTemplate = true;
         public bool runInBackground = false;
         public WebGLExceptionSupport enableExceptions = WebGLExceptionSupport.FullWithoutStacktrace;
@@ -24,6 +25,9 @@ namespace YG.Insides
         public void ApplySettings()
         {
             PlatformToggles toggles = YG2.infoYG.platformToggles;
+
+            if (toggles.autoPauseGame)
+                YG2.infoYG.Basic.autoPauseGame = autoPauseGame;
 
             if (toggles.runInBackground)
                 PlayerSettings.runInBackground = runInBackground;

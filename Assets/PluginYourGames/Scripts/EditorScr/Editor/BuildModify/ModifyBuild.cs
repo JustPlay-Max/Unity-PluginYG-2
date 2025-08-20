@@ -14,6 +14,7 @@ namespace YG.EditorScr.BuildModify
     public partial class ModifyBuild
     {
         private const string ERROR_COLOR = "#ff4f00";
+        private const string WARNING_COLOR = "#fccf03";
         private static string BUILD_PATCH;
         private static InfoYG infoYG;
         private static string indexFile;
@@ -85,6 +86,14 @@ namespace YG.EditorScr.BuildModify
                 logBuildCompleteText = "Сборка завершена!";
 #endif
                 Debug.Log($"<color=#00FF00>{InfoYG.NAME_PLUGIN} - {logBuildCompleteText}  Platform - {PlatformSettings.currentPlatformBaseName}.  Build number: {buildNum}</color>");
+                if (InfoYG.instance.Basic.platform == null)
+                {
+#if RU_YG2
+                    Debug.Log($"<color={WARNING_COLOR}>Обратите внимание!</color> <color={ERROR_COLOR}>В настройках {InfoYG.NAME_PLUGIN} не выбрана платформа. </color><color={WARNING_COLOR}>Проигнорируйте данное сообщение, если вы намеренно оставили поле пустым.</color>");
+#else
+                    Debug.Log($"<color={WARNING_COLOR}>Please note!</color> <color={ERROR_COLOR}>In the settings {InfoYG.NAME_PLUGIN} no platform selected. </color><color={WARNING_COLOR}>Ignore this message if you intentionally left the field blank.</color>");
+#endif
+                }
 
                 if (errors.Count > 0)
                 {

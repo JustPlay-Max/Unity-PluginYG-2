@@ -1,7 +1,7 @@
 ﻿#if YandexGamesPlatform_yg
 using System;
 using System.Runtime.InteropServices;
-using UnityEditor;
+using UnityEngine;
 
 namespace YG
 {
@@ -28,7 +28,7 @@ namespace YG
         public void GetClipboardTextAsync(Action<string> callback)
         {
 #if UNITY_EDITOR || !PLATFORM_WEBGL
-            string copyBuffer = EditorGUIUtility.systemCopyBuffer;
+            string copyBuffer = GUIUtility.systemCopyBuffer;
             callback?.Invoke(copyBuffer);
 #else
             clipboardCallbackAction = callback;

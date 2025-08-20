@@ -129,7 +129,7 @@ namespace YG
                 eventSystem.enabled = eventSystem_save;
 
             inst = null;
-            DestroyImmediate(gameObject);
+            Destroy(gameObject);
         }
     }
 }

@@ -14,21 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameFull: YandexGamesPlatform
   projectSettings:
-    showFirstAdv: 1
+    showFirstAdv: 0
     interAdvInterval: 60
     postponeCallByFail: 0
     useYandexMetrica: 1
-    metricaCounterID: 99005242
+    metricaCounterID: 0
     skipInterAdvAfterReward: 0
-    saveLocal: 1
+    saveLocal: 0
     saveCloud: 1
+    autoPauseGame: 1
     selectWebGLTemplate: 1
     runInBackground: 0
     enableExceptions: 2
     compressionFormat: 0
     decompressionFallback: 0
     autoGraphicsAPI: 1
-    minimalCodeCompression: 1
+    managedStrippingLevel: 4
     dataCaching: 1
     colorSpace: 0
     archivingBuild: 1

@@ -34,7 +34,7 @@ public class UpdatePluginYGTemp
                 byte[] packageBytes = await response.Content.ReadAsByteArrayAsync();
                 File.WriteAllBytes(downloadPath, packageBytes);
 
-                AssetDatabase.ImportPackage(downloadPath, true);
+                AssetDatabase.ImportPackage(downloadPath, false);
                 File.Delete(downloadPath);
             }
         }
