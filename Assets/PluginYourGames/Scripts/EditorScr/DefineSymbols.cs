@@ -46,6 +46,7 @@ namespace YG.EditorScr
 
             PluginPrefs.SetInt(InfoYG.FIRST_STARTUP_KEY, 1);
 
+            ConversionPlatformConfigs();
             InfoYG.Inst();
 
             UpdateDefineSymbols();
@@ -56,6 +57,7 @@ namespace YG.EditorScr
         {
             AddDefine(YG2_DEFINE);
             PlatformDefineSymbols();
+            ConversionPlatformConfigs();
             ModulesDefineSymbols();
 
             if (UnityPackagesManager.IsPackageImported(TMP_PACKAGE) || UnityPackagesManager.IsPackageImported(TMP_NEW_PACKAGE))
@@ -234,6 +236,42 @@ namespace YG.EditorScr
 
             foreach (var folderName in folderNames)
                 AddDefine(folderName + "_yg");
+        }
+
+        public static void ConversionPlatformConfigs()
+        {
+            if (SessionState.GetBool("ExportingPluginYG", false)) return;
+            
+            bool dirty = false;
+            string[] platformPathes = Directory.GetDirectories(InfoYG.PATCH_PC_PLATFORMS);
+
+            for (int i = 0; i < platformPathes.Length; i++)
+            {
+                string platform = Path.GetFileName(platformPathes[i]);
+                string assetConfigPath = Path.Combine(platformPathes[i], $"{platform}.asset");
+                string setupConfigPath = Path.Combine(platformPathes[i], $"{platform}.txt");
+
+                bool existSetup = File.Exists(setupConfigPath);
+
+                if (File.Exists(assetConfigPath))
+                {
+                    if (File.Exists(setupConfigPath))
+                        FileYG.Delete(setupConfigPath);
+                    continue;
+                }
+
+                if (!existSetup) continue;
+
+                string assetDir = "Assets" + platformPathes[i].Substring(Application.dataPath.Length);
+                string srcAsset = Path.Combine(assetDir, $"{platform}.txt").Replace("\\", "/");
+                string dstAsset = Path.Combine(assetDir, $"{platform}.asset").Replace("\\", "/");
+
+                AssetDatabase.MoveAsset(srcAsset, dstAsset);
+                dirty = true;
+            }
+
+            if (dirty)
+                AssetDatabase.Refresh();
         }
 
         public static bool CheckDefine(string define)

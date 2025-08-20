@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using YG.Insides;
 
 namespace YG
@@ -25,15 +24,14 @@ namespace YG
 
         public static void RewardedAdvShow(string id)
         {
-            Message("Rewarded Ad Show");
-
             if (!nowInterAdv && !nowRewardAdv)
             {
-                if (id == string.Empty || id == null)
-                    id = "null";
+                if (string.IsNullOrEmpty(id)) id = "null";
 
+                YGInsides.currentRewardID = id;
                 onAdvNotification?.Invoke();
 #if !UNITY_EDITOR
+                Message("Rewarded Ad Show");
                 iPlatform.RewardedAdvShow(id);
 #else
                 AdvCallingSimulation.RewardedAdvOpen(id);
@@ -53,11 +51,7 @@ namespace YG.Insides
 {
     public static partial class YGInsides
     {
-        private enum RewardAdResult { None, Success, Error };
-        private static RewardAdResult rewardAdResult = RewardAdResult.None;
-
-        private static string currentRewardID;
-        private static float timeOpenRewardedAdv;
+        public static string currentRewardID;
         public static Action rewardCallback = null;
 
         public static void OpenRewardedAdv()
@@ -66,7 +60,6 @@ namespace YG.Insides
             YG2.onOpenRewardedAdv?.Invoke();
             YG2.onOpenAnyAdv?.Invoke();
             YG2.nowRewardAdv = true;
-            timeOpenRewardedAdv = Time.realtimeSinceStartup;
         }
 
         public static void CloseRewardedAdv()
@@ -76,56 +69,34 @@ namespace YG.Insides
             YG2.onCloseRewardedAdv?.Invoke();
             YG2.onCloseAnyAdv?.Invoke();
             YG2.PauseGame(false);
-
-            if (rewardAdResult == RewardAdResult.Success)
-            {
-                OnRewardedEvent();
-            }
-            else if (rewardAdResult == RewardAdResult.Error)
-            {
-                ErrorRewardedAdv();
-            }
-
-            rewardAdResult = RewardAdResult.None;
         }
 
         public static void RewardAdv(string id)
         {
-            if (id == "null" || id == null)
-                id = string.Empty;
-
+            if (id == "null") id = string.Empty;
             currentRewardID = id;
 #if UNITY_EDITOR
             if (infoYG.Simulation.testFailAds)
-                timeOpenRewardedAdv += Time.realtimeSinceStartup + 1;
+            {
+                ErrorRewardedAdv();
+            }
             else
-                timeOpenRewardedAdv = 0;
+            {
+                OnRewardedSuccess();
+            }
+#else
+            OnRewardedSuccess();
 #endif
-            rewardAdResult = RewardAdResult.None;
-
-            if (Time.realtimeSinceStartup > timeOpenRewardedAdv + 0.5f)
-            {
-                if (infoYG.RewardedAdv.rewardedAfterClosing)
-                {
-                    rewardAdResult = RewardAdResult.Success;
-                }
-                else
-                {
-                    OnRewardedEvent();
-                }
-            }
-            else
-            {
-                if (infoYG.RewardedAdv.rewardedAfterClosing)
-                    rewardAdResult = RewardAdResult.Error;
-                else
-                    ErrorRewardedAdv();
-            }
         }
+        public static void RewardAdv() => RewardAdv(currentRewardID);
 
-        private static void OnRewardedEvent()
+        private static void OnRewardedSuccess()
         {
-            Message("Reward Adv");
+#if UNITY_EDITOR
+            Message($"Rewarded Ad completed (Editor log: reward id [{currentRewardID}]");
+#else
+            Message("Rewarded Ad completed");
+#endif
 #if InterstitialAdv_yg
             if (YG2.infoYG.RewardedAdv.skipInterAdvAfterReward)
                 YG2.SkipNextInterAdCall();

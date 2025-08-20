@@ -7,7 +7,7 @@ namespace YG.Insides
         public int metricaCounterID;
 
         [ApplySettings]
-        private void Metrica_ApplySettings()
+        public void Metrica_ApplySettings()
         {
             if (YG2.infoYG.platformToggles.useYandexMetrica)
                 YG2.infoYG.Metrica.useYandexMetrica = useYandexMetrica;
