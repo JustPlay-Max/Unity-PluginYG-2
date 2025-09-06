@@ -12,12 +12,12 @@ namespace YG.Example
         private void Awake()
         {
             textComponent = GetComponent<Text>();
-            SwitchLanguage(YG2.lang);
         }
 
         private void OnEnable()
         {
             YG2.onSwitchLang += SwitchLanguage;
+            SwitchLanguage(YG2.lang);
         }
         private void OnDisable()
         {
