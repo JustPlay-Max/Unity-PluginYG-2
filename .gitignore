@@ -15,7 +15,7 @@
 !Assets/PluginYourGames/Modules/Authorization/
 !Assets/PluginYourGames/Modules/AutoTranslateLangs/
 !Assets/PluginYourGames/Modules/BannerAdv/
-!Assets/PluginYourGames/Modules/BannerAdv/
+!Assets/PluginYourGames/Modules/Bonuses/
 !Assets/PluginYourGames/Modules/Clipboard/
 !Assets/PluginYourGames/Modules/EnvirData/
 !Assets/PluginYourGames/Modules/Flags/
@@ -55,7 +55,7 @@
 !Assets/PluginYourGames/Modules/Authorization/**
 !Assets/PluginYourGames/Modules/AutoTranslateLangs/**
 !Assets/PluginYourGames/Modules/BannerAdv/**
-!Assets/PluginYourGames/Modules/BannerAdv/**
+!Assets/PluginYourGames/Modules/Bonuses/**
 !Assets/PluginYourGames/Modules/Clipboard/**
 !Assets/PluginYourGames/Modules/EnvirData/**
 !Assets/PluginYourGames/Modules/Flags/**
