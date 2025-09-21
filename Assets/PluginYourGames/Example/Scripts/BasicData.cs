@@ -32,8 +32,9 @@ namespace YG.Example
             string isFirstGameSession = $"is First Game Session = {YG2.isFirstGameSession.ToString()}";
             string gameplaying = $"is Gameplaying = {YG2.isGameplaying.ToString()}";
             string pauseGame = $"is Pause Game = {YG2.isPauseGame.ToString()}";
+            string buildNumber = $"build Number = {YG2.buildNumber.ToString()}";
 
-            dataText.text = $"{platformName}\n{isFirstGameSession}\n{gameplaying}\n{pauseGame}";
+            dataText.text = $"{platformName}\n{isFirstGameSession}\n{gameplaying}\n{pauseGame}\n{buildNumber}";
         }
 
         private void OnDrawTextHostBool(bool b)

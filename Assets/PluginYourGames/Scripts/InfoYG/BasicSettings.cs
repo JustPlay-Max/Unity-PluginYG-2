@@ -58,6 +58,10 @@ namespace YG
             [NestedYG(nameof(loadSceneIfSDKLate), nameof(syncInitSDK)), Min(0)]
 #endif
             public bool simulationLoadScene;
+
+
+            [HideInInspector]
+            public int buildNumber;
         }
     }
 }
