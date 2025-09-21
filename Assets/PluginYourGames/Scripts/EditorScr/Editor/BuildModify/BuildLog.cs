@@ -53,7 +53,7 @@ namespace YG.EditorScr.BuildModify
             return -1;
         }
 
-        private static string ReadProperty(string property)
+        public static string ReadProperty(string property)
         {
             if (File.Exists(BUILDLOGFILE_PATH))
             {
