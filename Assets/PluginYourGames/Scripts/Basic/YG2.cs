@@ -16,6 +16,7 @@ namespace YG
         public static YGSendMessage sendMessage;
         public static OptionalPlatform optionalPlatform = new OptionalPlatform();
         public static string platform { get => PlatformSettings.currentPlatformBaseName; }
+        public static int buildNumber { get => infoYG.Basic.buildNumber; }
         public static bool isSDKEnabled { get => _SDKEnabled; }
         private static bool _SDKEnabled;
         public static bool isFirstGameSession;

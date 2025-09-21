@@ -14,6 +14,7 @@ namespace YG
     public partial class InfoYG : ScriptableObject
     {
         public static InfoYG instance;
+
         public static InfoYG Inst()
         {
             if (instance == null)

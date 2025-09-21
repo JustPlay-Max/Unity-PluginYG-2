@@ -79,7 +79,7 @@ namespace YG
             }
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             if (editTimeScale && Time.timeScale != 0)
             {

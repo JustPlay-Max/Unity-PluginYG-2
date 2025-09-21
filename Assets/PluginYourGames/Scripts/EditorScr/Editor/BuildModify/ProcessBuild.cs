@@ -10,6 +10,10 @@
         public int callbackOrder => -1000;
         public void OnPreprocessBuild(BuildReport report)
         {
+            int.TryParse(BuildLog.ReadProperty("Build number"), out int buildNumInt);
+            buildNumInt += 1;
+            YG2.infoYG.Basic.buildNumber = buildNumInt;
+
             BuildPath = report.summary.outputPath;
 #if PLATFORM_WEBGL
             if (!string.IsNullOrEmpty(BuildPath))
