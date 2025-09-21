@@ -6,37 +6,38 @@
 
     public class ProcessBuild : IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
+        public static string BuildPath { get; private set; } = string.Empty;
         public int callbackOrder => -1000;
         public void OnPreprocessBuild(BuildReport report)
         {
-            if (YG2.infoYG.Basic.platform != null && YG2.infoYG.Basic.autoApplySettings)
-                InfoYG.Inst().Basic.platform.ApplyProjectSettings();
+            BuildPath = report.summary.outputPath;
 #if PLATFORM_WEBGL
-            string buildPath = report.summary.outputPath;
-
-            if (buildPath != null && buildPath != string.Empty)
+            if (!string.IsNullOrEmpty(BuildPath))
             {
-                string indexPath = buildPath + "/index.html";
-                if (File.Exists(indexPath))
-                    File.Delete(indexPath);
-
-                string stylePath = buildPath + "/style.css";
-                if (File.Exists(stylePath))
-                    File.Delete(stylePath);
+                DeleteIfFileExist($"{BuildPath}/index.html");
+                DeleteIfFileExist($"{BuildPath}/style.css");
             }
 #endif
+            if (YG2.infoYG.Basic.platform != null && YG2.infoYG.Basic.autoApplySettings)
+                InfoYG.Inst().Basic.platform.ApplyProjectSettings();
         }
 
         public void OnPostprocessBuild(BuildReport report)
         {
-            string pathToBuiltProject = report.summary.outputPath;
-
-            ModifyBuild.ModifyIndex(pathToBuiltProject);
+            ModifyBuild.ModifyIndex();
 
             if (YG2.infoYG.Basic.archivingBuild)
-                ArchivingBuild.Archiving(pathToBuiltProject);
-                
-            BuildLog.WritingLog(pathToBuiltProject);
+                ArchivingBuild.Archiving(BuildPath);
+
+            BuildLog.WritingLog();
         }
+
+#if PLATFORM_WEBGL
+        private void DeleteIfFileExist(string filePath)
+        {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+        }
+#endif
     }
 }
