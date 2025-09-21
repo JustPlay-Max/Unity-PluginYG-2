@@ -1,94 +1,78 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace YG.EditorScr.BuildModify
 {
     public class BuildLog
     {
-        private static string FILE_PATCH
+        private const string BUILDLOGFILE_NAME = "BuildLogYG2.txt";
+        private static string BUILDLOGFILE_PATH => $"{InfoYG.PATCH_PC_EDITOR}/{BUILDLOGFILE_NAME}";
+        public static void WritingLog()
         {
-            get { return InfoYG.PATCH_PC_EDITOR + "/BuildLogYG2.txt"; }
-        }
-        private readonly static string SEPARAOTR = ": ";
-
-        public static void WritingLog(string buildPath)
-        {
-            string[] linesBasic = new string[]
+            string[] buildLogHeaderLines = new string[]
             {
-                "Build path", // 0
-                "Build number", // 1
-                "PluginYG version" // 2
+                "Build path: ",      // 0
+                "Build number: ",    // 1
+                "PluginYG version: " // 2
             };
 
-            if (!File.Exists(FILE_PATCH))
+            if (!File.Exists(BUILDLOGFILE_PATH))
             {
-                string newLines = "";
-                for (int i = 0; i < linesBasic.Length; i++)
-                {
-                    newLines += linesBasic[i] + SEPARAOTR + "\n";
-                }
+                string readLines = string.Join("\n", buildLogHeaderLines);
 
-                File.WriteAllText(FILE_PATCH, newLines);
+                File.WriteAllText(BUILDLOGFILE_PATH, readLines, Encoding.UTF8);
             }
 
-            string[] lines = File.ReadAllLines(FILE_PATCH);
+            string[] buildLog = File.ReadAllLines(BUILDLOGFILE_PATH, Encoding.UTF8);
 
-
-            /// Write lines log:
+            // Write lines log:
             // Build patch
-            WritingLine(linesBasic[0], buildPath);
+            buildLog[0] = $"{buildLogHeaderLines[0]}{ProcessBuild.BuildPath}";
 
             // Build number
-            string readBuildNumber = ReadingLine(linesBasic[1]);
-            int oldBuildNumber = 0;
-
-            if (readBuildNumber != null && readBuildNumber != "")
-                oldBuildNumber = int.Parse(ReadingLine(linesBasic[1]));
-
-            string newBuildNumber = (oldBuildNumber + 1).ToString();
-            WritingLine(linesBasic[1], newBuildNumber);
+            buildLog[1] = $"{buildLogHeaderLines[1]}{GetBuildNumber() + 1}";
 
             // PluginYG version
-            WritingLine(linesBasic[2], InfoYG.VERSION_YG2);
+            buildLog[2] = $"{buildLogHeaderLines[2]}{InfoYG.VERSION_YG2}";
 
-            File.WriteAllLines(FILE_PATCH, lines);
-
-            void WritingLine(string searchString, string write)
-            {
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    if (lines[i].Contains(searchString + SEPARAOTR))
-                    {
-                        string newLine = searchString + SEPARAOTR + write;
-                        lines[i] = newLine;
-                        break;
-                    }
-                }
-            }
-
-            string ReadingLine(string searchString)
-            {
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    if (lines[i].Contains(searchString))
-                    {
-                        return lines[i].Replace(searchString + SEPARAOTR, string.Empty);
-                    }
-                }
-                return null;
-            }
+            File.WriteAllLines(BUILDLOGFILE_PATH, buildLog, Encoding.UTF8);
         }
 
-        public static string ReadProperty(string property)
+        public static int GetBuildNumber()
         {
-            if (File.Exists(FILE_PATCH))
+            string propertyString = ReadProperty("Build number");
+            if (!string.IsNullOrEmpty(propertyString))
             {
-                string[] lines = File.ReadAllLines(FILE_PATCH);
-
-                for (int i = 0; i < lines.Length; i++)
+                if (int.TryParse(propertyString, out int buildNumber))
                 {
-                    if (lines[i].Contains(property + SEPARAOTR))
+                    return buildNumber;
+                }
+            }
+
+            return -1;
+        }
+
+        private static string ReadProperty(string property)
+        {
+            if (File.Exists(BUILDLOGFILE_PATH))
+            {
+                string[] lines = File.ReadAllLines(BUILDLOGFILE_PATH);
+
+                foreach (string line in lines)
+                {
+                    if (line.Contains(property))
                     {
-                        return lines[i].Replace(property + SEPARAOTR, string.Empty);
+                        int index = line.IndexOf(':') + 2;
+
+                        if (index > line.Length)
+                        {
+                            UnityEngine.Debug.LogWarning($"[{property.ToUpper()}] index out of bounds");
+
+                            return null;
+                        }
+
+                        return line.Substring(index);
                     }
                 }
             }

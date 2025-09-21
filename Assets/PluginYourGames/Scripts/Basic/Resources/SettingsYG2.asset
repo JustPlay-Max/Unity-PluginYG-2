@@ -1,0 +1,459 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b1feb428cc7f42a5ba34f566340a1f3, type: 3}
+  m_Name: SettingsYG2
+  m_EditorClassIdentifier: 
+  Authorization:
+    playerPhotoSize: 1
+    authorized: 1
+    playerName: Player current
+    uniqueID: 000
+    playerPhoto: demo image
+    payingStatus: 0
+  AutoTranslateLangs:
+    domainAutoLocalization: com
+    languages:
+      ru: 1
+      en: 1
+      tr: 1
+      az: 0
+      be: 0
+      he: 0
+      hy: 0
+      ka: 0
+      et: 0
+      fr: 0
+      kk: 0
+      ky: 0
+      lt: 0
+      lv: 0
+      ro: 0
+      tg: 0
+      tk: 0
+      uk: 0
+      uz: 0
+      es: 0
+      pt: 0
+      ar: 0
+      id: 0
+      ja: 0
+      it: 0
+      de: 0
+      hi: 0
+    fonts:
+      defaultFont: []
+      ru: []
+      en: []
+      tr: []
+      az: []
+      be: []
+      he: []
+      hy: []
+      ka: []
+      et: []
+      fr: []
+      kk: []
+      ky: []
+      lt: []
+      lv: []
+      ro: []
+      tg: []
+      tk: []
+      uk: []
+      uz: []
+      es: []
+      pt: []
+      ar: []
+      id: []
+      ja: []
+      it: []
+      de: []
+      hi: []
+    fontsTMP:
+      defaultFont: []
+      ru: []
+      en: []
+      tr: []
+      az: []
+      be: []
+      he: []
+      hy: []
+      ka: []
+      et: []
+      fr: []
+      kk: []
+      ky: []
+      lt: []
+      lv: []
+      ro: []
+      tg: []
+      tk: []
+      uk: []
+      uz: []
+      es: []
+      pt: []
+      ar: []
+      id: []
+      ja: []
+      it: []
+      de: []
+      hi: []
+    fontsSizeCorrect:
+      ru: 
+      en: 
+      tr: 
+      az: 
+      be: 
+      he: 
+      hy: 
+      ka: 
+      et: 
+      fr: 
+      kk: 
+      ky: 
+      lt: 
+      lv: 
+      ro: 
+      tg: 
+      tk: 
+      uk: 
+      uz: 
+      es: 
+      pt: 
+      ar: 
+      id: 
+      ja: 
+      it: 
+      de: 
+      hi: 
+  BannerAdv:
+    simulationInEditor: 1
+    size: 100
+    color: {r: 0, g: 1, b: 0, a: 0.5}
+  Flags:
+    flags: []
+  InterstitialAdv:
+    showFirstAdv: 1
+    interAdvInterval: 60
+    postponeCallByFail: 1
+    postponeCallTimer: 10
+    labelAdvSimLabel: 0
+  Leaderboards:
+    enable: 1
+    saveScoreAnonymousPlayers: 1
+    listLBSim:
+    - technoName: test
+      entries: '1. Max: 10
+
+        2. Masha: 15
+
+        3. anonymous: 23
+
+        4.
+        Player 4: 30
+
+        5. Player current: 40
+
+        6. Player 6: 50
+
+        7.
+        Player 7: 60
+
+        8. Player 8: 70
+
+        9. Player 9: 80
+
+        10.
+        Player 10: 90'
+      isDefault: 0
+      isInvertSortOrder: 0
+      decimalOffset: 0
+      type: numeric
+      players:
+      - rank: 1
+        name: Max
+        score: 100
+        photo: demo image
+        uniqueID: 123
+        extraData: 
+      - rank: 2
+        name: Masha
+        score: 90
+        photo: demo image
+        uniqueID: 321
+        extraData: 
+      - rank: 3
+        name: anonymous
+        score: 80
+        photo: anonymous
+        uniqueID: 456
+        extraData: 
+      - rank: 4
+        name: Player 4
+        score: 70
+        photo: demo image
+        uniqueID: 321
+        extraData: 
+      - rank: 5
+        name: Player current
+        score: 60
+        photo: demo image
+        uniqueID: 000
+        extraData: 
+      - rank: 6
+        name: Player 6
+        score: 50
+        photo: demo image
+        uniqueID: 326
+        extraData: 
+      - rank: 7
+        name: Player 7
+        score: 40
+        photo: demo image
+        uniqueID: 327
+        extraData: 
+      - rank: 8
+        name: Player 8
+        score: 30
+        photo: demo image
+        uniqueID: 328
+        extraData: 
+      - rank: 9
+        name: Player 9
+        score: 20
+        photo: demo image
+        uniqueID: 329
+        extraData: 
+      - rank: 10
+        name: Player 10
+        score: 10
+        photo: demo image
+        uniqueID: 330
+        extraData: 
+      currentPlayer:
+        rank: 5
+        score: 60
+        extraData: 
+    - technoName: time
+      entries: '1. Max: 7123
+
+        2. Maria: 15321
+
+        3. anonymous: 62000
+
+        4.
+        Player 4: 122000
+
+        5. Player current: 127000
+
+        6. Player 6:
+        340000'
+      isDefault: 0
+      isInvertSortOrder: 1
+      decimalOffset: 0
+      type: numeric
+      players:
+      - rank: 1
+        name: Max
+        score: 7123
+        photo: demo image
+        uniqueID: 789
+        extraData: 
+      - rank: 2
+        name: Maria
+        score: 15321
+        photo: demo image
+        uniqueID: 987
+        extraData: 
+      - rank: 3
+        name: anonymous
+        score: 62000
+        photo: anonymous
+        uniqueID: 891
+        extraData: 
+      - rank: 4
+        name: Player 4
+        score: 122000
+        photo: demo image
+        uniqueID: 321
+        extraData: 
+      - rank: 5
+        name: Player current
+        score: 127000
+        photo: demo image
+        uniqueID: 000
+        extraData: 
+      - rank: 6
+        name: Player 6
+        score: 340000
+        photo: demo image
+        uniqueID: 321
+        extraData: 
+      currentPlayer:
+        rank: 5
+        score: 127000
+        extraData: 
+  Localization:
+    setLanguageMod: 1
+  Metrica:
+    enable: 0
+    metricaCounterID: 0
+    log: 1
+    useYandexMetrica: 1
+  OpenURL:
+    developerURL: https://yandex.ru/games/developer/25834
+    allGames:
+    - appID: 177895
+      title: "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD \uFFFD\uFFFD\uFFFD\uFFFD
+        3D"
+      url: https://yandex.ru/games/app/177895
+      coverURL: https://avatars.mds.yandex.net/get-games/1881957/2a0000018ab6f8e6b8c3ec2b8c3bf7e5d596/pjpg128x128
+      iconURL: https://avatars.mds.yandex.net/get-games/1881957/2a0000018ab6f8e6b8c3ec2b8c3bf7e5d596/pjpg128x128
+    - appID: 341205
+      title: "\uFFFD\uFFFD\uFFFD \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD? \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD
+        \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD!"
+      url: https://yandex.ru/games/app/341205
+      coverURL: https://avatars.mds.yandex.net/get-games/1881957/2a00000190318058b9a4d207de946818eaff/pjpg128x128
+      iconURL: https://avatars.mds.yandex.net/get-games/1881957/2a00000190318058b9a4d207de946818eaff/pjpg128x128
+    - appID: 191541
+      title: "\uFFFD\uFFFD\uFFFD \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD!"
+      url: https://yandex.ru/games/app/191541
+      coverURL: https://avatars.mds.yandex.net/get-games/11385414/2a00000190db848f31b9058ad84bfd435ed4/pjpg128x128
+      iconURL: https://avatars.mds.yandex.net/get-games/11385414/2a00000190db848f31b9058ad84bfd435ed4/pjpg128x128
+    - appID: 232236
+      title: "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD
+        \uFFFD\uFFFD\uFFFD"
+      url: https://yandex.ru/games/app/232236
+      coverURL: https://avatars.mds.yandex.net/get-games/1890793/2a00000189c00383b5000f00c723ed0fa77c/pjpg128x128
+      iconURL: https://avatars.mds.yandex.net/get-games/1890793/2a00000189c00383b5000f00c723ed0fa77c/pjpg128x128
+  Payments:
+    durationPayPanel: 1
+    testBuyFail: 0
+    purshases:
+    - id: gun
+      title: Gun
+      description: Product - Gun
+      imageURI: demo image
+      price: 5 YAN
+      priceValue: 5
+      priceCurrencyCode: YAN
+      currencyImageURL: https://yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png
+      consumed: 1
+    - id: armor
+      title: Armor
+      description: Product - Armor
+      imageURI: demo image
+      price: 10 YAN
+      priceValue: 10
+      priceCurrencyCode: YAN
+      currencyImageURL: https://yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png
+      consumed: 1
+    - id: grenade
+      title: Grenade
+      description: Product - Grenade
+      imageURI: demo image
+      price: 30 YAN
+      priceValue: 30
+      priceCurrencyCode: YAN
+      currencyImageURL: https://yastatic.net/s3/games-static/static-data/images/payments/sdk/currency-icon-s@2x.png
+      consumed: 1
+  QuitGameEvent:
+    enable: 0
+    objectName: NameYourObject
+    methodName: NameYourMethod
+  RewardedAdv:
+    skipInterAdvAfterReward: 0
+    labelAdvSimLabel: 0
+  ServerTime:
+    manualDateSetup: 1
+    year: 2050
+    month: 6
+    day: 15
+    hour: 12
+    minute: 30
+    second: 0
+  Storage:
+    saveLocal: 0
+    saveCloud: 1
+    flush: 0
+  Basic:
+    platform: {fileID: 11400000, guid: 19f2d77c91e114a89be62283870ed237, type: 2}
+    autoApplySettings: 1
+    autoPauseGame: 1
+    editEventSystem: 1
+    autoGRA: 1
+    logInEditor: 1
+    archivingBuild: 1
+    syncInitSDK: 0
+    loadSceneIfSDKLate: 0
+    loadSceneIndex: 0
+    simulationLoadScene: 0
+  Simulation:
+    device: 0
+    language: ru
+    advIntervalSimulation: 10
+    durationAdv: 0.5
+    loadAdv: 0
+    testFailAds: 0
+  Templates:
+    logoImageFormat: 0
+    backgroundImgFormat: 0
+    gradientBackgroundByLoadGame:
+      radial: 0
+      angleInclination: 140
+      color1: {r: 1, g: 0.831, b: 0.149, a: 1}
+      color2: {r: 0.36, g: 0.09, b: 1, a: 1}
+    customProgressBar: 1
+    progressBarSettigs:
+      round: 1
+      roundAngle: 10
+      width: 30
+      height: 24
+      color1: {r: 0.25, g: 0.6392, b: 1, a: 1}
+      color2: {r: 1, g: 0.831, b: 0.149, a: 0.7}
+    fixedAspectRatio: 0
+    aspectRatio: 16/9
+    disableForMobile: 1
+    fillBackground: 0
+    imageBackground: 0
+    imageName: background.jpg
+    gradientBackgroundByAspectRatio:
+      radial: 0
+      angleInclination: 140
+      color1: {r: 1, g: 0.831, b: 0.149, a: 1}
+      color2: {r: 0.36, g: 0.09, b: 1, a: 1}
+    pixelRatioEnable: 0
+    pixelRatioValue: 1.3
+    developerBuild: 0
+  platformInfo:
+    ownHost: 0
+  platformToggles:
+    showFirstAdv: 0
+    interAdvInterval: 0
+    postponeCallByFail: 0
+    useYandexMetrica: 0
+    metricaCounterID: 0
+    skipInterAdvAfterReward: 0
+    saveLocal: 0
+    saveCloud: 0
+    autoPauseGame: 0
+    selectWebGLTemplate: 1
+    runInBackground: 1
+    enableExceptions: 1
+    compressionFormat: 1
+    decompressionFallback: 1
+    autoGraphicsAPI: 1
+    managedStrippingLevel: 1
+    dataCaching: 0
+    colorSpace: 0
+    archivingBuild: 0
+    syncInitSDK: 0

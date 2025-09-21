@@ -22,7 +22,7 @@ namespace YG.EditorScr.BuildModify
                     textCopy = textCopy.Replace("circle", $"{infoYG.Templates.gradientBackgroundByLoadGame.angleInclination}deg");
                 }
 
-                styleFile += $"\n\n\n{textCopy}";
+                styleFileContent += $"\n\n\n{textCopy}";
             }
 
             if (infoYG.Templates.fixedAspectRatio && infoYG.Templates.fillBackground)
@@ -31,7 +31,7 @@ namespace YG.EditorScr.BuildModify
                 {
                     string imageName = infoYG.Templates.imageName;
                     string line = $"document.body.style.background = \"url('Images/{imageName}') center / cover no-repeat\";";
-                    indexFile = indexFile.Replace("// Fill Background [Build Modify]", line);
+                    indexFileContent = indexFileContent.Replace("// Fill Background [Build Modify]", line);
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace YG.EditorScr.BuildModify
                         textCopy = textCopy.Replace("circle", $"{infoYG.Templates.gradientBackgroundByAspectRatio.angleInclination}deg");
                     }
 
-                    styleFile += $"\n\n\n{textCopy}";
+                    styleFileContent += $"\n\n\n{textCopy}";
                 }
             }
         }

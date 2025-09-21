@@ -7,14 +7,15 @@ namespace YG.EditorScr.BuildModify
         {
             if (infoYG.Templates.pixelRatioEnable)
             {
-                string value = infoYG.Templates.pixelRatioValue.ToString();
-                value = value.Replace(",", ".");
+                string pixelRatioValue = infoYG.Templates.pixelRatioValue
+                    .ToString()
+                    .Replace(",", ".");
 
-                indexFile = indexFile.Replace("//config.devicePixelRatio = 1", "config.devicePixelRatio = " + value);
+                indexFileContent = indexFileContent.Replace("//config.devicePixelRatio = 1", $"config.devicePixelRatio = {pixelRatioValue}");
             }
             else
             {
-                indexFile = indexFile.Replace("//config.devicePixelRatio = 1;", string.Empty);
+                indexFileContent = indexFileContent.Replace("//config.devicePixelRatio = 1;", string.Empty);
             }
         }
     }
