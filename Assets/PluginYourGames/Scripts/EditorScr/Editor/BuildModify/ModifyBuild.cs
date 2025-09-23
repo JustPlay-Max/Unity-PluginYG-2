@@ -15,11 +15,12 @@ namespace YG.EditorScr.BuildModify
     {
         private const string ERROR_COLOR = "#ff4f00";
         private const string WARNING_COLOR = "#fccf03";
+        private static string BUILD_PATCH = string.Empty;
         private const string INDEX_FILE_NAME = "index.html";
         private const string STYLE_FILE_NAME = "style.css";
         private static InfoYG infoYG = null;
-        private static string indexFileContent = string.Empty;
-        private static string styleFileContent = string.Empty;
+        private static string indexFile = string.Empty;
+        private static string styleFile = string.Empty;
         private static string methodName = string.Empty;
         private enum CodeType { HeadNative, BodyNative, JS, Head, Body, Init0, Init1, Init2, Init, Start };
         public static event Action onModifyComplete = null;
@@ -27,18 +28,19 @@ namespace YG.EditorScr.BuildModify
         public static void ModifyIndex(string buildPath)
         {
             infoYG = YG2.infoYG;
+            BUILD_PATCH = buildPath;
             List<string> errors = new List<string>();
 
 #if PLATFORM_WEBGL
             string indexFilePath = Path.Combine(buildPath, INDEX_FILE_NAME);
             if (File.Exists(indexFilePath))
-                indexFileContent = File.ReadAllText(indexFilePath);
+                indexFile = File.ReadAllText(indexFilePath);
             else
                 Debug.LogError($"{INDEX_FILE_NAME} file not found");
 
             string styleFilePath = Path.Combine(buildPath, STYLE_FILE_NAME);
             if (File.Exists(styleFilePath))
-                styleFileContent = File.ReadAllText(styleFilePath);
+                styleFile = File.ReadAllText(styleFilePath);
 
             Type type = typeof(ModifyBuild);
             MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
@@ -76,10 +78,10 @@ namespace YG.EditorScr.BuildModify
             string initFunction = $"<script>console.log('%c' + '{logText}', 'color: #FFDF73; background-color: #454545');</script>";
             AddIndexCode(initFunction, CodeType.BodyNative);
 #endif
-            File.WriteAllText(indexFilePath, indexFileContent);
+            File.WriteAllText(indexFilePath, indexFile);
 
             if (File.Exists(styleFilePath))
-                File.WriteAllText(styleFilePath, styleFileContent);
+                File.WriteAllText(styleFilePath, styleFile);
 
 #endif
             EditorApplication.delayCall += () =>
@@ -155,7 +157,7 @@ namespace YG.EditorScr.BuildModify
                 _ => "// Additional script modules"
             };
 
-            StringBuilder sb = new StringBuilder(indexFileContent);
+            StringBuilder sb = new StringBuilder(indexFile);
             int insertIndex = sb.ToString().IndexOf(commentHelper);
             if (insertIndex >= 0)
             {
@@ -163,7 +165,7 @@ namespace YG.EditorScr.BuildModify
                     insertIndex += commentHelper.Length;
 
                 sb.Insert(insertIndex, $"\n{code}\n");
-                indexFileContent = sb.ToString();
+                indexFile = sb.ToString();
             }
         }
 

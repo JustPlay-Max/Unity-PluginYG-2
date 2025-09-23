@@ -6,8 +6,8 @@ namespace YG.EditorScr.BuildModify
 {
     public class BuildLog
     {
-        private const string BUILDLOGFILE_NAME = "BuildLogYG2.txt";
-        private static string BUILDLOGFILE_PATH => $"{InfoYG.PATCH_PC_EDITOR}/{BUILDLOGFILE_NAME}";
+        private const string BUILD_LOG_FILE_NAME = "BuildLogYG2.txt";
+        private static string BUILD_PATCH => $"{InfoYG.PATCH_PC_EDITOR}/{BUILD_LOG_FILE_NAME}";
         public static void WritingLog()
         {
             string[] buildLogHeaderLines = new string[]
@@ -17,14 +17,14 @@ namespace YG.EditorScr.BuildModify
                 "PluginYG version: " // 2
             };
 
-            if (!File.Exists(BUILDLOGFILE_PATH))
+            if (!File.Exists(BUILD_PATCH))
             {
                 string readLines = string.Join("\n", buildLogHeaderLines);
 
-                File.WriteAllText(BUILDLOGFILE_PATH, readLines, Encoding.UTF8);
+                File.WriteAllText(BUILD_PATCH, readLines, Encoding.UTF8);
             }
 
-            string[] buildLog = File.ReadAllLines(BUILDLOGFILE_PATH, Encoding.UTF8);
+            string[] buildLog = File.ReadAllLines(BUILD_PATCH, Encoding.UTF8);
 
             // Write lines log:
             // Build patch
@@ -36,7 +36,7 @@ namespace YG.EditorScr.BuildModify
             // PluginYG version
             buildLog[2] = $"{buildLogHeaderLines[2]}{InfoYG.VERSION_YG2}";
 
-            File.WriteAllLines(BUILDLOGFILE_PATH, buildLog, Encoding.UTF8);
+            File.WriteAllLines(BUILD_PATCH, buildLog, Encoding.UTF8);
         }
 
         public static int GetBuildNumber()
@@ -55,9 +55,9 @@ namespace YG.EditorScr.BuildModify
 
         public static string ReadProperty(string property)
         {
-            if (File.Exists(BUILDLOGFILE_PATH))
+            if (File.Exists(BUILD_PATCH))
             {
-                string[] lines = File.ReadAllLines(BUILDLOGFILE_PATH);
+                string[] lines = File.ReadAllLines(BUILD_PATCH);
 
                 foreach (string line in lines)
                 {
