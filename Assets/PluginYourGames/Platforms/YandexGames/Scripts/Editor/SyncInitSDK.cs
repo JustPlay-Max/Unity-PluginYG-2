@@ -7,7 +7,7 @@ namespace YG.EditorScr.BuildModify
         {
             if (infoYG.Basic.syncInitSDK)
             {
-                indexFileContent = indexFileContent.Replace("let syncInit = false;", "let syncInit = true;");
+                indexFile = indexFile.Replace("let syncInit = false;", "let syncInit = true;");
             }
         }
     }

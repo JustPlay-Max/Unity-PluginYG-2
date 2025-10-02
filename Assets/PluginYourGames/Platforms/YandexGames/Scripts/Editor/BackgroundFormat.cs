@@ -10,7 +10,7 @@ namespace YG.EditorScr.BuildModify
         {
             string searchCode = @"loadingCover.style.background = ""url('Images/background.png') center / cover"";";
 
-            if (!indexFileContent.Contains(searchCode))
+            if (!indexFile.Contains(searchCode))
             {
                 Debug.LogWarning("Search string not found in index.html");
                 return;
@@ -23,22 +23,22 @@ namespace YG.EditorScr.BuildModify
             }
             else if (infoYG.Templates.backgroundImgFormat == InfoYG.TemplatesSettings.BackgroundImageFormat.JPG)
             {
-                indexFileContent = indexFileContent.Replace(searchCode, searchCode.Replace("png", "jpg"));
+                indexFile = indexFile.Replace(searchCode, searchCode.Replace("png", "jpg"));
                 DeleteImage("png");
                 DeleteImage("gif");
             }
             else if (infoYG.Templates.backgroundImgFormat == InfoYG.TemplatesSettings.BackgroundImageFormat.GIF)
             {
-                indexFileContent = indexFileContent.Replace(searchCode, searchCode.Replace("png", "gif"));
+                indexFile = indexFile.Replace(searchCode, searchCode.Replace("png", "gif"));
                 DeleteImage("png");
                 DeleteImage("jpg");
             }
             else if (infoYG.Templates.backgroundImgFormat == InfoYG.TemplatesSettings.BackgroundImageFormat.Unity)
             {
-                if (indexFileContent.Contains("var backgroundUnity = "))
-                    indexFileContent = indexFileContent.Replace(searchCode, "canvas.style.background = backgroundUnity;");
+                if (indexFile.Contains("var backgroundUnity = "))
+                    indexFile = indexFile.Replace(searchCode, "canvas.style.background = backgroundUnity;");
                 else
-                    indexFileContent = indexFileContent.Replace(searchCode, string.Empty);
+                    indexFile = indexFile.Replace(searchCode, string.Empty);
 
                 DeleteImage("png");
                 DeleteImage("jpg");
@@ -46,7 +46,7 @@ namespace YG.EditorScr.BuildModify
             }
             else
             {
-                indexFileContent = indexFileContent.Replace(searchCode, string.Empty);
+                indexFile = indexFile.Replace(searchCode, string.Empty);
                 DeleteImage("png");
                 DeleteImage("jpg");
                 DeleteImage("gif");

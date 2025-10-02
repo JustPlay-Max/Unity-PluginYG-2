@@ -10,7 +10,7 @@ namespace YG.EditorScr.BuildModify
         {
             string searchCode = "Images/logo.png";
 
-            if (!indexFileContent.Contains(searchCode))
+            if (!indexFile.Contains(searchCode))
             {
                 Debug.LogError($"Search string '{searchCode}' not found in index.html");
                 return;
@@ -23,19 +23,19 @@ namespace YG.EditorScr.BuildModify
             }
             else if (infoYG.Templates.logoImageFormat == InfoYG.TemplatesSettings.LogoImgFormat.JPG)
             {
-                indexFileContent = indexFileContent.Replace(searchCode, searchCode.Replace("png", "jpg"));
+                indexFile = indexFile.Replace(searchCode, searchCode.Replace("png", "jpg"));
                 DeleteLogo("png");
                 DeleteLogo("gif");
             }
             else if (infoYG.Templates.logoImageFormat == InfoYG.TemplatesSettings.LogoImgFormat.GIF)
             {
-                indexFileContent = indexFileContent.Replace(searchCode, searchCode.Replace("png", "gif"));
+                indexFile = indexFile.Replace(searchCode, searchCode.Replace("png", "gif"));
                 DeleteLogo("png");
                 DeleteLogo("jpg");
             }
             else if (infoYG.Templates.logoImageFormat == InfoYG.TemplatesSettings.LogoImgFormat.No)
             {
-                indexFileContent = indexFileContent.Replace(@"<div id=""unity-logo""><img src=""Images/logo.png""></div>", string.Empty);
+                indexFile = indexFile.Replace(@"<div id=""unity-logo""><img src=""Images/logo.png""></div>", string.Empty);
                 DeleteLogo("png");
                 DeleteLogo("jpg");
                 DeleteLogo("gif");
