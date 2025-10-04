@@ -20,12 +20,12 @@ namespace YG.EditorScr.BuildModify
                 textCopy = textCopy.Replace("___WIDTH_BAR___", infoYG.Templates.progressBarSettigs.width.ToString());
 
                 textCopy = textCopy.Replace("___COLOR_BAR_HALF___", ConvertToRGBA(colorHalf));
-                styleFileContent += $"\n\n\n{textCopy}";
+                styleFile += $"\n\n\n{textCopy}";
 
                 // Hight
                 textCopy = ManualFileTextCopy($"{InfoYG.CORE_FOLDER_YG2}/Platforms/YandexGames/Scripts/Editor/ProgressBar/HightProgressBar.css");
                 textCopy = textCopy.Replace("___HIGHT_BAR___", infoYG.Templates.progressBarSettigs.height.ToString());
-                styleFileContent += $"\n\n\n{textCopy}";
+                styleFile += $"\n\n\n{textCopy}";
 
                 // Round
                 if (infoYG.Templates.progressBarSettigs.round)
@@ -35,7 +35,7 @@ namespace YG.EditorScr.BuildModify
                     textCopy = textCopy.Replace("__ROUND_BAR_EMPTY__", (infoYG.Templates.progressBarSettigs.roundAngle + 2).ToString());
                     textCopy = textCopy.Replace("__ROUND_BAR_FULL__", infoYG.Templates.progressBarSettigs.roundAngle.ToString());
 
-                    styleFileContent += $"\n\n\n{textCopy}";
+                    styleFile += $"\n\n\n{textCopy}";
                 }
             }
         }

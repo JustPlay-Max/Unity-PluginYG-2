@@ -11,11 +11,11 @@ namespace YG.EditorScr.BuildModify
                     .ToString()
                     .Replace(",", ".");
 
-                indexFileContent = indexFileContent.Replace("//config.devicePixelRatio = 1", $"config.devicePixelRatio = {pixelRatioValue}");
+                indexFile = indexFile.Replace("//config.devicePixelRatio = 1", $"config.devicePixelRatio = {pixelRatioValue}");
             }
             else
             {
-                indexFileContent = indexFileContent.Replace("//config.devicePixelRatio = 1;", string.Empty);
+                indexFile = indexFile.Replace("//config.devicePixelRatio = 1;", string.Empty);
             }
         }
     }
