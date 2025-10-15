@@ -63,9 +63,19 @@ namespace YG.Utils.Metrica
 
         private static string GetValueString(object value)
         {
-            if (value is int || value is float || value is double)
+            if (value is int)
             {
                 return value.ToString();
+            }
+            
+            if (value is float floatValue)
+            {
+                return floatValue.ToString(CultureInfo.InvariantCulture);
+            }
+            
+            if (value is double doubleValue)
+            {
+                return doubleValue.ToString(CultureInfo.InvariantCulture);
             }
 
             if (value is bool boolValue)
