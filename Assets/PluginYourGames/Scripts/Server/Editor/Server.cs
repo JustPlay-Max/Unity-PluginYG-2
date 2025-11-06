@@ -79,7 +79,7 @@ namespace YG.EditorScr
 
                     if (!string.IsNullOrEmpty(fileContent))
                     {
-                        File.WriteAllText(InfoYG.FILE_SERVER_INFO, fileContent);
+                        FileYG.WriteAllText(InfoYG.FILE_SERVER_INFO, fileContent);
                         ServerInfo.Read();
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();

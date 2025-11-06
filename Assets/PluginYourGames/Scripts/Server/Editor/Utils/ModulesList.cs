@@ -18,7 +18,7 @@ namespace YG.EditorScr
 
             if (File.Exists(pluginVersionPatch))
             {
-                pluginVersion = File.ReadAllText(pluginVersionPatch);
+                pluginVersion = FileYG.ReadAllText(pluginVersionPatch);
                 pluginVersion = pluginVersion.Replace("v", string.Empty);
             }
 
@@ -33,7 +33,7 @@ namespace YG.EditorScr
             string[] modulesTextLines = null;
 
             if (File.Exists(InfoYG.FILE_MODULES_PC))
-                modulesTextLines = File.ReadAllLines(InfoYG.FILE_MODULES_PC);
+                modulesTextLines = FileYG.ReadAllLines(InfoYG.FILE_MODULES_PC);
 
             for (int i = 0; i < modulesTextLines.Length; i++)
             {
@@ -73,13 +73,13 @@ namespace YG.EditorScr
 
                 if (File.Exists(platfomVersionPathc))
                 {
-                    version = File.ReadAllText(platfomVersionPathc);
+                    version = FileYG.ReadAllText(platfomVersionPathc);
                     version = version.Replace("v", string.Empty);
                 }
 
                 Module module = new Module
                 {
-                    nameModule = platfomNames[i],
+                    nameModule = platfomNames[i].Replace("Integration", ""),
                     projectVersion = version,
                     platform = true
                 };

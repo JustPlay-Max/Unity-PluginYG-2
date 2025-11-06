@@ -57,7 +57,7 @@ namespace YG.EditorScr.BuildModify
         {
             if (File.Exists(BUILD_PATCH))
             {
-                string[] lines = File.ReadAllLines(BUILD_PATCH);
+                string[] lines = FileYG.ReadAllLines(BUILD_PATCH);
 
                 foreach (string line in lines)
                 {

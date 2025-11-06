@@ -57,7 +57,7 @@ namespace YG.EditorScr.BuildModify
                 string pathImage = $"{ProcessBuild.BuildPath}/Images/background.{format}";
 
                 if (File.Exists(pathImage))
-                    File.Delete(pathImage);
+                    FileYG.Delete(pathImage);
             }
         }
 

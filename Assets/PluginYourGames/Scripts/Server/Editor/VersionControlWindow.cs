@@ -545,7 +545,13 @@ namespace YG.EditorScr
                                     rect.x += 23;
 
                                     if (GUI.Button(rect, "Doc", ButtonStyle()))
+                                    {
+#if RU_YG2
                                         Application.OpenURL(module.doc);
+#else
+                                        Application.OpenURL(module.doc + "?en=");
+#endif
+                                    }
                                 }
                                 else
                                 {
@@ -591,6 +597,7 @@ namespace YG.EditorScr
                         {
                             string patchModules = $"{InfoYG.PATCH_PC_MODULES}/{module.nameModule}";
                             string patchPlatforms = $"{InfoYG.PATCH_PC_PLATFORMS}/{module.nameModule}";
+                            string patchFormatPlatforms = $"{InfoYG.PATCH_PC_PLATFORMS}/{module.nameModule + "Integration"}";
 
                             if (Directory.Exists(patchModules))
                                 pathDelete = patchModules;
@@ -598,6 +605,11 @@ namespace YG.EditorScr
                             if (Directory.Exists(patchPlatforms))
                             {
                                 pathDelete = patchPlatforms;
+                                isModulPlatform = true;
+                            }
+                            else if (Directory.Exists(patchFormatPlatforms))
+                            {
+                                pathDelete = patchFormatPlatforms;
                                 isModulPlatform = true;
                             }
                         }
@@ -734,18 +746,18 @@ namespace YG.EditorScr
                 return;
 
             string tempScrName = "UpdatePluginYGTemp";
-            string tempScrText = File.ReadAllText($"{InfoYG.PATCH_PC_YG2}/Scripts/Server/Editor/{tempScrName}.txt");
+            string tempScrText = FileYG.ReadAllText($"{InfoYG.PATCH_PC_YG2}/Scripts/Server/Editor/{tempScrName}.txt");
             tempScrText = tempScrText.Replace("DOWNLOAD_URL_KEY", module.download);
             tempScrText = tempScrText.Replace("PATH_YG2", InfoYG.CORE_FOLDER_YG2);
 
             string scenesFile = $"{InfoYG.PATCH_PC_EXAMPLE}/Resources/DemoSceneNames.txt";
             if (File.Exists(scenesFile))
             {
-                string scenesText = File.ReadAllText(scenesFile);
+                string scenesText = FileYG.ReadAllText(scenesFile);
                 tempScrText = tempScrText.Replace("EXAMPLE_SCENES = string.Empty", @$"EXAMPLE_SCENES = @""{scenesText}""");
             }
 
-            File.WriteAllText($"{Application.dataPath}/{tempScrName}.cs", tempScrText);
+            FileYG.WriteAllText($"{Application.dataPath}/{tempScrName}.cs", tempScrText);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 

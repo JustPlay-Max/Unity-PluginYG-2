@@ -19,7 +19,7 @@ namespace YG
             if (visible)
             {
                 visibilityWindowGame = true;
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR && !YandexGamesPlatform_yg
                 if (!nowAdsShow)
                     PauseGame(false);
 #endif
@@ -28,7 +28,7 @@ namespace YG
             }
             else
             {
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR && !YandexGamesPlatform_yg
                 if (!nowAdsShow)
                     PauseGame(true);
 #endif

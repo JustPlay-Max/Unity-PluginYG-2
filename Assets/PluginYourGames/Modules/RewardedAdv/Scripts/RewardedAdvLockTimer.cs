@@ -27,19 +27,32 @@ namespace YG
         private static Dictionary<string, float> timersList = new Dictionary<string, float>();
         private Coroutine coroutine;
 
-        private void OnEnable() => YG2.onRewardAdv += SetTimer;
-        private void OnDisable() => YG2.onRewardAdv -= SetTimer;
-
-        private void Start()
+        private void OnEnable()
         {
+            YG2.onRewardAdv += SetTimer;
+
             timerObject.SetActive(false);
 
             if (timersList.ContainsKey(rewardID))
             {
                 if (timerComplete)
+                {
                     timersList.Remove(rewardID);
-                else
+                }
+                else if (coroutine == null)
+                {
                     coroutine = StartCoroutine(ShowTimer());
+                }
+            }
+        }
+        private void OnDisable()
+        {
+            YG2.onRewardAdv -= SetTimer;
+
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
             }
         }
 
@@ -55,7 +68,9 @@ namespace YG
             else
             {
                 timersList.Add(id, Time.realtimeSinceStartup);
-                coroutine = StartCoroutine(ShowTimer());
+
+                if (coroutine == null)
+                    coroutine = StartCoroutine(ShowTimer());
             }
         }
 

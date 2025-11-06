@@ -34,13 +34,13 @@ namespace YG.EditorScr.BuildModify
 #if PLATFORM_WEBGL
             string indexFilePath = Path.Combine(buildPath, INDEX_FILE_NAME);
             if (File.Exists(indexFilePath))
-                indexFile = File.ReadAllText(indexFilePath);
+                indexFile = FileYG.ReadAllText(indexFilePath);
             else
                 Debug.LogError($"{INDEX_FILE_NAME} file not found");
 
             string styleFilePath = Path.Combine(buildPath, STYLE_FILE_NAME);
             if (File.Exists(styleFilePath))
-                styleFile = File.ReadAllText(styleFilePath);
+                styleFile = FileYG.ReadAllText(styleFilePath);
 
             Type type = typeof(ModifyBuild);
             MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
@@ -78,10 +78,10 @@ namespace YG.EditorScr.BuildModify
             string initFunction = $"<script>console.log('%c' + '{logText}', 'color: #FFDF73; background-color: #454545');</script>";
             AddIndexCode(initFunction, CodeType.BodyNative);
 #endif
-            File.WriteAllText(indexFilePath, indexFile);
+            FileYG.WriteAllText(indexFilePath, indexFile);
 
             if (File.Exists(styleFilePath))
-                File.WriteAllText(styleFilePath, styleFile);
+                FileYG.WriteAllText(styleFilePath, styleFile);
 
 #endif
             EditorApplication.delayCall += () =>
@@ -172,13 +172,13 @@ namespace YG.EditorScr.BuildModify
         public static string FileTextCopy(string fileName)
         {
             string file = $"{InfoYG.PATCH_PC_MODULES}/{methodName}/Scripts/Editor/CopyCode/{fileName}";
-            return File.ReadAllText(file);
+            return FileYG.ReadAllText(file);
         }
 
         public static string ManualFileTextCopy(string filePath)
         {
             string file = $"{Application.dataPath}/{filePath}";
-            return File.ReadAllText(file);
+            return FileYG.ReadAllText(file);
         }
 
         private static void InitFunction(string methodName, CodeType codeType = CodeType.Init)
