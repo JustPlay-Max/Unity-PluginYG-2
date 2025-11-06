@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace YG.Utils.Metrica
 {
@@ -61,34 +63,35 @@ namespace YG.Utils.Metrica
             return jsonString;
         }
 
-        private static string GetValueString(object value)
+        private static string GetValueString(object obj)
         {
-            if (value is int || value is float || value is double)
+            return obj switch
             {
-                return value.ToString();
+                int intValue => intValue.ToString(CultureInfo.InvariantCulture),
+
+                float floatValue => floatValue.ToString(CultureInfo.InvariantCulture),
+
+                double doubleValue => doubleValue.ToString(CultureInfo.InvariantCulture),
+
+                bool boolValue => boolValue.ToString().ToLower(),
+
+                string stringValue => $"\"{stringValue.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"",
+
+                IList<object> listValue => StringifyList(listValue),
+
+                _ => $"\"{obj.ToString()}\""
+            };
+        }
+
+        private static string StringifyList(IList<object> list)
+        {
+            var listString = new List<string>(list.Count);
+            foreach (var item in list.ToArray())
+            {
+                listString.Add(GetValueString(item));
             }
 
-            if (value is bool boolValue)
-            {
-                return boolValue.ToString().ToLower();
-            }
-
-            if (value is string stringValue)
-            {
-                return $"\"{stringValue.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
-            }
-
-            if (value is IList<object> listValue)
-            {
-                var listString = new List<string>();
-                foreach (var item in listValue)
-                {
-                    listString.Add(GetValueString(item));
-                }
-                return "[" + string.Join(",", listString) + "]";
-            }
-
-            return $"\"{value}\"";
+            return "[" + string.Join(",", listString) + "]";
         }
 
         [System.Serializable]
