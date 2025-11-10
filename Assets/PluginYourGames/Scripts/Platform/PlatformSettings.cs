@@ -12,7 +12,7 @@ namespace YG.Insides
             get
             {
                 if (InfoYG.instance && InfoYG.instance.Basic.platform)
-                    return InfoYG.instance.Basic.platform.nameFull;
+                    return InfoYG.instance.Basic.platform.nameFull.Replace("Integration", "");
                 return "NullPlatform";
             }
         }
@@ -21,15 +21,14 @@ namespace YG.Insides
             get
             {
                 if (InfoYG.instance && InfoYG.instance.Basic.platform)
-                    return InfoYG.instance.Basic.platform.nameFull.Replace("Platform", string.Empty);
+                    return InfoYG.instance.Basic.platform.nameFull.Replace("Integration", "").Replace("Platform", "");
                 return "Null";
             }
         }
 
-
         public string NameBase()
         {
-            return nameFull.Replace("Platform", string.Empty);
+            return nameFull.Replace("Integration", "").Replace("Platform", "");
         }
 
 #if UNITY_EDITOR
@@ -48,6 +47,11 @@ namespace YG.Insides
 
                 if (AssetDatabase.IsValidFolder(templatePath))
                     PlayerSettings.WebGL.template = "PROJECT:" + templateName;
+                else
+                {
+                    if (AssetDatabase.IsValidFolder(templatePath + "Integration"))
+                        PlayerSettings.WebGL.template = "PROJECT:" + templateName + "Integration";
+                }
             }
         }
 

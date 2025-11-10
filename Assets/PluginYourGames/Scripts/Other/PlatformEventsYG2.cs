@@ -16,10 +16,29 @@ namespace YG.Insides
             OnDisable,
 #if RU_YG2
             [InspectorName("Вручную (метод ExecuteEvent)")]
+#else
+            [InspectorName("Manual (method ExecuteEvent)")]
 #endif
             Manual
         }
-        public UpdateType whenToEvent = UpdateType.Start;
+        public UpdateType whenToEvent = UpdateType.OnEnable;
+
+        public enum ExecuteMode
+        {
+#if RU_YG2
+            [InspectorName("Выполнять только у выбранных платформ")]
+#else
+            [InspectorName("Run only on selected platforms")]
+#endif
+            Selected,
+#if RU_YG2
+            [InspectorName("Игнорировать выбранные платформы (выполнять у тех, которых нет в списке)")]
+#else
+            [InspectorName("Ignore selected platforms (perform on those that are not in the list)")]
+#endif
+            Deselected
+        }
+        public ExecuteMode executeMode = ExecuteMode.Selected;
 
         private void Awake()
         {
@@ -47,9 +66,21 @@ namespace YG.Insides
 
         public void ExecuteEvent()
         {
-            if (platforms.Contains(YG2.platform))
+            bool isContainsCurrentPlatform = platforms.Contains(YG2.platform);
+
+            if (executeMode == ExecuteMode.Selected)
             {
-                platformAction?.Invoke();
+                if (isContainsCurrentPlatform)
+                {
+                    platformAction?.Invoke();
+                }
+            }
+            else if (executeMode == ExecuteMode.Deselected)
+            {
+                if (!isContainsCurrentPlatform)
+                {
+                    platformAction?.Invoke();
+                }
             }
         }
 

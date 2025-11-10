@@ -14,6 +14,7 @@ namespace YG
     public partial class InfoYG : ScriptableObject
     {
         public static InfoYG instance;
+
         public static InfoYG Inst()
         {
             if (instance == null)
@@ -95,7 +96,7 @@ namespace YG
                 if (!Directory.Exists(folder))
                     continue;
 
-                string platformName = Path.GetFileName(platfFolders[i]) + "Platform";
+                string platformName = (Path.GetFileName(platfFolders[i]) + "Platform").Replace("Integration", "");
                 string asmdefPath = Path.Combine(folder, platformName + ".asmdef").Replace("\\", "/");
 
                 bool shouldHaveAsmdef = !string.IsNullOrEmpty(selectPlatform) && platformName != selectPlatform;

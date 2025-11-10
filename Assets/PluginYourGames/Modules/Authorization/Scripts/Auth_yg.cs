@@ -7,11 +7,11 @@ namespace YG
     public partial class YG2
     {
         public static PlayerData player = new PlayerData();
-        public enum PayingStatus { Paying, PartiallyPaying, NotPaying, Unknown };
+        public enum PayingStatus : byte { Paying = 0, PartiallyPaying, NotPaying, Unknown };
 
         public class PlayerData
         {
-            public bool auth;
+            public bool auth = false;
             public string name = "unauthorized";
             public string id = string.Empty;
             public string photo = string.Empty;
@@ -44,22 +44,13 @@ namespace YG
             player.id = infoYG.Authorization.uniqueID;
             player.payingStatus = infoYG.Authorization.payingStatus;
 
-            if (!infoYG.Authorization.authorized)
-            {
-                player.name = "unauthorized";
-            }
-            else
-            {
-                //if (!infoYG.Authorization.scopes)
-                //    player.name = InfoYG.ANONYMOUS;
-                //else
-                player.name = infoYG.Authorization.playerName;
-            }
+            player.name = infoYG.Authorization.authorized
+                ? infoYG.Authorization.playerName
+                : "unauthorized";
 
-            if (infoYG.Authorization.playerPhoto == InfoYG.DEMO_IMAGE)
-                player.photo = ServerInfo.saveInfo.playerImage;
-            else
-                player.photo = infoYG.Authorization.playerPhoto;
+            player.photo = infoYG.Authorization.playerPhoto == InfoYG.DEMO_IMAGE
+                ? ServerInfo.saveInfo.playerImage
+                : infoYG.Authorization.playerPhoto;
 
             GetDataInvoke();
         }

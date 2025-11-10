@@ -51,7 +51,7 @@ namespace YG
 
         public static void SetDefaultSaves()
         {
-            Message("Reset Save Progress");
+            Message("Set Default Saves");
             int idSave = saves.idSave;
             saves = new SavesYG { idSave = idSave };
 

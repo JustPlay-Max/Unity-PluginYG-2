@@ -20,10 +20,14 @@ namespace YG
         private bool editEventSystem;
         private EventSystem eventSystem;
 
+        private static bool deleteProcessing;
+
         public void Setup(bool timeScale, bool audioPause, bool cursor, bool eventSystem)
         {
             if (inst == null)
             {
+                deleteProcessing = false;
+
                 inst = this;
                 DontDestroyOnLoad(inst);
 
@@ -79,8 +83,16 @@ namespace YG
             }
         }
 
-        private void LateUpdate()
+        private void Update()
         {
+            if (!YG2.isPauseGame)
+            {
+                if (!deleteProcessing)
+                    PauseDisabled();
+
+                return;
+            }
+
             if (editTimeScale && Time.timeScale != 0)
             {
                 timeScale_save = Time.timeScale;
@@ -111,6 +123,9 @@ namespace YG
 
         public void PauseDisabled()
         {
+            inst = null;
+            deleteProcessing = true;
+
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
             if (editTimeScale)
@@ -128,7 +143,6 @@ namespace YG
             if (editEventSystem && eventSystem != null)
                 eventSystem.enabled = eventSystem_save;
 
-            inst = null;
             Destroy(gameObject);
         }
     }

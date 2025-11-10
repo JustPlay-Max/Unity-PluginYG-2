@@ -211,13 +211,13 @@ namespace YG.EditorScr
             GUILayout.BeginHorizontal();
 
             GUIStyle styleHeader = TextStyles.White();
-            styleHeader.fontSize = 18;
+            styleHeader.fontSize = 21;
             styleHeader.fontStyle = FontStyle.Bold;
 
             GUIStyle styleHeader2 = TextStyles.Gray();
-            styleHeader2.fontSize = 12;
+            styleHeader2.fontSize = 11;
             styleHeader2.fontStyle = FontStyle.Bold;
-
+            
             if (iconPluginYG2)
             {
                 GUILayout.Space(20);
@@ -226,20 +226,37 @@ namespace YG.EditorScr
                 GUI.DrawTexture(textureRect, iconPluginYG2);
                 GUILayout.Space(10);
 
-                Rect textureMiddleRect = GUILayoutUtility.GetRect(20, 20, GUILayout.ExpandWidth(false));
-                Vector2 pivot = new Vector2(textureMiddleRect.x + textureMiddleRect.width / 2, textureMiddleRect.y + textureMiddleRect.height / 2);
-                Matrix4x4 originalMatrix = GUI.matrix;
-                GUIUtility.RotateAroundPivot(45f, pivot);
-                Rect rotatedRect = new Rect(textureMiddleRect.x + 7, textureMiddleRect.y + 7, textureMiddleRect.width, textureMiddleRect.height);
-                GUI.DrawTexture(rotatedRect, iconConnect);
-                GUI.matrix = originalMatrix;
-                GUILayout.Space(8);
-
-                if (iconPlatform)
+                if (scr.Basic.platform != null)
                 {
-                    Rect textureLastRect = GUILayoutUtility.GetRect(40, 40, GUILayout.ExpandWidth(false));
-                    GUI.DrawTexture(textureLastRect, iconPlatform);
-                    GUILayout.Space(10);
+                    Rect textureMiddleRect = GUILayoutUtility.GetRect(20, 20, GUILayout.ExpandWidth(false));
+                    Vector2 pivot = new Vector2(textureMiddleRect.x + textureMiddleRect.width / 2, textureMiddleRect.y + textureMiddleRect.height / 2);
+                    Matrix4x4 originalMatrix = GUI.matrix;
+                    GUIUtility.RotateAroundPivot(45f, pivot);
+                    Rect rotatedRect = new Rect(textureMiddleRect.x + 7, textureMiddleRect.y + 7, textureMiddleRect.width, textureMiddleRect.height);
+                    GUI.DrawTexture(rotatedRect, iconConnect);
+                    GUI.matrix = originalMatrix;
+
+                    if (iconPlatform)
+                    {
+                        GUILayout.Space(10);
+                        Rect textureLastRect = GUILayoutUtility.GetRect(40, 40, GUILayout.ExpandWidth(false));
+                        GUI.DrawTexture(textureLastRect, iconPlatform);
+                        GUILayout.Space(20);
+                    }
+                    else
+                    {
+                        GUILayout.Space(5);
+                        GUIStyle stylePlatformLabel = TextStyles.Header();
+                        stylePlatformLabel.fontSize = 30;
+                        stylePlatformLabel.fontStyle = FontStyle.Bold;
+                        stylePlatformLabel.alignment = TextAnchor.MiddleLeft;
+
+                        string platformLabel = TextStyles.RemoveLowercaseLetters(scr.Basic.platform.NameBase());
+
+                        Vector2 size = stylePlatformLabel.CalcSize(new GUIContent(platformLabel));
+                        EditorGUILayout.LabelField(platformLabel, stylePlatformLabel, GUILayout.Width(size.x), GUILayout.Height(size.y));
+                        GUILayout.Space(10);
+                    }
                 }
             }
             else
@@ -249,7 +266,7 @@ namespace YG.EditorScr
             }
 
             GUILayout.BeginVertical();
-            EditorGUILayout.LabelField("PLUGIN YG2", styleHeader);
+            EditorGUILayout.LabelField("PLUGIN YG 2.0", styleHeader);
 
             EditorGUILayout.LabelField(Langs.fullNamePlugin.ToUpper(), styleHeader2);
             GUILayout.EndVertical();
@@ -321,6 +338,18 @@ namespace YG.EditorScr
 
             if (lastPlatform != currentPlatform)
             {
+                EditorApplication.delayCall += () =>
+                {
+                    foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
+                    {
+                        if (w.titleContent != null && w.titleContent.text.Contains("Select Platform Settings"))
+                        {
+                            w.Close();
+                            break;
+                        }
+                    }
+                };
+
                 InfoYG.SetPlatform(currentPlatform);
 
                 if (currentPlatform == "NullPlatform")
@@ -459,7 +488,7 @@ namespace YG.EditorScr
             string[] platfomNames = new string[platfomFolders.Length];
 
             for (int i = 0; i < platfomFolders.Length; i++)
-                platfomNames[i] = Path.GetFileName(platfomFolders[i]);
+                platfomNames[i] = Path.GetFileName(platfomFolders[i]).Replace("Integration", "");
 
             for (int i = 0; i < platfomNames.Length; i++)
             {
@@ -467,7 +496,7 @@ namespace YG.EditorScr
 
                 if (File.Exists(platfomVersionPathc))
                 {
-                    string version = File.ReadAllText(platfomVersionPathc);
+                    string version = FileYG.ReadAllText(platfomVersionPathc);
                     platfomNames[i] += " " + version;
                 }
             }
@@ -475,7 +504,7 @@ namespace YG.EditorScr
             modulesStr.AddRange(platfomNames);
 
             if (File.Exists(InfoYG.FILE_MODULES_PC))
-                modulesStr.AddRange(File.ReadAllLines(InfoYG.FILE_MODULES_PC).ToList());
+                modulesStr.AddRange(FileYG.ReadAllLines(InfoYG.FILE_MODULES_PC).ToList());
 
             for (int i = 0; i < modulesStr.Count; i++)
             {

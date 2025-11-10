@@ -1,3 +1,6 @@
+// YGEditorStyles.cs
+// Ѕезопасна€ работа со стил€ми во врем€ перекомпил€ции/без активного GUI skin
+
 namespace YG.EditorScr
 {
     using UnityEngine;
@@ -7,8 +10,7 @@ namespace YG.EditorScr
     [InitializeOnLoad]
     public static class YGEditorStyles
     {
-        private static double nextExecutionTime;
-
+        // кэш
         private static GUIStyle _selectable;
         private static GUIStyle _deselectable;
         private static GUIStyle _box;
@@ -18,91 +20,21 @@ namespace YG.EditorScr
         private static GUIStyle _debutton;
         private static GUIStyle _warning;
 
-        public static GUIStyle selectable
-        {
-            get
-            {
-                if (_selectable == null)
-                    _selectable = Selectable();
-                return _selectable;
-            }
-        }
-        public static GUIStyle deselectable
-        {
-            get
-            {
-                if (_deselectable == null)
-                    _deselectable = Deselectable();
-                return _deselectable;
-            }
-        }
-
-        public static GUIStyle box
-        {
-            get
-            {
-                if (_box == null)
-                    _box = Box();
-                return _box;
-            }
-        }
-
-        public static GUIStyle boxLight
-        {
-            get
-            {
-                if (_boxLight == null)
-                    _boxLight = BoxLight();
-                return _boxLight;
-            }
-        }
-
-        public static GUIStyle error
-        {
-            get
-            {
-                if (_error == null)
-                    _error = Error();
-                return _error;
-            }
-        }
-
-        public static GUIStyle warning
-        {
-            get
-            {
-                if (_warning == null)
-                    _warning = Warning();
-                return _warning;
-            }
-        }
-
-        public static GUIStyle button
-        {
-            get
-            {
-                if (_button == null)
-                    _button = Button();
-                return _button;
-            }
-        }
-
-        public static GUIStyle debutton
-        {
-            get
-            {
-                if (_debutton == null)
-                    _debutton = Debutton();
-                return _debutton;
-            }
-        }
+        // безопасна€ проверка, можно ли строить стили на базе EditorStyles/GUIskin
+        static bool CanBuildGUI =>
+            GUI.skin != null &&
+            Event.current != null &&
+            !EditorApplication.isCompiling &&
+            !EditorApplication.isUpdating;
 
         static YGEditorStyles()
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            EditorApplication.update += UpdateStyles;
             ModifyBuild.onModifyComplete += ReinitializeStyles;
         }
+
+        [InitializeOnLoadMethod]
+        static void AfterReload() => ReinitializeStyles();
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
@@ -121,22 +53,34 @@ namespace YG.EditorScr
             _warning = null;
         }
 
-        private static void UpdateStyles()
+        // универсальный безопасный геттер
+        static GUIStyle GetOrMake(ref GUIStyle cache, System.Func<GUIStyle> factory)
         {
-            if (EditorApplication.isPlaying && Time.unscaledTime < 10)
-            {
-                ReinitializeStyles();
-            }
-            else if (EditorApplication.timeSinceStartup >= nextExecutionTime)
-            {
-                nextExecutionTime = EditorApplication.timeSinceStartup + 3;
-                ReinitializeStyles();
-            }
+            if (cache != null) return cache;
+            cache = CanBuildGUI ? factory() : new GUIStyle();
+            return cache;
         }
 
+        // публичные стили
+        public static GUIStyle selectable => GetOrMake(ref _selectable, Selectable);
+        public static GUIStyle deselectable => GetOrMake(ref _deselectable, Deselectable);
+        public static GUIStyle box => GetOrMake(ref _box, Box);
+        public static GUIStyle boxLight => GetOrMake(ref _boxLight, BoxLight);
+        public static GUIStyle error => GetOrMake(ref _error, Error);
+        public static GUIStyle warning => GetOrMake(ref _warning, Warning);
+        public static GUIStyle button => GetOrMake(ref _button, Button);
+        public static GUIStyle debutton => GetOrMake(ref _debutton, Debutton);
+
+        // фабрика безопасного базового helpBox
+        static GUIStyle BaseHelpBox()
+        {
+            return (GUI.skin != null ? new GUIStyle(EditorStyles.helpBox) : new GUIStyle());
+        }
+
+        // фабрики стилей
         public static GUIStyle Selectable()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+            var style = BaseHelpBox();
 
             Color normalColor = new Color(1f, 1f, 1f, 0.07f);
             Color hoverColor = new Color(1f, 0.5f, 0f, 0.3f);
@@ -145,17 +89,13 @@ namespace YG.EditorScr
             style.hover.background = MakeTexUnderlineLeft(hoverColor);
             style.active.background = MakeTexUnderlineLeft(hoverColor);
             style.focused.background = MakeTexUnderlineLeft(hoverColor);
-
             return style;
         }
 
         public static GUIStyle Deselectable()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
-
+            var style = BaseHelpBox();
             Color normalColor = new Color(1f, 1f, 1f, 0.07f);
-            Color hoverColor = new Color(1f, 0.5f, 0f, 0.3f);
-
             style.normal.background = MakeTexUnderlineLeft(normalColor);
             return style;
         }
@@ -165,9 +105,9 @@ namespace YG.EditorScr
             GUIStyle style;
             Color color;
 
-            if (EditorGUIUtility.isProSkin)
+            if (GUI.skin != null && EditorGUIUtility.isProSkin)
             {
-                style = new GUIStyle(EditorStyles.helpBox);
+                style = BaseHelpBox();
                 color = new Color(0f, 0f, 0f, 0.2f);
             }
             else
@@ -176,32 +116,29 @@ namespace YG.EditorScr
                 color = new Color(1f, 1f, 1f, 0.5f);
             }
 
-            style.normal.background = MakeTex(color);
-            style.hover.background = MakeTex(color);
-            style.active.background = MakeTex(color);
-            style.focused.background = MakeTex(color);
-
+            var tex = MakeTex(color);
+            style.normal.background = tex;
+            style.hover.background = tex;
+            style.active.background = tex;
+            style.focused.background = tex;
             return style;
         }
 
         public static GUIStyle BoxLight()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+            var style = BaseHelpBox();
 
-            if (EditorGUIUtility.isProSkin)
+            if (GUI.skin != null && EditorGUIUtility.isProSkin)
             {
                 Color color = new Color(1f, 1f, 1f, 0.05f);
 
-                style.normal.background = MakeTex(color);
-                style.hover.background = MakeTex(color);
-                style.active.background = MakeTex(color);
-                style.focused.background = MakeTex(color);
+                var tex = MakeTex(color);
+                style.normal.background = tex;
+                style.hover.background = tex;
+                style.active.background = tex;
+                style.focused.background = tex;
 
                 style.border = new RectOffset(23, 23, 23, 23);
-            }
-            else
-            {
-                style = new GUIStyle(EditorStyles.helpBox);
             }
 
             return style;
@@ -209,104 +146,94 @@ namespace YG.EditorScr
 
         public static GUIStyle Error()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+            var style = BaseHelpBox();
             Color color = new Color(1f, 0f, 0f, 0.18f);
 
-            style.normal.background = MakeTex(color);
-            style.hover.background = MakeTex(color);
-            style.active.background = MakeTex(color);
-            style.focused.background = MakeTex(color);
+            var tex = MakeTex(color);
+            style.normal.background = tex;
+            style.hover.background = tex;
+            style.active.background = tex;
+            style.focused.background = tex;
 
             return style;
         }
 
         public static GUIStyle Warning()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+            var style = BaseHelpBox();
             Color color = new Color(1f, 0.6f, 0f, 0.25f);
 
-            style.normal.background = MakeTex(color);
-            style.hover.background = MakeTex(color);
-            style.active.background = MakeTex(color);
-            style.focused.background = MakeTex(color);
+            var tex = MakeTex(color);
+            style.normal.background = tex;
+            style.hover.background = tex;
+            style.active.background = tex;
+            style.focused.background = tex;
 
             return style;
         }
 
         public static GUIStyle Button()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+            // дл€ лайт-скина отдаЄм системную кнопку, дл€ про Ч кастом
+            if (!(GUI.skin != null && EditorGUIUtility.isProSkin))
+                return new GUIStyle(GUI.skin != null ? GUI.skin.button : new GUIStyle());
 
-            if (EditorGUIUtility.isProSkin)
-            {
-                Color hoverColor = new Color(1f, 0.5f, 0f, 0.5f);
+            var style = BaseHelpBox();
+            var hover = new Color(1f, 0.5f, 0f, 0.5f);
 
-                style.normal.background = MakeTexUnderline(new Color(1f, 1f, 1f, 0.2f));
-                style.hover.background = MakeTexUnderline(hoverColor);
-                style.active.background = MakeTexUnderline(new Color(1f, 0.5f, 0f, 1f));
-                style.focused.background = MakeTexUnderline(hoverColor);
+            style.normal.background = MakeTexUnderline(new Color(1f, 1f, 1f, 0.2f));
+            style.hover.background = MakeTexUnderline(hover);
+            style.active.background = MakeTexUnderline(new Color(1f, 0.5f, 0f, 1f));
+            style.focused.background = MakeTexUnderline(hover);
 
-                style.normal.textColor = Color.white;
-                style.hover.textColor = Color.white;
-                style.active.textColor = Color.white;
-                style.focused.textColor = Color.white;
+            style.normal.textColor = Color.white;
+            style.hover.textColor = Color.white;
+            style.active.textColor = Color.white;
+            style.focused.textColor = Color.white;
 
-                style.fontSize = 12;
-                style.alignment = TextAnchor.MiddleCenter;
-            }
-            else
-            {
-                style = new GUIStyle(GUI.skin.button);
-            }
-
+            style.fontSize = 12;
+            style.alignment = TextAnchor.MiddleCenter;
             return style;
         }
 
         public static GUIStyle Debutton()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+            if (!(GUI.skin != null && EditorGUIUtility.isProSkin))
+                return new GUIStyle(GUI.skin != null ? GUI.skin.button : new GUIStyle());
 
-            if (EditorGUIUtility.isProSkin)
-            {
-                style.normal.background = MakeTexUnderline(new Color(1f, 1f, 1f, 0.2f));
-                style.normal.textColor = Color.white;
-                style.fontSize = 12;
-                style.alignment = TextAnchor.MiddleCenter;
-            }
-            else
-            {
-                style = new GUIStyle(GUI.skin.button);
-            }
-
+            var style = BaseHelpBox();
+            style.normal.background = MakeTexUnderline(new Color(1f, 1f, 1f, 0.2f));
+            style.normal.textColor = Color.white;
+            style.fontSize = 12;
+            style.alignment = TextAnchor.MiddleCenter;
             return style;
         }
 
+        // генераци€ текстур (с флагами, чтобы не плодить ресурсы между reload)
         private static Texture2D MakeTex(Color col)
         {
-            Color[] pix = new Color[1] { col };
-            Texture2D result = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-            result.SetPixels(pix);
+            var result = new Texture2D(1, 1, TextureFormat.ARGB32, false)
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            result.SetPixel(0, 0, col);
             result.Apply(true);
             return result;
         }
 
         private static Texture2D MakeTexUnderline(Color color)
         {
-            int squareSize = 16;
-            int width = squareSize + 1;
-
-            Texture2D result = new Texture2D(width, width, TextureFormat.ARGB32, false);
-
-            Color[] pixels = new Color[width * width];
-            for (int i = 0; i < pixels.Length; i++)
+            int w = 17;
+            var result = new Texture2D(w, w, TextureFormat.ARGB32, false)
             {
-                pixels[i] = color;
-            }
+                hideFlags = HideFlags.HideAndDontSave
+            };
 
-            Color orange = new Color(1f, 0.5f, 0f, 1f);
-            pixels[7] = orange;
-            pixels[8] = orange;
-            pixels[9] = orange;
+            var pixels = new Color[w * w];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = color;
+
+            var orange = new Color(1f, 0.5f, 0f, 1f);
+            pixels[7] = orange; pixels[8] = orange; pixels[9] = orange;
 
             result.SetPixels(pixels);
             result.Apply(true);
@@ -315,21 +242,17 @@ namespace YG.EditorScr
 
         private static Texture2D MakeTexUnderlineLeft(Color color)
         {
-            int squareSize = 16;
-            int width = squareSize + 1;
-
-            Texture2D result = new Texture2D(width, width, TextureFormat.ARGB32, false);
-
-            Color[] pixels = new Color[width * width];
-            for (int i = 0; i < pixels.Length; i++)
+            int w = 17;
+            var result = new Texture2D(w, w, TextureFormat.ARGB32, false)
             {
-                pixels[i] = color;
-            }
+                hideFlags = HideFlags.HideAndDontSave
+            };
 
-            Color orange = new Color(1f, 0.5f, 0f, 1f);
+            var pixels = new Color[w * w];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = color;
 
-            for (int i = 0; i < 6; i++)
-                pixels[i] = orange;
+            var orange = new Color(1f, 0.5f, 0f, 1f);
+            for (int i = 0; i < 6; i++) pixels[i] = orange;
 
             result.SetPixels(pixels);
             result.Apply(true);

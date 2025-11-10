@@ -81,7 +81,7 @@ namespace YG.EditorScr
                     {
                         FileYG.DeleteDirectory(patchModules);
                     }
-                    else if (Directory.Exists(patchPlatforms))
+                    else if (Directory.Exists(patchPlatforms) || Directory.Exists(patchPlatforms.Replace("Integration", "")))
                     {
                         if (module.nameModule != "YandexGames")
                             DeletePlatformWebGLTemplate(module.nameModule);
@@ -160,8 +160,17 @@ namespace YG.EditorScr
         public static void DeletePlatformWebGLTemplate(string folderNamePlatform)
         {
             string deleteDirectory = $"{InfoYG.PATCH_PC_WEBGLTEMPLATES}/{folderNamePlatform}";
+
             if (Directory.Exists(deleteDirectory))
+            {
                 FileYG.DeleteDirectory(deleteDirectory);
+            }
+            else
+            {
+                deleteDirectory += "Integration";
+                if (Directory.Exists(deleteDirectory))
+                    FileYG.DeleteDirectory(deleteDirectory);
+            }
 
             if (FileYG.IsFolderEmpty(InfoYG.PATCH_PC_WEBGLTEMPLATES))
                 Directory.Delete(InfoYG.PATCH_PC_WEBGLTEMPLATES);

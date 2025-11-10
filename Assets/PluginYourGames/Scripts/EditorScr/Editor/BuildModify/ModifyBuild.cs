@@ -15,26 +15,32 @@ namespace YG.EditorScr.BuildModify
     {
         private const string ERROR_COLOR = "#ff4f00";
         private const string WARNING_COLOR = "#fccf03";
-        private static string BUILD_PATCH;
-        private static InfoYG infoYG;
-        private static string indexFile;
-        private static string styleFile;
-        private static string methodName;
+        private static string BUILD_PATCH = string.Empty;
+        private const string INDEX_FILE_NAME = "index.html";
+        private const string STYLE_FILE_NAME = "style.css";
+        private static InfoYG infoYG = null;
+        private static string indexFile = string.Empty;
+        private static string styleFile = string.Empty;
+        private static string methodName = string.Empty;
         private enum CodeType { HeadNative, BodyNative, JS, Head, Body, Init0, Init1, Init2, Init, Start };
-        public static Action onModifyComplete;
+        public static event Action onModifyComplete = null;
 
-        public static void ModifyIndex(string buildPatch)
+        public static void ModifyIndex(string buildPath)
         {
             infoYG = YG2.infoYG;
-            BUILD_PATCH = buildPatch;
+            BUILD_PATCH = buildPath;
             List<string> errors = new List<string>();
-#if PLATFORM_WEBGL
-            string indexFilePath = Path.Combine(buildPatch, "index.html");
-            indexFile = File.ReadAllText(indexFilePath);
 
-            string styleFilePath = Path.Combine(buildPatch, "style.css");
+#if PLATFORM_WEBGL
+            string indexFilePath = Path.Combine(buildPath, INDEX_FILE_NAME);
+            if (File.Exists(indexFilePath))
+                indexFile = FileYG.ReadAllText(indexFilePath);
+            else
+                Debug.LogError($"{INDEX_FILE_NAME} file not found");
+
+            string styleFilePath = Path.Combine(buildPath, STYLE_FILE_NAME);
             if (File.Exists(styleFilePath))
-                styleFile = File.ReadAllText(styleFilePath);
+                styleFile = FileYG.ReadAllText(styleFilePath);
 
             Type type = typeof(ModifyBuild);
             MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
@@ -61,12 +67,10 @@ namespace YG.EditorScr.BuildModify
                 }
             }
 #endif
-            int.TryParse(BuildLog.ReadProperty("Build number"), out int buildNumInt);
-            buildNumInt += 1;
-            string buildNum = buildNumInt.ToString();
+            int buildNumber = BuildLog.GetBuildNumber() + 1;
 
 #if PLATFORM_WEBGL
-            string logText = $"{InfoYG.NAME_PLUGIN} v{InfoYG.VERSION_YG2}  build: {buildNum}";
+            string logText = $"[{InfoYG.NAME_PLUGIN} v{InfoYG.VERSION_YG2}] [Build: {buildNumber}] [Platform: {YG2.platform}]";
 #if YandexGamesPlatform_yg
             string initFunction = $"LogStyledMessage('{logText}');";
             AddIndexCode(initFunction, CodeType.JS);
@@ -74,24 +78,27 @@ namespace YG.EditorScr.BuildModify
             string initFunction = $"<script>console.log('%c' + '{logText}', 'color: #FFDF73; background-color: #454545');</script>";
             AddIndexCode(initFunction, CodeType.BodyNative);
 #endif
-            File.WriteAllText(indexFilePath, indexFile);
+            FileYG.WriteAllText(indexFilePath, indexFile);
 
             if (File.Exists(styleFilePath))
-                File.WriteAllText(styleFilePath, styleFile);
+                FileYG.WriteAllText(styleFilePath, styleFile);
+
 #endif
             EditorApplication.delayCall += () =>
             {
-                string logBuildCompleteText = "Build complete!";
 #if RU_YG2
-                logBuildCompleteText = "Сборка завершена!";
+                string logBuildCompleteText = "Сборка завершена!";
+#else
+                string logBuildCompleteText = "Build complete!";
 #endif
-                Debug.Log($"<color=#00FF00>{InfoYG.NAME_PLUGIN} - {logBuildCompleteText}  Platform - {PlatformSettings.currentPlatformBaseName}.  Build number: {buildNum}</color>");
+                Debug.Log($"<color=#00FF00>{InfoYG.NAME_PLUGIN} - {logBuildCompleteText}  Platform - {PlatformSettings.currentPlatformBaseName}.  Build number: {buildNumber}</color>");
+
                 if (InfoYG.instance.Basic.platform == null)
                 {
 #if RU_YG2
-                    Debug.Log($"<color={WARNING_COLOR}>Обратите внимание!</color> <color={ERROR_COLOR}>В настройках {InfoYG.NAME_PLUGIN} не выбрана платформа. </color><color={WARNING_COLOR}>Проигнорируйте данное сообщение, если вы намеренно оставили поле пустым.</color>");
+                    Debug.LogWarning($"<color={WARNING_COLOR}>Обратите внимание!</color> <color={ERROR_COLOR}>В настройках {InfoYG.NAME_PLUGIN} не выбрана платформа. </color><color={WARNING_COLOR}>Проигнорируйте данное сообщение, если вы намеренно оставили поле пустым.</color>");
 #else
-                    Debug.Log($"<color={WARNING_COLOR}>Please note!</color> <color={ERROR_COLOR}>In the settings {InfoYG.NAME_PLUGIN} no platform selected. </color><color={WARNING_COLOR}>Ignore this message if you intentionally left the field blank.</color>");
+                    Debug.LogWarning($"<color={WARNING_COLOR}>Please note!</color> <color={ERROR_COLOR}>In the settings {InfoYG.NAME_PLUGIN} no platform selected. </color><color={WARNING_COLOR}>Ignore this message if you intentionally left the field blank.</color>");
 #endif
                 }
 
@@ -119,52 +126,45 @@ namespace YG.EditorScr.BuildModify
 
         public static void ModifyIndex()
         {
-            string buildPatch = BuildLog.ReadProperty("Build path");
+            string buildPath = ProcessBuild.BuildPath;
 
-            if (buildPatch != null)
+            if (string.IsNullOrEmpty(buildPath))
             {
-                ModifyIndex(buildPatch);
-                Process.Start("explorer.exe", buildPatch.Replace("/", "\\"));
+                Debug.LogError($"Path not found:\n{buildPath}");
             }
             else
             {
-                Debug.LogError("Path not found:\n" + buildPatch);
+                ModifyIndex(buildPath);
+#if UNITY_EDITOR_WIN
+                Process.Start("explorer.exe", buildPath.Replace("/", "\\"));
+#endif
             }
         }
 
-        private static void AddIndexCode(string code, CodeType addCodeType)
+        private static void AddIndexCode(string code, CodeType codeType)
         {
-            string commentHelper;
-
-            if (addCodeType == CodeType.HeadNative)
-                commentHelper = "</head>";
-            else if (addCodeType == CodeType.BodyNative)
-                commentHelper = "</body>";
-            else if (addCodeType == CodeType.Head)
-                commentHelper = "<!-- Additional head modules -->";
-            else if (addCodeType == CodeType.Body)
-                commentHelper = "<!-- Additional body modules -->";
-            else if (addCodeType == CodeType.Init0)
-                commentHelper = "// Additional init0 modules";
-            else if (addCodeType == CodeType.Init1)
-                commentHelper = "// Additional init1 modules";
-            else if (addCodeType == CodeType.Init2)
-                commentHelper = "// Additional init2 modules";
-            else if (addCodeType == CodeType.Init)
-                commentHelper = "// Additional init modules";
-            else if (addCodeType == CodeType.Start)
-                commentHelper = "// Additional start modules";
-            else
-                commentHelper = "// Additional script modules";
+            string commentHelper = codeType switch
+            {
+                CodeType.HeadNative => "</head>",
+                CodeType.BodyNative => "</body>",
+                CodeType.Head => "<!-- Additional head modules -->",
+                CodeType.Body => "<!-- Additional body modules -->",
+                CodeType.Init0 => "// Additional init0 modules",
+                CodeType.Init1 => "// Additional init1 modules",
+                CodeType.Init2 => "// Additional init2 modules",
+                CodeType.Init => "// Additional init modules",
+                CodeType.Start => "// Additional start modules",
+                _ => "// Additional script modules"
+            };
 
             StringBuilder sb = new StringBuilder(indexFile);
             int insertIndex = sb.ToString().IndexOf(commentHelper);
             if (insertIndex >= 0)
             {
-                if (addCodeType != CodeType.HeadNative && addCodeType != CodeType.BodyNative)
+                if (codeType != CodeType.HeadNative && codeType != CodeType.BodyNative)
                     insertIndex += commentHelper.Length;
 
-                sb.Insert(insertIndex, "\n" + code + "\n");
+                sb.Insert(insertIndex, $"\n{code}\n");
                 indexFile = sb.ToString();
             }
         }
@@ -172,13 +172,13 @@ namespace YG.EditorScr.BuildModify
         public static string FileTextCopy(string fileName)
         {
             string file = $"{InfoYG.PATCH_PC_MODULES}/{methodName}/Scripts/Editor/CopyCode/{fileName}";
-            return File.ReadAllText(file);
+            return FileYG.ReadAllText(file);
         }
 
         public static string ManualFileTextCopy(string filePath)
         {
             string file = $"{Application.dataPath}/{filePath}";
-            return File.ReadAllText(file);
+            return FileYG.ReadAllText(file);
         }
 
         private static void InitFunction(string methodName, CodeType codeType = CodeType.Init)

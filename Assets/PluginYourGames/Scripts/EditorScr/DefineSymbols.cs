@@ -125,7 +125,7 @@ namespace YG.EditorScr
 
                     for (int p = 0; p < platforms.Length; p++)
                     {
-                        string platform = Path.GetFileName(platforms[p]);
+                        string platform = FormatPlatformName(Path.GetFileName(platforms[p]));
                         platform += "Platform_yg";
 
                         if (defines[d] == platform)
@@ -241,37 +241,58 @@ namespace YG.EditorScr
         public static void ConversionPlatformConfigs()
         {
             if (SessionState.GetBool("ExportingPluginYG", false)) return;
-            
+
+            string[] platformDirs = Directory.GetDirectories(InfoYG.PATCH_PC_PLATFORMS);
+            if (platformDirs == null || platformDirs.Length == 0) return;
+
             bool dirty = false;
-            string[] platformPathes = Directory.GetDirectories(InfoYG.PATCH_PC_PLATFORMS);
 
-            for (int i = 0; i < platformPathes.Length; i++)
+            using (new ReloadScope())
+            using (new AssetEditScope())
             {
-                string platform = Path.GetFileName(platformPathes[i]);
-                string assetConfigPath = Path.Combine(platformPathes[i], $"{platform}.asset");
-                string setupConfigPath = Path.Combine(platformPathes[i], $"{platform}.txt");
-
-                bool existSetup = File.Exists(setupConfigPath);
-
-                if (File.Exists(assetConfigPath))
+                for (int i = 0; i < platformDirs.Length; i++)
                 {
-                    if (File.Exists(setupConfigPath))
-                        FileYG.Delete(setupConfigPath);
-                    continue;
+                    string prettyPath = FormatPlatformName(platformDirs[i]);
+                    string platform = Path.GetFileName(prettyPath);
+
+                    string setupTxtFsPath = Path.Combine(platformDirs[i], $"{platform}.txt");
+                    string assetFsPath = Path.Combine(platformDirs[i], $"{platform}.asset");
+
+                    bool existSetup = File.Exists(setupTxtFsPath);
+                    bool existAsset = File.Exists(assetFsPath);
+
+                    if (existAsset)
+                    {
+                        if (existSetup)
+                            FileYG.Delete(setupTxtFsPath);
+                        continue;
+                    }
+
+                    if (!existSetup) continue;
+
+                    string assetDir = "Assets" + platformDirs[i].Substring(Application.dataPath.Length);
+                    string srcAsset = Path.Combine(assetDir, $"{platform}.txt").Replace("\\", "/");
+                    string dstAsset = Path.Combine(assetDir, $"{platform}.asset").Replace("\\", "/");
+
+                    var moveErr = AssetDatabase.MoveAsset(srcAsset, dstAsset);
+                    if (string.IsNullOrEmpty(moveErr))
+                    {
+                        dirty = true;
+                    }
+                    else
+                    {
+                        Debug.LogError($"ConversionPlatformConfigs: MoveAsset failed {srcAsset} -> {dstAsset}: {moveErr}");
+                    }
                 }
 
-                if (!existSetup) continue;
-
-                string assetDir = "Assets" + platformPathes[i].Substring(Application.dataPath.Length);
-                string srcAsset = Path.Combine(assetDir, $"{platform}.txt").Replace("\\", "/");
-                string dstAsset = Path.Combine(assetDir, $"{platform}.asset").Replace("\\", "/");
-
-                AssetDatabase.MoveAsset(srcAsset, dstAsset);
-                dirty = true;
+                if (dirty)
+                {
+                    AssetDatabase.SaveAssets();
+                }
             }
 
             if (dirty)
-                AssetDatabase.Refresh();
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         public static bool CheckDefine(string define)
@@ -361,6 +382,11 @@ namespace YG.EditorScr
                 BuildTargetGroup.PS4,
                 BuildTargetGroup.PS5,
             };
+        }
+
+        public static string FormatPlatformName(string currentName)
+        {
+            return currentName.Replace("Integration", "");
         }
     }
 }

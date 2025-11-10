@@ -1,7 +1,8 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
+using System.Text;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace YG.EditorScr
 {
@@ -105,8 +106,40 @@ namespace YG.EditorScr
 
         public static string AddSpaces(string input)
         {
-            string result = Regex.Replace(input, @"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=\d)|(?<=\d)(?=[a-zA-Z])", " ");
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            // Базовое разделение (между CamelCase и цифрами)
+            string result = Regex.Replace(input,
+                @"(?<=[a-z])(?=[A-Z])|
+                  (?<=[A-Z])(?=[A-Z][a-z])|
+                  (?<=[a-zA-Z])(?=\d)|
+                  (?<=\d)(?=[a-zA-Z])",
+                " ",
+                RegexOptions.IgnorePatternWhitespace);
+
+            // Убираем лишние пробелы между "одна буква + цифра" (например, Y 8 → Y8)
+            result = Regex.Replace(result, @"\b([A-Za-z]) (\d)\b", "$1$2");
+
             return result;
+        }
+
+        public static string RemoveLowercaseLetters(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            StringBuilder result = new StringBuilder(input.Length);
+
+            foreach (char c in input)
+            {
+                if (char.IsUpper(c) || char.IsDigit(c))
+                {
+                    result.Append(c);
+                }
+            }
+
+            return result.ToString();
         }
     }
 }

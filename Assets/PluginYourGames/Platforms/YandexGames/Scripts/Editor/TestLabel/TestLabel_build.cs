@@ -12,11 +12,7 @@ namespace YG.EditorScr.BuildModify
 
                 string html = ManualFileTextCopy($"{InfoYG.CORE_FOLDER_YG2}/Platforms/YandexGames/Scripts/Editor/TestLabel/TestLabel.html");
 
-                int.TryParse(BuildLog.ReadProperty("Build number"), out int buildNumInt);
-                buildNumInt += 1;
-                string buildNum = buildNumInt.ToString();
-
-                html = html.Replace("___TEXT_LABEL___", $"Test build: {buildNum}");
+                html = html.Replace("___TEXT_LABEL___", $"Test build: {BuildLog.GetBuildNumber() + 1}");
                 AddIndexCode(html, CodeType.Body);
 
                 string js = ManualFileTextCopy($"{InfoYG.CORE_FOLDER_YG2}/Platforms/YandexGames/Scripts/Editor/TestLabel/TestLabel.js");

@@ -14,37 +14,83 @@ namespace YG.EditorScr
         private PlatformSettings scr;
         private Texture2D iconPlatform;
 
-        private SerializedObject serializedScr;
         private SerializedObject serializedInfoYG;
+
+        // чтобы не зациклиться, если окно несколько раз создаётся
+        private static bool pendingApplyName;
 
         private void OnEnable()
         {
-            scr = (PlatformSettings)target;
-
-            serializedScr = new SerializedObject(scr);
-            serializedInfoYG = new SerializedObject(YG2.infoYG);
-
-            string path = AssetDatabase.GetAssetPath(scr);
-            if (string.IsNullOrEmpty(path))
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
                 return;
 
-            string folderPath = Path.GetDirectoryName(path);
-            string modulName = Path.GetFileName(folderPath);
+            scr = (PlatformSettings)target;
+            if (scr == null) return;
 
-            scr.nameFull = modulName + "Platform";
+            serializedInfoYG = new SerializedObject(YG2.infoYG);
 
-            EditorUtility.SetDirty(scr);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            string assetPath = AssetDatabase.GetAssetPath(scr);
+            if (string.IsNullOrEmpty(assetPath))
+                return;
 
-            string iconPath = GetIconCurrentPlatformPath(modulName);
+            string folderPath = Path.GetDirectoryName(assetPath);
+            string moduleName = Path.GetFileName(folderPath);
 
-            if (File.Exists(iconPath))
+            // Меняем поле через SerializedObject, но НЕ сохраняем и НЕ рефрешим отсюда
+            serializedObject.UpdateIfRequiredOrScript();
+            var nameFullProp = serializedObject.FindProperty("nameFull");
+            if (nameFullProp != null)
+            {
+                string newName = moduleName + "Platform";
+                if (nameFullProp.stringValue != newName)
+                {
+                    nameFullProp.stringValue = newName;
+                    serializedObject.ApplyModifiedPropertiesWithoutUndo();
+
+                    // Если очень нужно записать на диск — делаем это ОДИН РАЗ, вне GUI-цикла
+                    if (!pendingApplyName)
+                    {
+                        pendingApplyName = true;
+                        EditorApplication.delayCall += () =>
+                        {
+                            try
+                            {
+                                if (scr != null)
+                                {
+                                    EditorUtility.SetDirty(scr);
+                                    // Запись + синхронный рефреш в одном защищённом блоке
+                                    using (new ReloadScope())
+                                    using (new AssetEditScope())
+                                    {
+                                        AssetDatabase.SaveAssets();
+                                    }
+                                    AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+                                }
+                            }
+                            finally
+                            {
+                                pendingApplyName = false;
+                            }
+                        };
+                    }
+                }
+            }
+
+            // Иконку грузим без рефреша проекта
+            string iconPath = GetIconCurrentPlatformPath(moduleName);
+            if (!string.IsNullOrEmpty(iconPath) && File.Exists(iconPath))
             {
                 byte[] fileData = File.ReadAllBytes(iconPath);
                 iconPlatform = new Texture2D(2, 2);
                 iconPlatform.LoadImage(fileData);
+                iconPlatform.hideFlags = HideFlags.HideAndDontSave;
             }
+        }
+        private void OnDisable()
+        {
+            if (iconPlatform != null)
+                DestroyImmediate(iconPlatform);
+            iconPlatform = null;
         }
 
         public static string GetIconCurrentPlatformPath(string modulName)
@@ -53,7 +99,15 @@ namespace YG.EditorScr
             if (File.Exists(iconPath))
                 return iconPath;
 
+            iconPath = Path.Combine(InfoYG.PATCH_PC_WEBGLTEMPLATES, modulName + "Integration", "thumbnail.png");
+            if (File.Exists(iconPath))
+                return iconPath;
+
             iconPath = Path.Combine(InfoYG.PATCH_PC_PLATFORMS, modulName, "Editor", "thumbnail.png");
+            if (File.Exists(iconPath))
+                return iconPath;
+
+            iconPath = Path.Combine(InfoYG.PATCH_PC_PLATFORMS, modulName + "Integration", "Editor", "thumbnail.png");
             if (File.Exists(iconPath))
                 return iconPath;
 
@@ -62,8 +116,14 @@ namespace YG.EditorScr
 
         public override void OnInspectorGUI()
         {
-            serializedScr.Update();
-            serializedInfoYG.Update();
+            if (target == null)
+            {
+                Selection.activeObject = null;
+                return;
+            }
+
+            serializedObject.UpdateIfRequiredOrScript();
+            if (serializedInfoYG != null) serializedInfoYG.Update();
 
             Undo.RecordObject(scr, "Platform Settings Change");
             Undo.RecordObject(YG2.infoYG, "InfoYG Change");
@@ -94,7 +154,7 @@ namespace YG.EditorScr
             if (!iconPlatform)
                 styleNamePlatform.alignment = TextAnchor.MiddleCenter;
 
-            GUIContent tooltip = new GUIContent(scr.nameFull + "_yg", Langs.t_nameDefining);
+            GUIContent tooltip = new GUIContent((scr.nameFull + "_yg").Replace("Integration", ""), Langs.t_nameDefining);
             EditorGUILayout.LabelField(tooltip, styleNamePlatform);
 
             GUILayout.EndVertical();
@@ -128,8 +188,8 @@ namespace YG.EditorScr
             if (FastButton.Stringy(Langs.applySettingsProject))
                 scr.ApplyProjectSettings();
 
-            serializedScr.ApplyModifiedProperties();
-            serializedInfoYG.ApplyModifiedProperties();
+            serializedObject.ApplyModifiedProperties();
+            if (serializedInfoYG != null) serializedInfoYG.ApplyModifiedProperties();
 
             if (GUI.changed)
             {

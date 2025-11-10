@@ -43,12 +43,10 @@ namespace YG.EditorScr.BuildModify
 
             void DeleteLogo(string format)
             {
-                string pathImage = BUILD_PATCH + "/Images/logo." + format;
+                string pathImage = $"{ProcessBuild.BuildPath}/Images/logo.{format}";
 
                 if (File.Exists(pathImage))
-                {
                     File.Delete(pathImage);
-                }
             }
         }
 

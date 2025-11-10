@@ -11,14 +11,7 @@ namespace YG
         [Serializable]
         public partial class AuthorizationSettings
         {
-            //#if UNITY_EDITOR
-            //            [Tooltip(Langs.t_scopes), Space(5)]
-            //#endif
-            //            public bool scopes = true;
-            public enum PlayerPhotoSize { small, medium, large };
-            //#if UNITY_EDITOR
-            //            [NestedYG(nameof(scopes)), Tooltip(Langs.t_playerPhotoSize)]
-            //#endif
+            public enum PlayerPhotoSize : byte { small = 0, medium, large };
             public PlayerPhotoSize playerPhotoSize = PlayerPhotoSize.medium;
 
 #if UNITY_EDITOR
@@ -27,20 +20,20 @@ namespace YG
             public string playerName = "Player current";
             public string uniqueID = "000";
             public string playerPhoto = DEMO_IMAGE;
+
             [Tooltip(Langs.t_payingStatus)]
             public YG2.PayingStatus payingStatus;
 #endif
 
             public string GetPlayerPhotoSize()
             {
-                if (playerPhotoSize == PlayerPhotoSize.small)
-                    return "small";
-                else if (playerPhotoSize == PlayerPhotoSize.medium)
-                    return "medium";
-                else if (playerPhotoSize == PlayerPhotoSize.large)
-                    return "large";
-
-                return null;
+                return playerPhotoSize switch
+                {
+                    PlayerPhotoSize.small => "small",
+                    PlayerPhotoSize.medium => "medium",
+                    PlayerPhotoSize.large => "large",
+                    _ => null
+                };
             }
         }
     }

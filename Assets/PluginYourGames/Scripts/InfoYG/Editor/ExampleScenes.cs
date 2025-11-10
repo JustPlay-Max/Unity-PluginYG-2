@@ -127,7 +127,7 @@ namespace YG.EditorScr
                 if (!File.Exists(file))
                 {
                     Directory.CreateDirectory(directory);
-                    File.WriteAllText(file, string.Empty);
+                    FileYG.WriteAllText(file, string.Empty);
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 }
