@@ -217,7 +217,7 @@ namespace YG.EditorScr
             GUIStyle styleHeader2 = TextStyles.Gray();
             styleHeader2.fontSize = 11;
             styleHeader2.fontStyle = FontStyle.Bold;
-
+            
             if (iconPluginYG2)
             {
                 GUILayout.Space(20);

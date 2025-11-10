@@ -55,9 +55,9 @@ namespace YG
 #endif
             public int loadSceneIndex;
 #if UNITY_EDITOR
-            [NestedYG(nameof(loadSceneIfSDKLate), nameof(syncInitSDK)), Min(0)]
+            [NestedYG(nameof(syncInitSDK)), Min(0), Tooltip(Langs.t_initDelaySimulation)]
 #endif
-            public bool simulationLoadScene;
+            public bool initDelaySimulation;
 
 
             [HideInInspector]

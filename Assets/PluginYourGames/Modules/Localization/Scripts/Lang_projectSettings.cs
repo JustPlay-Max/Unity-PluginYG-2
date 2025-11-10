@@ -3,7 +3,7 @@ namespace YG.Insides
 {
     public partial class ProjectSettings
     {
-        public InfoYG.LocalizationSettings.SetLangMod setLanguageMod = InfoYG.LocalizationSettings.SetLangMod.FirstLaunchOnly;
+        public InfoYG.LocalizationSettings.SetLangMod setLanguageMod = InfoYG.LocalizationSettings.SetLangMod.EveryGameLaunch;
 
         [ApplySettings]
         private void Localization_ApplySettings()

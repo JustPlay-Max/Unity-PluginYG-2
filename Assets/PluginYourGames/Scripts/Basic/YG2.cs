@@ -103,7 +103,7 @@ namespace YG
 #if UNITY_EDITOR
         public static async void SyncInitialization()
         {
-            if (infoYG.Basic.simulationLoadScene)
+            if (infoYG.Basic.initDelaySimulation)
                 await System.Threading.Tasks.Task.Delay(1000);
 #else
         public static void SyncInitialization()
@@ -131,7 +131,7 @@ namespace YG
 #if !UNITY_EDITOR
                         SceneManager.LoadScene(infoYG.Basic.loadSceneIndex);
 #else
-                        if (infoYG.Basic.simulationLoadScene)
+                        if (infoYG.Basic.initDelaySimulation)
                             SceneManager.LoadScene(infoYG.Basic.loadSceneIndex);
 #endif
                         void LoadLastScene(Scene scene, LoadSceneMode mode)
@@ -151,7 +151,7 @@ namespace YG
                 if (infoYG.Basic.loadSceneIfSDKLate && infoYG.Basic.loadSceneIndex != 0)
                 {
 #if UNITY_EDITOR
-                    if (infoYG.Basic.simulationLoadScene)
+                    if (infoYG.Basic.initDelaySimulation)
 #endif
                         SceneManager.LoadScene(infoYG.Basic.loadSceneIndex);
                 }
