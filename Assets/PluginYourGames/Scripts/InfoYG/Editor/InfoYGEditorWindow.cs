@@ -17,6 +17,7 @@ namespace YG.EditorScr
         private string lastPlatform;
         private int versionUpdates;
         private bool isExampleFiles = true;
+        private bool lastAutoDefineSymbols;
 
         private Texture2D iconPluginYG2, iconSettings, iconDebugging, iconTemplate, iconConnect, iconPlatform;
         private Vector2 scrollPosition;
@@ -42,7 +43,10 @@ namespace YG.EditorScr
             ExampleScenes.LoadSceneList();
 
             if (scr != null && scr.Basic.platform != null)
+            {
                 lastPlatform = PlatformSettings.currentPlatformFullName;
+                lastAutoDefineSymbols = scr.Basic.autoDefineSymbols;
+            }
 
             Serialize();
             YGEditorStyles.ReinitializeStyles();
@@ -470,7 +474,19 @@ namespace YG.EditorScr
             EditorGUILayout.EndScrollView();
 
             if (EditorGUI.EndChangeCheck())
+            {
                 serializedObject.ApplyModifiedProperties();
+
+                if (scr != null && scr.Basic != null)
+                {
+                    bool current = scr.Basic.autoDefineSymbols;
+                    if (current != lastAutoDefineSymbols)
+                    {
+                        lastAutoDefineSymbols = current;
+                        DefineSymbols.RefreshAutoDefineSubscription();
+                    }
+                }
+            }
 
             if (EditorUtils.IsMouseOverWindow(this))
                 Repaint();

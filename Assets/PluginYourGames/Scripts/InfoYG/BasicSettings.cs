@@ -45,6 +45,10 @@ namespace YG
 #if UNITY_EDITOR
             [Tooltip(Langs.t_syncInitSDK)]
 #endif
+            public bool autoDefineSymbols = true;
+#if UNITY_EDITOR
+            [Tooltip(Langs.t_syncInitSDK)]
+#endif
             public bool syncInitSDK;
 #if UNITY_EDITOR
             [NestedYG(nameof(syncInitSDK)), Tooltip(Langs.t_loadSceneIfSDKLate)]

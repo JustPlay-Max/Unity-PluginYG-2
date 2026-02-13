@@ -20,9 +20,14 @@ namespace YG.EditorScr
         public const string NJSON_DEFINE = "NJSON_YG2", NJSON_PACKAGE = "com.unity.nuget.newtonsoft-json";
         public const string NJSON_STORAGE_DEFINE = "NJSON_STORAGE_YG2";
 
+        public const string AUTO_DEFINE_SYMBOLS_KEY = "YG2_AutoDefineSymbols";
+
         static DefineSymbols()
         {
             PluginPrefs.Load();
+
+    if (!AutoDefinesEnabled())
+        return;
 
             if (PluginPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY) == 0)
             {
@@ -37,6 +42,9 @@ namespace YG.EditorScr
 
         private static async void FirstStartup()
         {
+            if (!AutoDefinesEnabled())
+                return;
+
             for (int i = 0; i <= 10; i++)
             {
                 EditorUtility.DisplayProgressBar($"{InfoYG.NAME_PLUGIN} first startup", "first startup operations", 0.1f + (i / 20f));
@@ -53,8 +61,41 @@ namespace YG.EditorScr
             CompilationPipeline.RequestScriptCompilation();
         }
 
+        public static bool AutoDefinesEnabled()
+        {
+            if (YG2.infoYG == null)
+                return true; // безопасный дефолт (чтобы не сломать инициализацию)
+
+            if (YG2.infoYG.Basic == null)
+                return true;
+
+            return YG2.infoYG.Basic.autoDefineSymbols;
+        }
+
+        public static void SetAutoDefinesEnabled(bool enabled)
+        {
+            PluginPrefs.Load();
+            PluginPrefs.SetInt(AUTO_DEFINE_SYMBOLS_KEY, enabled ? 1 : 0);
+
+            RefreshAutoDefineSubscription();
+        }
+
+        public static void RefreshAutoDefineSubscription()
+        {
+            EditorApplication.projectChanged -= UpdateDefineSymbols;
+
+            if (AutoDefinesEnabled())
+            {
+                EditorApplication.projectChanged += UpdateDefineSymbols;
+                UpdateDefineSymbols();
+            }
+        }
+
         public static void UpdateDefineSymbols()
         {
+            if (!AutoDefinesEnabled())
+                return;
+
             AddDefine(YG2_DEFINE);
             PlatformDefineSymbols();
             ConversionPlatformConfigs();
