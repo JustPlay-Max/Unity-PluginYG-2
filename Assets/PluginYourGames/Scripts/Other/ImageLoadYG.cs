@@ -41,7 +41,7 @@ namespace YG
 
         public void Load(string url)
         {
-            if (url == "null" && url == null && url == string.Empty)
+            if (string.IsNullOrEmpty(url) || url == "null")
                 return;
 
             Texture2D existingTexture = ExistingTexture(url);

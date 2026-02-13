@@ -6,7 +6,6 @@ using YG.Utils;
 
 namespace YG
 {
-    [DefaultExecutionOrder(-5000)]
     public static partial class YG2
     {
         public static InfoYG infoYG { get { return InfoYG.Inst(); } }
