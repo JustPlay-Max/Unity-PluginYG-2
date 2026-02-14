@@ -11,6 +11,7 @@ namespace YG.EditorScr
         public bool critical;
         public bool noLoad;
         public bool platform;
+        public bool tool;
         public string dependencies;
     }
 }

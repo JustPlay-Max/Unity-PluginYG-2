@@ -43,6 +43,10 @@ namespace YG
 #endif
             public bool archivingBuild = true;
 #if UNITY_EDITOR
+            [Tooltip(Langs.t_autoDefineSymbols)]
+#endif
+            public bool autoDefineSymbols = true;
+#if UNITY_EDITOR
             [Tooltip(Langs.t_syncInitSDK)]
 #endif
             public bool syncInitSDK;
