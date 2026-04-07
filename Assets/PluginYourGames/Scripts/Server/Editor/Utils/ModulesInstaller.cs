@@ -48,7 +48,7 @@ namespace YG.EditorScr
                 string dialogText = Langs.dependenciesDialog + "\n";
 
                 foreach (Module dependency in dependencies)
-                    dialogText += "\n• " + dependency.nameModule;
+                    dialogText += "\n- " + dependency.nameModule;
 
                 if (!EditorUtility.DisplayDialog($"Dependencies found for {module.nameModule}", dialogText, "Ok", Langs.cancel))
                 {
@@ -189,6 +189,53 @@ namespace YG.EditorScr
 
             return lastVersion <= projectVersion;
         }
+
+        public static bool IsCriticalUpdate(Module module)
+        {
+            if (module == null)
+                return false;
+
+            if (string.IsNullOrEmpty(module.projectVersion))
+                return false;
+
+            if (IsModuleCurrentVersion(module))
+                return false;
+
+            // Legacy behavior: the latest version itself is marked critical.
+            if (module.critical)
+                return true;
+
+            // New behavior: critical if update path crosses important versions.
+            return IsImportantInstalledVersion(module.nameModule, module.projectVersion, module.lastVersion);
+        }
+
+        public static bool IsImportantInstalledVersion(string moduleName, string installedVersion, string availableVersion = null)
+        {
+            if (string.IsNullOrWhiteSpace(moduleName) || string.IsNullOrWhiteSpace(installedVersion))
+                return false;
+
+            ServerJson cloud = ServerInfo.saveInfo;
+            if (cloud == null || cloud.importantVersions == null || cloud.importantVersions.Length == 0)
+                return false;
+
+            for (int i = 0; i < cloud.importantVersions.Length; i++)
+            {
+                if (!TryParseImportantVersionEntry(cloud.importantVersions[i], out string importantModule, out string importantVersion))
+                    continue;
+
+                if (!string.Equals(moduleName.Trim(), importantModule, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                // Mark as critical when user is below important version
+                // and available update is on/after important version.
+                if (IsVersionBefore(installedVersion, importantVersion) &&
+                    IsVersionAtOrAfter(availableVersion, importantVersion))
+                    return true;
+            }
+
+            return false;
+        }
+
         private static bool TryParseVersion(string v, out float value)
         {
             value = 0f;
@@ -202,6 +249,65 @@ namespace YG.EditorScr
                 return false;
 
             return float.TryParse(v, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+        }
+
+        private static bool TryParseImportantVersionEntry(string entry, out string moduleName, out string version)
+        {
+            moduleName = string.Empty;
+            version = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(entry))
+                return false;
+
+            string value = entry.Trim();
+            int separatorIndex = value.IndexOf('/');
+
+            if (separatorIndex <= 0 || separatorIndex >= value.Length - 1)
+                return false;
+
+            moduleName = value.Substring(0, separatorIndex).Trim();
+            version = value.Substring(separatorIndex + 1).Trim();
+            return moduleName.Length > 0 && version.Length > 0;
+        }
+
+        private static bool AreVersionsEqual(string a, string b)
+        {
+            if (TryParseVersion(a, out float valueA) && TryParseVersion(b, out float valueB))
+                return Mathf.Abs(valueA - valueB) < 0.0001f;
+
+            string normalizedA = NormalizeVersionToken(a);
+            string normalizedB = NormalizeVersionToken(b);
+            return string.Equals(normalizedA, normalizedB, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsVersionBefore(string version, string threshold)
+        {
+            if (TryParseVersion(version, out float parsedVersion) && TryParseVersion(threshold, out float parsedThreshold))
+                return parsedVersion < parsedThreshold;
+
+            return false;
+        }
+
+        private static bool IsVersionAtOrAfter(string version, string threshold)
+        {
+            if (TryParseVersion(version, out float parsedVersion) && TryParseVersion(threshold, out float parsedThreshold))
+                return parsedVersion >= parsedThreshold;
+
+            // If latest version is unknown, fallback to conservative behavior:
+            // do not show critical state for range-based matching.
+            return false;
+        }
+
+        private static string NormalizeVersionToken(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            return value
+                .Replace("v", string.Empty)
+                .Replace("V", string.Empty)
+                .Replace(",", ".")
+                .Trim();
         }
 
         public static bool ExistUpdates(List<Module> modules)

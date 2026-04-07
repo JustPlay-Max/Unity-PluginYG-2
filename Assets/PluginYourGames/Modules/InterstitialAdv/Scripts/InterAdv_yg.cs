@@ -75,6 +75,9 @@ namespace YG
 
         public static void InterstitialAdvShow()
         {
+#if UNITY_EDITOR
+            if (!infoYG.Simulation.enableInterAdv) return;
+#endif
             if (skipIterAdv)
             {
                 skipIterAdv = false;

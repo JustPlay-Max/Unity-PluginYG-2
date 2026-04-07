@@ -22,7 +22,13 @@ namespace YG
             public string language = "ru";
 
             [HeaderYG(Langs.advSimHeader, 5)]
-
+#if RU_YG2
+            [Tooltip("Симуляция interstitial рекламной в Unity Editor.")]
+#else
+            [Tooltip("Simulation of an interstitial advertising campaign in Unity Editor.")]
+#endif
+            public bool enableInterAdv = true;
+            
             [Tooltip(Langs.t_advIntervalSimulation), Min(0)]
             public int advIntervalSimulation = 60;
 
@@ -31,7 +37,6 @@ namespace YG
 
             [Tooltip(Langs.t_loadAdv), Min(0)]
             public float loadAdv = 0.0f;
-
 #if UNITY_EDITOR
 #if RU_YG2
             [Tooltip("Симулирование вызова ошибки при просмотре рекламы.")]
@@ -39,6 +44,12 @@ namespace YG
             [Tooltip("Click the check mark to simulate an error call when viewing ads.")]
 #endif
             public bool testFailAds;
+#if RU_YG2
+            [Tooltip("Симулирование паузы при смене фокуса игры.")]
+#else
+            [Tooltip("Simulating a pause when changing the focus of the game.")]
+#endif
+            public bool pauseOnFocusGame;
 #endif
         }
     }

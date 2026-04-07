@@ -140,11 +140,15 @@ namespace YG.EditorScr
                     GUILayout.Label(last, lastStyle, GUILayout.Width(60));
 
                     // Critical (если есть) — красным
-                    if (m.critical)
+                    if (ModulesInstaller.IsCriticalUpdate(m))
                     {
                         var critStyle = TextStyles.Red();
                         critStyle.alignment = TextAnchor.MiddleCenter;
                         GUILayout.Label(" critical!", critStyle, GUILayout.Width(80));
+                    }
+                    else
+                    {
+                        GUILayout.Label(string.Empty, GUILayout.Width(80));
                     }
 
                     GUILayout.FlexibleSpace();
