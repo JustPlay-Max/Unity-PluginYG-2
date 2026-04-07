@@ -495,64 +495,23 @@ namespace YG.EditorScr
         private int VersionUpdatesLabel()
         {
             int versionUpdates = 0;
-            List<string> modulesStr = new List<string>
+            List<Module> modules = ModulesList.GetGeneratedList(ServerInfo.saveInfo);
+
+            for (int i = 0; i < modules.Count; i++)
             {
-                $"PluginYG2 v{InfoYG.VERSION_YG2}"
-            };
-
-            string[] platfomFolders = Directory.GetDirectories(InfoYG.PATCH_PC_PLATFORMS);
-            string[] platfomNames = new string[platfomFolders.Length];
-
-            for (int i = 0; i < platfomFolders.Length; i++)
-                platfomNames[i] = Path.GetFileName(platfomFolders[i]).Replace("Integration", "");
-
-            for (int i = 0; i < platfomNames.Length; i++)
-            {
-                string platfomVersionPathc = $"{platfomFolders[i]}/Version.txt";
-
-                if (File.Exists(platfomVersionPathc))
-                {
-                    string version = FileYG.ReadAllText(platfomVersionPathc);
-                    platfomNames[i] += " " + version;
-                }
-            }
-
-            modulesStr.AddRange(platfomNames);
-
-            if (File.Exists(InfoYG.FILE_MODULES_PC))
-                modulesStr.AddRange(FileYG.ReadAllLines(InfoYG.FILE_MODULES_PC).ToList());
-
-            for (int i = 0; i < modulesStr.Count; i++)
-            {
-                if (modulesStr[i] == string.Empty)
+                Module module = modules[i];
+                if (module == null || string.IsNullOrEmpty(module.projectVersion))
                     continue;
 
-                string name = modulesStr[i];
-                string version = "0";
+                if (ModulesInstaller.IsModuleCurrentVersion(module))
+                    continue;
 
-                int spaceIndex = modulesStr[i].IndexOf(" ");
-                if (spaceIndex > -1)
-                {
-                    name = modulesStr[i].Remove(spaceIndex);
-                    version = modulesStr[i].Remove(0, spaceIndex + 2);
-                }
+                versionUpdates = 1;
 
-                for (int j = 0; j < ServerInfo.saveInfo.modules.Length; j++)
-                {
-                    if (name == ServerInfo.saveInfo.modules[j].name)
-                    {
-                        float.TryParse(version, NumberStyles.Float, CultureInfo.InvariantCulture, out float projectVersion);
-                        float.TryParse(ServerInfo.saveInfo.modules[j].version, NumberStyles.Float, CultureInfo.InvariantCulture, out float lastVersion);
-
-                        if (lastVersion > projectVersion)
-                        {
-                            versionUpdates = 1;
-                            if (ServerInfo.saveInfo.modules[j].critical)
-                                return 2;
-                        }
-                    }
-                }
+                if (ModulesInstaller.IsCriticalUpdate(module))
+                    return 2;
             }
+
             return versionUpdates;
         }
 

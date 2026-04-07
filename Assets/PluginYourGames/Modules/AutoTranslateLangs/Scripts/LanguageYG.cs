@@ -300,19 +300,42 @@ namespace YG.LanguageLegacy
 #endif
             else
             {
-                Debug.LogError("(The text for translation was not found!");
+                Debug.LogError("The text for translation was not found!");
                 return null;
             }
+
 #if NJSON_YG2
             const string placeholder = " ||| ";
             string preparedText = text.Replace("\n", placeholder);
 
-            var url = String.Format("https://translate.google." + info.domainAutoLocalization + "/translate_a/single?client=gtx&dt=t&sl={0}&tl={1}&q={2}",
-                "auto", translationTo, WebUtility.UrlEncode(preparedText));
+            var url = string.Format(
+                "https://translate.google." + info.domainAutoLocalization +
+                "/translate_a/single?client=gtx&dt=t&sl={0}&tl={1}&q={2}",
+                "auto",
+                translationTo,
+                WebUtility.UrlEncode(preparedText)
+            );
+
             UnityWebRequest www = UnityWebRequest.Get(url);
             www.SendWebRequest();
 
+            while (!www.isDone)
+            {
+            }
+
+#if UNITY_2020_1_OR_NEWER
+            if (www.result != UnityWebRequest.Result.Success)
+#else
+            if (www.isNetworkError || www.isHttpError)
+#endif
+            {
+                Debug.LogError("Translate request error: " + www.error);
+                processTranslateLabel = processTranslateLabel + " error";
+                return null;
+            }
+
             string response = www.downloadHandler.text;
+
             try
             {
                 JArray jsonArray = JArray.Parse(response);
@@ -323,25 +346,24 @@ namespace YG.LanguageLegacy
                     if (segment[0] != null)
                         sb.Append(segment[0].ToString());
                 }
-                response = sb.ToString();
-                response = response.Replace(placeholder, "\n");
-            }
-            catch
-            {
-                response = "process error";
-                StopAllCoroutines();
-                processTranslateLabel = processTranslateLabel + " error";
 
-                Debug.LogError("The process is not completed! Most likely, you made too many requests. In this case, the Google Translate API blocks access to the translation for a while.  Please try again later. Do not translate the text too often, so that Google does not consider your actions as spam");
+                response = sb.ToString().Replace(placeholder, "\n");
+                return response;
             }
-            return response;
+            catch (Exception e)
+            {
+                processTranslateLabel = processTranslateLabel + " error";
+                Debug.LogError("Translate parse error: " + e.Message);
+                Debug.LogError("Server response: " + response);
+                return null;
+            }
 #else
 #if RU_YG2
-    Debug.LogError($"Для авто локализации требуется импортировать пакет Newtonsoft JSON. Сделать это можно в настройках {InfoYG.NAME_PLUGIN}.");
+            Debug.LogError($"Для авто локализации требуется импортировать пакет Newtonsoft JSON. Сделать это можно в настройках {InfoYG.NAME_PLUGIN}.");
 #else
-    Debug.LogError($"For auto localization, you need to import the Newtonsoft JSON package. You can do this in the settings {InfoYG.NAME_PLUGIN}.");
-#endif
-    return text;
+            Debug.LogError($"For auto localization, you need to import the Newtonsoft JSON package. You can do this in the settings {InfoYG.NAME_PLUGIN}.");
+ #endif
+            return text;
 #endif
         }
 

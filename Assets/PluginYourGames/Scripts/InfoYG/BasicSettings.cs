@@ -26,6 +26,10 @@ namespace YG
 #endif
             public bool autoPauseGame = true;
 #if UNITY_EDITOR
+            [NestedYG(nameof(autoPauseGame)), Tooltip(Langs.t_editTimeScale)]
+#endif
+            public bool editTimeScale = true;
+#if UNITY_EDITOR
             [NestedYG(nameof(autoPauseGame)), Tooltip(Langs.t_editEventSystem)]
 #endif
             public bool editEventSystem = true;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -189,10 +189,12 @@ namespace YG.EditorScr
             {
                 scrollPosition = scroll.scrollPosition;
 
+                bool hasSelectPanel = modules.Count > 1;
+
                 for (int i = 0; i < modules.Count; i++)
                 {
                     Module module = modules[i];
-                    bool isSelectPanel = i == 0;
+                    bool isSelectPanel = hasSelectPanel && i == 0;
 
                     using (new GUILayout.HorizontalScope(isSelectPanel || !EditorUtils.IsMouseOverWindow(this) ? YGEditorStyles.deselectable : YGEditorStyles.selectable))
                     {
@@ -339,7 +341,7 @@ namespace YG.EditorScr
                             else
                                 drawName = TextStyles.AddSpaces(drawName);
 
-                            // можно добавить визуальную пометку
+                            // Визуальная пометка
 
                             //if (module.platform)
                             //    drawName += " - platform";
@@ -400,7 +402,7 @@ namespace YG.EditorScr
 
                             if (imported)
                             {
-                                if (!ModulesInstaller.IsModuleCurrentVersion(module) && module.critical)
+                                if (!ModulesInstaller.IsModuleCurrentVersion(module) && ModulesInstaller.IsCriticalUpdate(module))
                                     GUI.Label(labelRect, projectVersionStr, TextStyles.Red());
                                 else
                                     GUI.Label(labelRect, projectVersionStr);
@@ -473,8 +475,8 @@ namespace YG.EditorScr
                                 }
                                 else if (imported && !ModulesInstaller.IsModuleCurrentVersion(module))
                                 {
-                                    if (module.critical)
-                                        lastVersionStr += "  critical!";
+                                    if (ModulesInstaller.IsCriticalUpdate(module))
+                                        lastVersionStr += "  important";
 
                                     GUI.Label(labelRect, lastVersionStr, labelStyleGreen);
                                 }
@@ -763,12 +765,10 @@ namespace YG.EditorScr
             }
         }
 
-        // CHANGED: затемняется только фон кнопки, текст остаётся неизменным
         private bool DrawTabButton(string title, bool active, bool highlightGreen)
         {
             GUIStyle style = new GUIStyle(YGEditorStyles.button);
 
-            // Зелёный текст при наличии обновлений — оставляем
             if (highlightGreen)
             {
                 style.normal.textColor =
@@ -782,17 +782,9 @@ namespace YG.EditorScr
 
             Color prevBg = GUI.backgroundColor;
 
-            // Затемняем ТОЛЬКО фон и только если:
-            // - вкладка не активна
-            // - мышь НЕ наведена
             if (!active && !hover)
             {
-                // степень затемнения регулируется этим значением
                 GUI.backgroundColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-
-                // альтернативы:
-                // GUI.backgroundColor = new Color(0.8f, 0.8f, 0.8f, 1f); // лёгкое затемнение
-                // GUI.backgroundColor = new Color(0.6f, 0.6f, 0.6f, 1f); // сильнее
             }
             else
             {
@@ -853,7 +845,7 @@ namespace YG.EditorScr
             return false;
         }
 
-        // NEW: есть ли вообще обновления в списке (включая noLoad)
+        // есть ли вообще обновления в списке (включая noLoad)
         private bool HasAnyUpdatesInList(List<Module> list)
         {
             if (!cloudComplete || list == null || list.Count == 0)

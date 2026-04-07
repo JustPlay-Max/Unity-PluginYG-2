@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 using YG.EditorScr.BuildModify;
@@ -170,7 +170,7 @@ namespace YG.EditorScr
                         if (cloudVersion > thisVersion)
                             newerVersion = true;
 
-                        if (ServerInfo.saveInfo.modules[i].critical == true)
+                        if (newerVersion && (ServerInfo.saveInfo.modules[i].critical || ModulesInstaller.IsImportantInstalledVersion(InfoYG.NAME_PLUGIN, InfoYG.VERSION_YG2, cloudVersionStr)))
                             cloudVersionStr += " critical";
 
                         break;
