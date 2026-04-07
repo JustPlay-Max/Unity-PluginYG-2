@@ -11,10 +11,10 @@ mergeInto(LibraryManager.library,
 	
 	ConsumePurchase_js: function(id, onPurchaseSuccess)
 	{
-		ConsumePurchase(UTF8ToString(id, onPurchaseSuccess));
+		ConsumePurchase(UTF8ToString(id), onPurchaseSuccess);
 	},
 	
-	ConsumePurchase_js: function(onPurchaseSuccess)
+	ConsumePurchases_js: function(onPurchaseSuccess)
 	{
 		ConsumePurchases(onPurchaseSuccess);
 	},
