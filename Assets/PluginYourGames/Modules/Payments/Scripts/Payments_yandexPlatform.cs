@@ -20,11 +20,11 @@ namespace YG
         }
 
         [DllImport("__Internal")]
-        private static extern void ConsumePurchase_js(bool onPurchaseSuccess);
+        private static extern void ConsumePurchases_js(bool onPurchaseSuccess);
         public void ConsumePurchases(bool onPurchaseSuccess)
         {
 #if !UNITY_EDITOR
-            ConsumePurchase_js(onPurchaseSuccess);
+            ConsumePurchases_js(onPurchaseSuccess);
 #endif
         }
 
