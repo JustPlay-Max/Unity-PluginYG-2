@@ -304,20 +304,27 @@ namespace YG.LanguageLegacy
                 return null;
             }
 #if NJSON_YG2
+            const string placeholder = " ||| ";
+            string preparedText = text.Replace("\n", placeholder);
+
             var url = String.Format("https://translate.google." + info.domainAutoLocalization + "/translate_a/single?client=gtx&dt=t&sl={0}&tl={1}&q={2}",
-                "auto", translationTo, WebUtility.UrlEncode(text));
+                "auto", translationTo, WebUtility.UrlEncode(preparedText));
             UnityWebRequest www = UnityWebRequest.Get(url);
             www.SendWebRequest();
-            while (!www.isDone)
-            {
 
-            }
             string response = www.downloadHandler.text;
-
             try
             {
                 JArray jsonArray = JArray.Parse(response);
-                response = jsonArray[0][0][0].ToString();
+
+                var sb = new System.Text.StringBuilder();
+                foreach (var segment in jsonArray[0])
+                {
+                    if (segment[0] != null)
+                        sb.Append(segment[0].ToString());
+                }
+                response = sb.ToString();
+                response = response.Replace(placeholder, "\n");
             }
             catch
             {
@@ -327,15 +334,14 @@ namespace YG.LanguageLegacy
 
                 Debug.LogError("The process is not completed! Most likely, you made too many requests. In this case, the Google Translate API blocks access to the translation for a while.  Please try again later. Do not translate the text too often, so that Google does not consider your actions as spam");
             }
-
             return response;
 #else
 #if RU_YG2
-            Debug.LogError($"Для авто локализации требуется импортировать пакет Newtonsoft JSON. Сделать это можно в настройках {InfoYG.NAME_PLUGIN}.");
+    Debug.LogError($"Для авто локализации требуется импортировать пакет Newtonsoft JSON. Сделать это можно в настройках {InfoYG.NAME_PLUGIN}.");
 #else
-            Debug.LogError($"For auto localization, you need to import the Newtonsoft JSON package. You can do this in the settings {InfoYG.NAME_PLUGIN}.");
+    Debug.LogError($"For auto localization, you need to import the Newtonsoft JSON package. You can do this in the settings {InfoYG.NAME_PLUGIN}.");
 #endif
-            return text;
+    return text;
 #endif
         }
 
