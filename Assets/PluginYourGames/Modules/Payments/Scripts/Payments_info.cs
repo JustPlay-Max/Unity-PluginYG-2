@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using UnityEngine;
 using YG.Insides;
 using YG.Utils.Pay;
@@ -13,10 +12,11 @@ namespace YG
         [Serializable]
         public partial class PaymentsSettings
         {
+#if UNITY_EDITOR
             [HeaderYG(Langs.simulation, 5), Min(0)]
             public float durationPayPanel = 1;
 #if RU_YG2
-            [Tooltip("Провека неудачной покупки. Консумирование в Unity Editor не симулируется!")]
+            [Tooltip("Проверка неудачной покупки. Консумирование в Unity Editor не симулируется!")]
 #else
             [Tooltip("Verification of a failed purchase. Consummation in Unity Editor is not simulated!")]
 #endif
@@ -61,7 +61,7 @@ namespace YG
                     consumed = true
                 }
             };
+#endif
         }
     }
 }
-#endif
