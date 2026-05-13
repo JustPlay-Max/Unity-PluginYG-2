@@ -134,16 +134,37 @@ namespace YG.EditorScr
 
         public static bool CreateIcon(string pach, out Texture2D textureProperty)
         {
-            if (!File.Exists(pach))
+            textureProperty = null;
+
+            if (string.IsNullOrEmpty(pach) || !File.Exists(pach))
             {
-                textureProperty = null;
                 return false;
+            }
+
+            string assetPath = GetAssetPath(pach);
+            if (!string.IsNullOrEmpty(assetPath))
+            {
+                textureProperty = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+                if (textureProperty != null)
+                    return true;
             }
 
             byte[] fileData = File.ReadAllBytes(pach);
             textureProperty = new Texture2D(2, 2);
             textureProperty.LoadImage(fileData);
+            textureProperty.hideFlags = HideFlags.HideAndDontSave;
             return true;
+        }
+
+        private static string GetAssetPath(string fullPath)
+        {
+            string dataPath = Path.GetFullPath(Application.dataPath).Replace("\\", "/");
+            string normalizedPath = Path.GetFullPath(fullPath).Replace("\\", "/");
+
+            if (!normalizedPath.StartsWith(dataPath + "/", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return "Assets" + normalizedPath.Substring(dataPath.Length);
         }
 
         private void OnGUI()
@@ -159,6 +180,7 @@ namespace YG.EditorScr
             if (scr == null)
             {
                 GUILayout.Label("Error!", EditorStyles.boldLabel);
+                EditorGUILayout.EndScrollView();
                 return;
             }
             GUIStyle styleOrange = TextStyles.Orange();

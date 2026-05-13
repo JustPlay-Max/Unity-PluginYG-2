@@ -29,31 +29,59 @@ namespace YG.EditorScr
         private static Dictionary<string, string> stringPrefs = new();
         private static Dictionary<string, int> intPrefs = new();
         private static Dictionary<string, float> floatPrefs = new();
+        private static bool loaded;
 
         public static void Load()
         {
+            stringPrefs.Clear();
+            intPrefs.Clear();
+            floatPrefs.Clear();
+
             if (File.Exists(savePath))
             {
-                var json = File.ReadAllText(savePath);
-                data = JsonUtility.FromJson<PluginPrefsData>(json);
+                try
+                {
+                    var json = File.ReadAllText(savePath);
+                    data = JsonUtility.FromJson<PluginPrefsData>(json);
+                }
+                catch
+                {
+                    data = null;
+                }
 
-                stringPrefs.Clear();
-                intPrefs.Clear();
-                floatPrefs.Clear();
+                if (data == null)
+                    data = new PluginPrefsData();
 
-                foreach (var pair in data.stringPrefs) stringPrefs[pair.key] = pair.value;
-                foreach (var pair in data.intPrefs) intPrefs[pair.key] = pair.value;
-                foreach (var pair in data.floatPrefs) floatPrefs[pair.key] = pair.value;
+                EnsureDataCollections();
+
+                if (data.stringPrefs != null)
+                    foreach (var pair in data.stringPrefs)
+                        if (pair != null && !string.IsNullOrEmpty(pair.key))
+                            stringPrefs[pair.key] = pair.value;
+
+                if (data.intPrefs != null)
+                    foreach (var pair in data.intPrefs)
+                        if (pair != null && !string.IsNullOrEmpty(pair.key))
+                            intPrefs[pair.key] = pair.value;
+
+                if (data.floatPrefs != null)
+                    foreach (var pair in data.floatPrefs)
+                        if (pair != null && !string.IsNullOrEmpty(pair.key))
+                            floatPrefs[pair.key] = pair.value;
             }
             else
             {
                 data = new PluginPrefsData();
                 Save();
             }
+
+            loaded = true;
         }
 
         private static void Save()
         {
+            EnsureDataCollections();
+
             data.stringPrefs.Clear();
             data.intPrefs.Clear();
             data.floatPrefs.Clear();
@@ -64,45 +92,70 @@ namespace YG.EditorScr
 
             var json = JsonUtility.ToJson(data, true);
             Directory.CreateDirectory(Path.GetDirectoryName(savePath));
+
+            if (File.Exists(savePath) && File.ReadAllText(savePath) == json)
+                return;
+
             File.WriteAllText(savePath, json);
-            UnityEditor.AssetDatabase.Refresh();
+        }
+
+        private static void EnsureDataCollections()
+        {
+            if (data == null)
+                data = new PluginPrefsData();
+
+            if (data.stringPrefs == null)
+                data.stringPrefs = new List<StringPair>();
+
+            if (data.intPrefs == null)
+                data.intPrefs = new List<IntPair>();
+
+            if (data.floatPrefs == null)
+                data.floatPrefs = new List<FloatPair>();
         }
 
         public static void SetString(string key, string value)
         {
+            EnsureLoaded();
             stringPrefs[key] = value;
             Save();
         }
 
         public static string GetString(string key, string defaultValue = "")
         {
+            EnsureLoaded();
             return stringPrefs.TryGetValue(key, out var value) ? value : defaultValue;
         }
 
         public static void SetInt(string key, int value)
         {
+            EnsureLoaded();
             intPrefs[key] = value;
             Save();
         }
 
         public static int GetInt(string key, int defaultValue = 0)
         {
+            EnsureLoaded();
             return intPrefs.TryGetValue(key, out var value) ? value : defaultValue;
         }
 
         public static void SetFloat(string key, float value)
         {
+            EnsureLoaded();
             floatPrefs[key] = value;
             Save();
         }
 
         public static float GetFloat(string key, float defaultValue = 0f)
         {
+            EnsureLoaded();
             return floatPrefs.TryGetValue(key, out var value) ? value : defaultValue;
         }
 
         public static void DeleteKey(string key)
         {
+            EnsureLoaded();
             stringPrefs.Remove(key);
             intPrefs.Remove(key);
             floatPrefs.Remove(key);
@@ -111,6 +164,7 @@ namespace YG.EditorScr
 
         public static void DeleteAll()
         {
+            EnsureLoaded();
             stringPrefs.Clear();
             intPrefs.Clear();
             floatPrefs.Clear();
@@ -119,6 +173,12 @@ namespace YG.EditorScr
                 File.Delete(savePath);
                 UnityEditor.AssetDatabase.Refresh();
             }
+        }
+
+        private static void EnsureLoaded()
+        {
+            if (!loaded)
+                Load();
         }
     }
 }

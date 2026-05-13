@@ -9,7 +9,6 @@ namespace YG.EditorScr
 
         public static List<Module> GetGeneratedList(ServerJson cloud)
         {
-            DefineSymbols.UpdateDefineSymbols();
             List<Module> modules = new List<Module>();
 
             // PluginYG2 module
@@ -179,7 +178,7 @@ namespace YG.EditorScr
                 }
             }
 
-            List<string> selectModulesList = PrefsList.GetList(VersionControlWindow.SELECT_MODULES_KEY);
+            List<string> selectModulesList = PrefsList.GetList(VersionControlWindow.SELECT_MODULES_KEY, VersionControlWindow.SELECT_MODULES_STORE);
 
             foreach (Module module in modules)
             {

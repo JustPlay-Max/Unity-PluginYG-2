@@ -74,6 +74,8 @@ namespace YG.EditorScr
             {
                 case StoreType.SessionState:
                     return SessionState.GetString(key, string.Empty);
+                case StoreType.PluginPrefs:
+                    return PluginPrefs.GetString(key, string.Empty);
                 case StoreType.EditorPrefs:
                 default:
                     return EditorPrefs.GetString(key, string.Empty);
@@ -91,7 +93,7 @@ namespace YG.EditorScr
                     EditorPrefs.SetString(key, value ?? string.Empty);
                     break;
                 case StoreType.PluginPrefs:
-                    EditorPrefs.SetString(key, value ?? string.Empty);
+                    PluginPrefs.SetString(key, value ?? string.Empty);
                     break;
             }
         }

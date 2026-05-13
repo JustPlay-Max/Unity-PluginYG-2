@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -38,6 +39,8 @@ namespace YG.EditorScr
 
         public static async void LoadServerInfo(bool core = false)
         {
+            bool hasServerInfoForNotifications = HasServerInfoForNotifications();
+
             if (!core)
             {
                 loadCount = 0;
@@ -113,10 +116,11 @@ namespace YG.EditorScr
 
                     if (!string.IsNullOrEmpty(fileContent))
                     {
-                        FileYG.WriteAllText(InfoYG.FILE_SERVER_INFO, fileContent);
+                        if (!File.Exists(InfoYG.FILE_SERVER_INFO) || File.ReadAllText(InfoYG.FILE_SERVER_INFO) != fileContent)
+                            FileYG.WriteAllText(InfoYG.FILE_SERVER_INFO, fileContent);
+
                         ServerInfo.Read();
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
+                        hasServerInfoForNotifications = HasServerInfoForNotifications();
                     }
                     else
                     {
@@ -138,8 +142,15 @@ namespace YG.EditorScr
                 SessionState.SetBool(LOAD_COMPLETE_KEY, true);
                 ServerInfo.DoActionLoadServerInfo();
 
-                NotificationUpdateWindow.OpenWindowIfExistUpdate();
+                if (hasServerInfoForNotifications)
+                    NotificationUpdateWindow.OpenWindowIfExistUpdate();
             }
+        }
+
+        private static bool HasServerInfoForNotifications()
+        {
+            ServerJson info = ServerInfo.saveInfo;
+            return info != null && info.modules != null && info.modules.Length > 0;
         }
 
         private static async Task<string> ReadFileFromURL(string url)
