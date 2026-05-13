@@ -21,13 +21,15 @@ namespace YG.EditorScr
         public const string NJSON_STORAGE_DEFINE = "NJSON_STORAGE_YG2";
 
         public const string AUTO_DEFINE_SYMBOLS_KEY = "YG2_AutoDefineSymbols";
+        private static bool updateDefineSymbolsQueued;
+        private static bool suppressAutoDefineUpdates;
 
         static DefineSymbols()
         {
             PluginPrefs.Load();
 
-    if (!AutoDefinesEnabled())
-        return;
+            if (!AutoDefinesEnabled())
+                return;
 
             if (PluginPrefs.GetInt(InfoYG.FIRST_STARTUP_KEY) == 0)
             {
@@ -35,7 +37,7 @@ namespace YG.EditorScr
             }
             else
             {
-                EditorApplication.projectChanged += UpdateDefineSymbols;
+                EditorApplication.projectChanged += RequestUpdateDefineSymbols;
                 UpdateDefineSymbols();
             }
         }
@@ -63,13 +65,18 @@ namespace YG.EditorScr
 
         public static bool AutoDefinesEnabled()
         {
-            if (YG2.infoYG == null)
+            InfoYG info = InfoYG.instance;
+
+            if (info == null)
+                info = Resources.Load<InfoYG>(InfoYG.NAME_INFOYG_FILE);
+
+            if (info == null)
                 return true; // безопасный дефолт (чтобы не сломать инициализацию)
 
-            if (YG2.infoYG.Basic == null)
+            if (info.Basic == null)
                 return true;
 
-            return YG2.infoYG.Basic.autoDefineSymbols;
+            return info.Basic.autoDefineSymbols;
         }
 
         public static void SetAutoDefinesEnabled(bool enabled)
@@ -83,16 +90,36 @@ namespace YG.EditorScr
         public static void RefreshAutoDefineSubscription()
         {
             EditorApplication.projectChanged -= UpdateDefineSymbols;
+            EditorApplication.projectChanged -= RequestUpdateDefineSymbols;
 
             if (AutoDefinesEnabled())
             {
-                EditorApplication.projectChanged += UpdateDefineSymbols;
-                UpdateDefineSymbols();
+                EditorApplication.projectChanged += RequestUpdateDefineSymbols;
+                RequestUpdateDefineSymbols();
             }
+        }
+
+        private static void RequestUpdateDefineSymbols()
+        {
+            if (updateDefineSymbolsQueued)
+                return;
+
+            if (suppressAutoDefineUpdates)
+                return;
+
+            updateDefineSymbolsQueued = true;
+            EditorApplication.delayCall += () =>
+            {
+                updateDefineSymbolsQueued = false;
+                UpdateDefineSymbols();
+            };
         }
 
         public static void UpdateDefineSymbols()
         {
+            if (suppressAutoDefineUpdates)
+                return;
+
             if (!AutoDefinesEnabled())
                 return;
 
@@ -195,6 +222,7 @@ namespace YG.EditorScr
             if (!File.Exists(InfoYG.FILE_MODULES_PC))
                 File.WriteAllText(InfoYG.FILE_MODULES_PC, string.Empty);
 
+            string oldText = File.ReadAllText(InfoYG.FILE_MODULES_PC);
             string[] modules = File.ReadAllLines(InfoYG.FILE_MODULES_PC);
             List<string> modulesList = new List<string>();
 
@@ -270,7 +298,8 @@ namespace YG.EditorScr
                 text += $"{folderNames[i]} {version}\n";
             }
 
-            File.WriteAllText(InfoYG.FILE_MODULES_PC, text);
+            if (oldText != text)
+                File.WriteAllText(InfoYG.FILE_MODULES_PC, text);
 
             if (modules.Length == folderNames.Length && !mismatch)
                 return;
@@ -405,6 +434,60 @@ namespace YG.EditorScr
                     PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup), newDefines);
                 }
             }
+        }
+
+        public static void RemoveAllPluginDefines()
+        {
+            suppressAutoDefineUpdates = true;
+            updateDefineSymbolsQueued = false;
+            EditorApplication.projectChanged -= UpdateDefineSymbols;
+            EditorApplication.projectChanged -= RequestUpdateDefineSymbols;
+
+            foreach (BuildTargetGroup buildTargetGroup in GetSupportedBuildTargetGroups())
+            {
+                if (buildTargetGroup == BuildTargetGroup.Unknown)
+                    continue;
+
+                NamedBuildTarget namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+                string definesText = PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget);
+                string[] defines = definesText.Split(';');
+                List<string> updatedDefines = new List<string>();
+                bool changed = false;
+
+                foreach (string define in defines)
+                {
+                    string trimmedDefine = define.Trim();
+
+                    if (ShouldRemovePluginDefine(trimmedDefine))
+                    {
+                        changed = true;
+                        continue;
+                    }
+
+                    if (!string.IsNullOrEmpty(trimmedDefine))
+                        updatedDefines.Add(trimmedDefine);
+                }
+
+                if (changed)
+                    PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, string.Join(";", updatedDefines));
+            }
+        }
+
+        private static bool ShouldRemovePluginDefine(string define)
+        {
+            if (string.IsNullOrEmpty(define))
+                return false;
+
+            if (define == YG2_DEFINE ||
+                define == LANG_DEFINE ||
+                define == TMP_DEFINE ||
+                define == NJSON_DEFINE ||
+                define == NJSON_STORAGE_DEFINE)
+            {
+                return true;
+            }
+
+            return define.EndsWith("_yg", System.StringComparison.Ordinal);
         }
 
         public static List<BuildTargetGroup> GetSupportedBuildTargetGroups()

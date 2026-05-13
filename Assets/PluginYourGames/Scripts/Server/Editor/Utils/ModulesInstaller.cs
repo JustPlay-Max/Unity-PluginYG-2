@@ -41,22 +41,57 @@ namespace YG.EditorScr
                 return;
             }
 
-            List<Module> dependencies = ModuleQueue.GetModuleDependencies(module);
+            ModuleQueue.QueueInstalModule(module);
+        }
 
-            if (dependencies.Count > 0)
+        public static bool ApprovalDependencies(Module module) => ApprovalDependencies(new List<Module> { module });
+
+        public static bool ApprovalDependencies(IEnumerable<Module> modules)
+        {
+            List<Module> dependencies = GetUniqueDependencies(modules);
+
+            if (dependencies.Count == 0)
+                return true;
+
+            string dialogText = Langs.dependenciesDialog + "\n";
+
+            foreach (Module dependency in dependencies)
+                dialogText += "\n• " + dependency.nameModule;
+
+            return EditorUtility.DisplayDialog(Langs.importModule, dialogText, "Ok", Langs.cancel);
+        }
+
+        private static List<Module> GetUniqueDependencies(IEnumerable<Module> modules)
+        {
+            List<Module> dependencies = new List<Module>();
+            HashSet<string> moduleNames = new HashSet<string>();
+            HashSet<string> dependencyNames = new HashSet<string>();
+
+            if (modules == null)
+                return dependencies;
+
+            foreach (Module module in modules)
             {
-                string dialogText = Langs.dependenciesDialog + "\n";
+                if (module != null && !string.IsNullOrEmpty(module.nameModule))
+                    moduleNames.Add(module.nameModule);
+            }
 
-                foreach (Module dependency in dependencies)
-                    dialogText += "\n- " + dependency.nameModule;
-
-                if (!EditorUtility.DisplayDialog($"Dependencies found for {module.nameModule}", dialogText, "Ok", Langs.cancel))
+            foreach (Module module in modules)
+            {
+                foreach (Module dependency in ModuleQueue.GetModuleDependencies(module))
                 {
-                    return;
+                    if (dependency == null || string.IsNullOrEmpty(dependency.nameModule))
+                        continue;
+
+                    if (moduleNames.Contains(dependency.nameModule))
+                        continue;
+
+                    if (dependencyNames.Add(dependency.nameModule))
+                        dependencies.Add(dependency);
                 }
             }
 
-            ModuleQueue.QueueInstalModule(module);
+            return dependencies;
         }
 
         public static async Task<bool> ImportPackageAsync(string module) => await ImportPackageAsync(GetModuleByName(module));
@@ -70,7 +105,11 @@ namespace YG.EditorScr
                 onDownloadProcess?.Invoke(true);
 
                 bool isDownload = await DownloadPackageAsync(module.download, downloadPath);
-                if (!isDownload) return false;
+                if (!isDownload)
+                {
+                    onDownloadProcess?.Invoke(false);
+                    return false;
+                }
 
                 if (removeBeforeImport && module.nameModule != InfoYG.NAME_PLUGIN)
                 {
@@ -79,7 +118,8 @@ namespace YG.EditorScr
 
                     if (Directory.Exists(patchModules))
                     {
-                        FileYG.DeleteDirectory(patchModules);
+                        DeleteAssetDirectory(patchModules);
+                        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
                     }
                     else if (Directory.Exists(patchPlatforms) || Directory.Exists(patchPlatforms.Replace("Integration", "")))
                     {
@@ -87,6 +127,7 @@ namespace YG.EditorScr
                             DeletePlatformWebGLTemplate(module.nameModule);
 
                         PlatformSettings.DeletePlatform();
+                        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
                     }
                 }
 
@@ -145,10 +186,7 @@ namespace YG.EditorScr
             {
                 if (modules[i].nameModule == InfoYG.NAME_PLUGIN)
                 {
-                    float.TryParse(modules[i].projectVersion, NumberStyles.Float, CultureInfo.InvariantCulture, out float projectVersion);
-                    float.TryParse(modules[i].lastVersion, NumberStyles.Float, CultureInfo.InvariantCulture, out float lastVersion);
-
-                    if (projectVersion >= lastVersion)
+                    if (IsModuleCurrentVersion(modules[i]))
                         return true;
                     else
                         break;
@@ -163,17 +201,44 @@ namespace YG.EditorScr
 
             if (Directory.Exists(deleteDirectory))
             {
-                FileYG.DeleteDirectory(deleteDirectory);
+                DeleteAssetDirectory(deleteDirectory);
             }
             else
             {
                 deleteDirectory += "Integration";
                 if (Directory.Exists(deleteDirectory))
-                    FileYG.DeleteDirectory(deleteDirectory);
+                    DeleteAssetDirectory(deleteDirectory);
             }
 
             if (FileYG.IsFolderEmpty(InfoYG.PATCH_PC_WEBGLTEMPLATES))
-                Directory.Delete(InfoYG.PATCH_PC_WEBGLTEMPLATES);
+                DeleteAssetDirectory(InfoYG.PATCH_PC_WEBGLTEMPLATES);
+        }
+
+        private static void DeleteAssetDirectory(string pathDelete)
+        {
+            string assetPath = ToAssetPath(pathDelete);
+
+            if (!string.IsNullOrEmpty(assetPath))
+            {
+                if (AssetDatabase.DeleteAsset(assetPath))
+                    return;
+            }
+
+            FileYG.DeleteDirectory(pathDelete);
+        }
+
+        private static string ToAssetPath(string fullPath)
+        {
+            if (string.IsNullOrEmpty(fullPath))
+                return null;
+
+            string dataPath = Path.GetFullPath(Application.dataPath).Replace("\\", "/");
+            string normalizedPath = Path.GetFullPath(fullPath).Replace("\\", "/");
+
+            if (!normalizedPath.StartsWith(dataPath + "/", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return "Assets" + normalizedPath.Substring(dataPath.Length);
         }
 
         public static bool IsModuleCurrentVersion(Module module)
@@ -181,13 +246,10 @@ namespace YG.EditorScr
             if (module == null)
                 return true;
 
-            if (!TryParseVersion(module.projectVersion, out float projectVersion))
+            if (!TryCompareVersions(module.projectVersion, module.lastVersion, out int comparison))
                 return true;
 
-            if (!TryParseVersion(module.lastVersion, out float lastVersion))
-                return true;
-
-            return lastVersion <= projectVersion;
+            return comparison >= 0;
         }
 
         public static bool IsCriticalUpdate(Module module)
@@ -236,19 +298,27 @@ namespace YG.EditorScr
             return false;
         }
 
-        private static bool TryParseVersion(string v, out float value)
+        private static bool TryCompareVersions(string version, string threshold, out int comparison)
         {
-            value = 0f;
+            comparison = 0;
 
-            if (string.IsNullOrWhiteSpace(v))
+            string normalizedVersion = NormalizeVersionToken(version);
+            string normalizedThreshold = NormalizeVersionToken(threshold);
+
+            if (string.IsNullOrEmpty(normalizedVersion) || string.IsNullOrEmpty(normalizedThreshold))
                 return false;
 
-            v = v.Replace("v", string.Empty).Replace(",", ".").Trim();
+            if (string.Equals(normalizedVersion, normalizedThreshold, StringComparison.OrdinalIgnoreCase))
+                return true;
 
-            if (string.Equals(v, "imported", StringComparison.OrdinalIgnoreCase))
+            if (!decimal.TryParse(normalizedVersion, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsedVersion))
                 return false;
 
-            return float.TryParse(v, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+            if (!decimal.TryParse(normalizedThreshold, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsedThreshold))
+                return false;
+
+            comparison = decimal.Compare(parsedVersion, parsedThreshold);
+            return true;
         }
 
         private static bool TryParseImportantVersionEntry(string entry, out string moduleName, out string version)
@@ -272,8 +342,8 @@ namespace YG.EditorScr
 
         private static bool AreVersionsEqual(string a, string b)
         {
-            if (TryParseVersion(a, out float valueA) && TryParseVersion(b, out float valueB))
-                return Mathf.Abs(valueA - valueB) < 0.0001f;
+            if (TryCompareVersions(a, b, out int comparison))
+                return comparison == 0;
 
             string normalizedA = NormalizeVersionToken(a);
             string normalizedB = NormalizeVersionToken(b);
@@ -282,16 +352,16 @@ namespace YG.EditorScr
 
         private static bool IsVersionBefore(string version, string threshold)
         {
-            if (TryParseVersion(version, out float parsedVersion) && TryParseVersion(threshold, out float parsedThreshold))
-                return parsedVersion < parsedThreshold;
+            if (TryCompareVersions(version, threshold, out int comparison))
+                return comparison < 0;
 
             return false;
         }
 
         private static bool IsVersionAtOrAfter(string version, string threshold)
         {
-            if (TryParseVersion(version, out float parsedVersion) && TryParseVersion(threshold, out float parsedThreshold))
-                return parsedVersion >= parsedThreshold;
+            if (TryCompareVersions(version, threshold, out int comparison))
+                return comparison >= 0;
 
             // If latest version is unknown, fallback to conservative behavior:
             // do not show critical state for range-based matching.
@@ -303,11 +373,43 @@ namespace YG.EditorScr
             if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;
 
-            return value
-                .Replace("v", string.Empty)
-                .Replace("V", string.Empty)
-                .Replace(",", ".")
-                .Trim();
+            string normalized = value.Replace(",", ".").Trim();
+
+            if (string.Equals(normalized, "imported", StringComparison.OrdinalIgnoreCase))
+                return string.Empty;
+
+            if (normalized.Length > 0 && (normalized[0] == 'v' || normalized[0] == 'V'))
+                normalized = normalized.Substring(1).TrimStart();
+
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            bool hasDigit = false;
+            bool lastWasDot = false;
+
+            for (int i = 0; i < normalized.Length; i++)
+            {
+                char ch = normalized[i];
+
+                if (char.IsDigit(ch))
+                {
+                    builder.Append(ch);
+                    hasDigit = true;
+                    lastWasDot = false;
+                    continue;
+                }
+
+                if (ch == '.' && hasDigit && !lastWasDot)
+                {
+                    builder.Append(ch);
+                    lastWasDot = true;
+                    continue;
+                }
+
+                if (hasDigit)
+                    break;
+            }
+
+            string token = builder.ToString().Trim('.');
+            return token;
         }
 
         public static bool ExistUpdates(List<Module> modules)
