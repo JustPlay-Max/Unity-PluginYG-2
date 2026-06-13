@@ -7,9 +7,11 @@ using System.Linq;
 
 namespace YG.MenuNav
 {
-    [DefaultExecutionOrder(-99)]
+    [DefaultExecutionOrder(MenuNavigationExecutionOrder)]
     public class MenuNavigation : MonoBehaviour
     {
+        private const int MenuNavigationExecutionOrder = -99;
+
         public Button usButton;
         public GameObject exitGameObj;
         public bool navigationOnDesktop, navigationOnMobile;
