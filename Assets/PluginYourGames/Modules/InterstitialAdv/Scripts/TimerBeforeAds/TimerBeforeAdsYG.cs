@@ -23,13 +23,25 @@ namespace YG
 
         private void OnEnable()
         {
+            ResetUi();
             StopRoutine();
 
             _timerRoutine = StartCoroutine(TimerProcess());
         }
 
         private void OnDisable()
-            => StopRoutine();
+        {
+            ResetUi();
+            StopRoutine();
+        }
+
+        private void ResetUi()
+        {
+            for (var i = 0; i < secondObjects.Length; i++)
+                secondObjects[i].SetActive(false);
+
+            secondsPanelObject.SetActive(false);
+        }
 
         private void StopRoutine()
         {
