@@ -8,16 +8,16 @@ namespace YG
 {
     public static partial class YG2
     {
-        public static InfoYG infoYG { get { return InfoYG.Inst(); } }
+        public static InfoYG infoYG => InfoYG.Inst();
 
         public static IPlatformsYG2 iPlatform;
         public static IPlatformsYG2 iPlatformNoRealization;
         public static YGSendMessage sendMessage;
         public static OptionalPlatform optionalPlatform = new OptionalPlatform();
-        public static string platform { get => PlatformSettings.currentPlatformBaseName; }
-        public static int buildNumber { get => infoYG.Basic.buildNumber; }
-        public static bool isSDKEnabled { get => _SDKEnabled; }
+        public static string platform => PlatformSettings.currentPlatformBaseName;
+        public static int buildNumber => infoYG.Basic.buildNumber;
         private static bool _SDKEnabled;
+        public static bool isSDKEnabled => _SDKEnabled;
         public static bool isFirstGameSession;
         public enum Device { Desktop, Mobile, Tablet, TV }
 
@@ -25,16 +25,8 @@ namespace YG
 
         public static Action onGetSDKData;
 
-        public static bool nowAdsShow
-        {
-            get
-            {
-                if (nowInterAdv || nowRewardAdv)
-                    return true;
-                else
-                    return false;
-            }
-        }
+        public static bool nowAdsShow => nowInterAdv || nowRewardAdv;
+
         public static bool nowInterAdv;
         public static bool nowRewardAdv;
         public static Action onAdvNotification, onOpenAnyAdv, onCloseAnyAdv, onErrorAnyAdv;
@@ -63,17 +55,15 @@ namespace YG
             iPlatform = new PlatformYG2();
             iPlatformNoRealization = new PlatformYG2NoRealization();
 
-            GameObject YGObj = new GameObject() { name = "YG2Instance" };
-            MonoBehaviour.DontDestroyOnLoad(YGObj);
-            sendMessage = YGObj.AddComponent<YGSendMessage>();
+            GameObject YG2Instance = new GameObject("YG2Instance");
+            sendMessage = YG2Instance.AddComponent<YGSendMessage>();
+            MonoBehaviour.DontDestroyOnLoad(YG2Instance);
 
             iPlatform.InitAwake();
             awakePassed = true;
 
             if (!infoYG.Basic.syncInitSDK || syncInitSDKComplete)
-            {
                 AwakeInit();
-            }
         }
 
         private static void AwakeInit()
