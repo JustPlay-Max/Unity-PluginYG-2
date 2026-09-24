@@ -12,6 +12,16 @@ namespace YG
         [Serializable]
         public partial class PaymentsSettings
         {
+            public bool useBackend;
+            [NestedYG(nameof(useBackend))]
+            public string backendURL = string.Empty;
+            [NestedYG(nameof(useBackend))]
+            public bool advancedBackend;
+            [NestedYG(nameof(useBackend), nameof(advancedBackend)), Min(1)]
+            public int pollAttempts = 8;
+            [NestedYG(nameof(useBackend), nameof(advancedBackend)), Min(0.2f)]
+            public float pollDelay = 1.5f;
+
 #if UNITY_EDITOR
             [HeaderYG(Langs.simulation, 5), Min(0)]
             public float durationPayPanel = 1;

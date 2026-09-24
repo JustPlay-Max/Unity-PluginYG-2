@@ -81,6 +81,7 @@ function InitPayments(sendback) {
 function BuyPayments(id) {
     try {
         if (payments != null) {
+            YG2Instance('SetPauseGame', 'true');
             payments.purchase(id).then(() => {
                 LogStyledMessage('Purchase Success');
                 ConsumePurchase(id, true);

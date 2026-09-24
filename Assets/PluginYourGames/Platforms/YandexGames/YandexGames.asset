@@ -20,6 +20,7 @@ MonoBehaviour:
     setLanguageMod: 1
     useYandexMetrica: 1
     metricaCounterID: 0
+    useBackendPayments: 0
     skipInterAdvAfterReward: 0
     saveLocal: 0
     saveCloud: 1

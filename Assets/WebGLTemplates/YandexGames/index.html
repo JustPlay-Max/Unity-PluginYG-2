@@ -108,6 +108,7 @@
         let ygGameInstance = null;
         let ysdk = null;
         let initYSDK = false;
+        let initSDKMessageSent = false;
         let initGame = false;
         let syncInit = false;
         let isVisibility = true;
@@ -206,7 +207,7 @@
         const ResumeCallback = () => {
             isPausedGame = false;
             YG2Instance('SetPauseGame', 'false');
-            FocusGame(false);
+            FocusGame();
         };
 
         const script = document.createElement("script");
@@ -220,6 +221,8 @@
                     progressBarFull.style.width = `${100 * adjustedProgress}%`;
                 }).then((unityInstance) => {
                     ygGameInstance = unityInstance;
+                    SendInitSDKComplete();
+
                     loadingCover.style.background = "";
                     loadingCover.style.display = "none";
                     FocusGame();
@@ -243,49 +246,78 @@
 
         function IsLocalHost() {
             try {
-                if (window.top !== window) {
+                if (window.top !== window)
                     return false;
-                }
 
                 const host = window.location.hostname;
-                if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) {
-                    LogStyledMessage("Local Host");
+                const isLocalAddress = window.location.protocol === "file:" ||
+                    host === "localhost" ||
+                    host === "127.0.0.1" ||
+                    host === "::1" ||
+                    host.endsWith(".local");
+
+                if (isLocalAddress && !IsYandexSDKAvailable()) {
+                    LogStyledMessage("Local Host Without Yandex SDK");
                     return true;
                 }
-            } 
+
+                return false;
+            }
             catch (error) {
                 console.error("Error checking the local host:", error);
                 return false;
             }
         }
 
-        function YG2Instance(method) {
-            if (ygGameInstance == null)
+        function IsYandexSDKAvailable() {
+            return typeof YaGames !== "undefined" && typeof YaGames.init === "function";
+        }
+
+        function SendInitSDKComplete() {
+            if (!initYSDK || ygGameInstance == null || initSDKMessageSent)
                 return;
 
-            if (!initGame) {
-                setTimeout(function () {
-                    if (ygGameInstance)
-                        ygGameInstance.SendMessage('YG2Instance', method);
-                }, 100);
-            }
-            else {
-                ygGameInstance.SendMessage('YG2Instance', method);
-            }
-                
+            ygGameInstance.SendMessage('YG2Instance', 'InitSDKComplete');
+            initSDKMessageSent = true;
         }
+
+        let pendingYG2Messages = [];
+        let pendingYG2Timer = null;
+
         function YG2Instance(method, arg) {
             if (ygGameInstance == null)
                 return;
 
-            if (!initGame) {
-                setTimeout(function () {
-                    ygGameInstance.SendMessage('YG2Instance', method, arg);
-                }, 100);
+            if (!initGame || pendingYG2Messages.length > 0) {
+                pendingYG2Messages.push({ method: method, arg: arg });
+
+                if (pendingYG2Timer === null)
+                    pendingYG2Timer = setTimeout(FlushYG2Messages, 100);
+
+                return;
             }
-            else {
+
+            SendYG2Message(method, arg);
+        }
+
+        function FlushYG2Messages() {
+            pendingYG2Timer = null;
+
+            const queue = pendingYG2Messages;
+            pendingYG2Messages = [];
+
+            if (ygGameInstance == null)
+                return;
+
+            for (let i = 0; i < queue.length; i++)
+                SendYG2Message(queue[i].method, queue[i].arg);
+        }
+
+        function SendYG2Message(method, arg) {
+            if (arg === undefined)
+                ygGameInstance.SendMessage('YG2Instance', method);
+            else
                 ygGameInstance.SendMessage('YG2Instance', method, arg);
-            }
         }
 
         function LogStyledMessage(message, style = 'color: #FFDF73; background-color: #454545') {
@@ -309,8 +341,7 @@
                 // Additional init modules
 
                 initYSDK = true;
-                if (ygGameInstance != null)
-                    ygGameInstance.SendMessage('YG2Instance', 'InitSDKComplete');
+                SendInitSDKComplete();
 
                 LogStyledMessage('Init YandexSDK Success');
 
@@ -328,7 +359,7 @@
             setTimeout(function () {
                 if (isPausedGame == true)
                     YG2Instance('SetPauseGame', 'true');
-            }, 100);
+            }, 0);
 
             // Additional start modules
         }

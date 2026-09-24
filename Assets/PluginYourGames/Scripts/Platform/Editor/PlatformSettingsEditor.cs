@@ -246,7 +246,7 @@ namespace YG.EditorScr
                         EditorGUI.BeginDisabledGroup(!newToggleValue);
 
                         EditorGUILayout.LabelField(
-                            ObjectNames.NicifyVariableName(field.Name),
+                            GetFieldLabel(field),
                             GUILayout.Width(200)
                         );
 
@@ -266,7 +266,7 @@ namespace YG.EditorScr
                     EditorGUILayout.BeginHorizontal(YGEditorStyles.selectable);
 
                     EditorGUILayout.LabelField(
-                        ObjectNames.NicifyVariableName(field.Name),
+                        GetFieldLabel(field),
                         GUILayout.Width(200)
                     );
 
@@ -275,6 +275,12 @@ namespace YG.EditorScr
                     EditorGUILayout.EndHorizontal();
                 }
             }
+        }
+
+        private static GUIContent GetFieldLabel(FieldInfo field)
+        {
+            TooltipAttribute tooltip = field.GetCustomAttribute<TooltipAttribute>();
+            return new GUIContent(ObjectNames.NicifyVariableName(field.Name), tooltip?.tooltip);
         }
 
         private void DrawField(FieldInfo field, object target, params GUILayoutOption[] options)

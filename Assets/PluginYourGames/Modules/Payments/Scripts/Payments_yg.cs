@@ -35,7 +35,6 @@ namespace YG
 
         public static void BuyPayments(string id)
         {
-            PauseGame(true);
 #if !UNITY_EDITOR
             iPlatform.BuyPayments(id);
 #else
