@@ -4,9 +4,10 @@ using UnityEngine.SceneManagement;
 
 namespace YG.Example.DemoScene
 {
-    [DefaultExecutionOrder(-5001)]
+    [DefaultExecutionOrder(DemoSceneDefaultExecution)]
     public class DemoScenePartial : MonoBehaviour
     {
+        private const int DemoSceneDefaultExecution = -5_001;
         public bool rootPartialsGrid;
         private static GameObject eventSystemObj;
 
@@ -66,9 +67,11 @@ namespace YG.Example.DemoScene
             }
             else
             {
-                eventSystemObj = new GameObject { name = "EventSystemBase" };
-                eventSystemObj.AddComponent<EventSystem>();
-                eventSystemObj.AddComponent<StandaloneInputModule>();
+                eventSystemObj = new GameObject(
+                    "EventSystemBase",
+                    typeof(EventSystem),
+                    typeof(StandaloneInputModule));
+
                 DontDestroyOnLoad(eventSystemObj);
             }
         }

@@ -1,23 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
+using YG.Localization;
 
 namespace YG
 {
     public class AdNotificationYG : MonoBehaviour
     {
-#if RU_YG2
-        [Tooltip("Объект, который будет активироваться перед открытием рекламы. И деактивироваться при открытии.")]
-#else
-        [Tooltip("The object that will be activated before opening the ad. And deactivate when opened.")]
-#endif
+        [Tooltip(InterstitialAdvLocalization.NotificationObj)]
         public GameObject notificationObj;
-#if RU_YG2
-        [Tooltip("Максимальное время показа объекта заглушки перед рекламой. Если реклама так и не будет показана, то объект скроется через указанное в данном параметре время.")]
-#else
-        [Tooltip("The maximum time for displaying the stub object before advertising. If the advertisement is not shown, the object will disappear after the time specified in this parameter.")]
-#endif
-        [Min(0.1f)]
-        public float waitingForAds = 1;
+
+        [Tooltip(InterstitialAdvLocalization.WaitingForAds)]
+        [Min(0.1f)] public float waitingForAds = 1;
 
         public static bool isShowNotification;
         public static AdNotificationYG Instance;

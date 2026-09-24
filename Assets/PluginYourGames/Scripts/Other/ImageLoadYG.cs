@@ -7,9 +7,11 @@ using System;
 
 namespace YG
 {
-    [DefaultExecutionOrder(-1)]
+    [DefaultExecutionOrder(ImageLoadYGExecutionOrder)]
     public class ImageLoadYG : MonoBehaviour
     {
+        private const int ImageLoadYGExecutionOrder = -1;
+
         public bool startLoad;
 #if PLUGIN_YG_2
         [NestedYG("startLoad")]
