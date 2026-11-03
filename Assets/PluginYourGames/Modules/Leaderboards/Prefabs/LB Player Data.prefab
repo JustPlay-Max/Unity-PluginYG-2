@@ -395,7 +395,7 @@ MonoBehaviour:
   rawImage: {fileID: 0}
   spriteImage: {fileID: 1338964851561685547}
   loadAnimObj: {fileID: 0}
-  log: 0
+  logError: 0
 --- !u!1 &7442660658558515371
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +688,10 @@ MonoBehaviour:
     rank: {fileID: 7442660659715647009}
     name: {fileID: 7442660659084700632}
     score: {fileID: 7442660659206096142}
+  textMP:
+    rank: {fileID: 0}
+    name: {fileID: 0}
+    score: {fileID: 0}
   topPlayerActivityComponents:
   - {fileID: 8311217508094180555}
   currentPlayerActivityComponents:

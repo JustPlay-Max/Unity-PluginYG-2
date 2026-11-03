@@ -22,7 +22,6 @@ namespace YG
             }
 
             pauseGame = pause;
-            onPauseGame?.Invoke(pause);
 
             if (infoYG.Basic.autoPauseGame)
             {
@@ -44,6 +43,8 @@ namespace YG
                         PauseGameYG.inst.PauseDisabled();
                 }
             }
+
+            onPauseGame?.Invoke(pause);
         }
         public static void PauseGame(bool pause) => PauseGame(pause, infoYG.Basic.editTimeScale, true, true, infoYG.Basic.editEventSystem);
         public static void PauseGameNoEditEventSystem(bool pause) => PauseGame(pause, true, true, true, false);

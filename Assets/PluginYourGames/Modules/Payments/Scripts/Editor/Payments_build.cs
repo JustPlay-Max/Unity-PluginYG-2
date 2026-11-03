@@ -8,6 +8,8 @@ namespace YG.EditorScr.BuildModify
             InitFunction("InitPayments");
 
             string copyCode = FileTextCopy("Payments_js.js");
+            copyCode = copyCode.Replace("let paymentsAutoConsume = true;",
+                $"let paymentsAutoConsume = {infoYG.Payments.AutoConsume.ToString().ToLowerInvariant()};");
             AddIndexCode(copyCode, CodeType.JS);
         }
     }

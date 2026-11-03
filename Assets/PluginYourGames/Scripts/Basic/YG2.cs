@@ -29,7 +29,7 @@ namespace YG
 
         public static bool nowInterAdv;
         public static bool nowRewardAdv;
-        public static Action onAdvNotification, onOpenAnyAdv, onCloseAnyAdv, onErrorAnyAdv;
+        public static Action onOpenAnyAdv, onCloseAnyAdv, onErrorAnyAdv;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
@@ -41,7 +41,6 @@ namespace YG
             nowInterAdv = false;
             nowRewardAdv = false;
             onGetSDKData = null;
-            onAdvNotification = null;
             onOpenAnyAdv = null;
             onCloseAnyAdv = null;
             onErrorAnyAdv = null;
@@ -149,8 +148,19 @@ namespace YG
 
         public static void GetDataInvoke()
         {
-            if (_SDKEnabled)
-                onGetSDKData?.Invoke();
+            if (!_SDKEnabled || onGetSDKData == null) return;
+
+            foreach (Action callback in onGetSDKData.GetInvocationList())
+            {
+                try
+                {
+                    callback();
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
+            }
         }
 
         public static void Message(string message)

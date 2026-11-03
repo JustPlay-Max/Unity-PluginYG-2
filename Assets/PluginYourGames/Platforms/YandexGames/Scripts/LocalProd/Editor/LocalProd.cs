@@ -8,6 +8,7 @@ using System.Threading;
 using UnityEditor;
 using YG.EditorScr.BuildModify;
 using YG.Insides;
+using YG.Localization;
 using Debug = UnityEngine.Debug;
 
 namespace YG.EditorScr
@@ -21,8 +22,8 @@ namespace YG.EditorScr
         private const string AUTO_RUN_KEY = "YG2.LocalProd.AutoRunAfterBuild";
         private const string SUPPRESS_BROWSER_SCRIPT = "Assets/PluginYourGames/Platforms/YandexGames/Scripts/LocalProd/Editor/SuppressProxyBrowser.cjs";
         private const string MENU_ROOT = "Tools/YG2/";
-        private const string RUN_MENU_PATH = MENU_ROOT + "Run Local Build in Yandex Games";
-        private const string AUTO_RUN_MENU_PATH = MENU_ROOT + "Enable Auto Run After Build";
+        private const string RUN_MENU_PATH = MENU_ROOT + LocalProdLocalization.runLocalBuildInYandexGames;
+        private const string AUTO_RUN_MENU_PATH = MENU_ROOT + LocalProdLocalization.enableAutorunAfterBuild;
         private static int launchVersion;
 
         static LocalProd()
@@ -40,7 +41,7 @@ namespace YG.EditorScr
 
                 if (string.IsNullOrWhiteSpace(buildPath) || !Directory.Exists(buildPath))
                 {
-                    Debug.LogError($"{LocalProdLangs.buildFolderNotFound}\n{buildPath}");
+                    Debug.LogError($"{LocalProdLocalization.buildFolderNotFound}\n{buildPath}");
                     return;
                 }
 
@@ -49,32 +50,32 @@ namespace YG.EditorScr
 
                 if (!File.Exists(indexPath))
                 {
-                    Debug.LogError($"{LocalProdLangs.indexNotFound}\n{indexPath}");
+                    Debug.LogError($"{LocalProdLocalization.indexNotFound}\n{indexPath}");
                     return;
                 }
 
                 if (!long.TryParse(settings.localProdGameId, out long gameId) || gameId <= 0)
                 {
-                    Debug.LogError(LocalProdLangs.invalidGameId);
+                    Debug.LogError(LocalProdLocalization.invalidGameId);
                     return;
                 }
 
                 if (settings.localProdPort < 1 || settings.localProdPort > 65535)
                 {
-                    Debug.LogError(LocalProdLangs.invalidPort);
+                    Debug.LogError(LocalProdLocalization.invalidPort);
                     return;
                 }
 
                 if (!IsNpxAvailable())
                 {
-                    Debug.LogError(LocalProdLangs.nodeNotFound);
+                    Debug.LogError(LocalProdLocalization.nodeNotFound);
                     return;
                 }
 
                 StopPreviousServer();
 
                 string command = BuildCommand(buildPath, gameId, settings);
-                Debug.Log(string.Format(LocalProdLangs.launchInfo,
+                Debug.Log(string.Format(LocalProdLocalization.launchInfo,
                     gameId, buildPath, settings.localProdPort, settings.localProdUseCsp, command));
 
                 StartServer(command);
@@ -82,7 +83,7 @@ namespace YG.EditorScr
             }
             catch (Exception exception)
             {
-                Debug.LogError($"{LocalProdLangs.launchFailed}\n{exception}\n\n{LocalProdLangs.nodeNotFound}");
+                Debug.LogError($"{LocalProdLocalization.launchFailed}\n{exception}\n\n{LocalProdLocalization.nodeNotFound}");
             }
         }
 
@@ -159,7 +160,7 @@ namespace YG.EditorScr
                     }
                     catch (Exception exception)
                     {
-                        Debug.LogError($"{LocalProdLangs.launchFailed}\n{exception}");
+                        Debug.LogError($"{LocalProdLocalization.launchFailed}\n{exception}");
                         return;
                     }
 
@@ -238,7 +239,7 @@ namespace YG.EditorScr
             Process process = Process.Start(startInfo);
 
             if (process == null)
-                throw new InvalidOperationException(LocalProdLangs.processNotStarted);
+                throw new InvalidOperationException(LocalProdLocalization.processNotStarted);
 
             SessionState.SetInt(PROCESS_ID_KEY, process.Id);
             SessionState.SetString(PROCESS_START_TIME_KEY, process.StartTime.ToUniversalTime().Ticks.ToString());
@@ -273,12 +274,12 @@ namespace YG.EditorScr
                     using (Process stopProcess = Process.Start(stopInfo))
                     {
                         if (stopProcess == null)
-                            throw new InvalidOperationException(LocalProdLangs.processNotStopped);
+                            throw new InvalidOperationException(LocalProdLocalization.processNotStopped);
 
                         stopProcess.WaitForExit();
 
                         if (stopProcess.ExitCode != 0 && !process.HasExited)
-                            throw new InvalidOperationException(LocalProdLangs.processNotStopped);
+                            throw new InvalidOperationException(LocalProdLocalization.processNotStopped);
                     }
 #else
                     process.Kill();

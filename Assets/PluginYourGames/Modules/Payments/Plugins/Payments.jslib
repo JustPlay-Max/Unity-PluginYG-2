@@ -83,6 +83,16 @@ mergeInto(LibraryManager.library,
 		BuyPayments(UTF8ToString(id));
 	},
 
+	GetPendingPurchases_js: function()
+	{
+		GetPendingPurchases();
+	},
+
+	ConsumePurchaseByToken_js: function(token)
+	{
+		ConsumePurchaseByToken(UTF8ToString(token));
+	},
+
 	YandexPayments_InitSigned__deps: ['$PaymentsYG'],
 	YandexPayments_InitSigned: function()
 	{

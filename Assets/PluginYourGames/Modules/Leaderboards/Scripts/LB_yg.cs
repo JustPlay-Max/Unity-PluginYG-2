@@ -32,7 +32,7 @@ namespace YG
                 Message("Set Leaderboard: " + score);
                 iPlatform.SetLeaderboard(nameLB, score, extraData);
 #else
-                Message($"Set Leaderboard «{nameLB}»: {score}");
+                Message($"Set Leaderboard ï¿½{nameLB}ï¿½: {score}");
 #endif
             }
         }
@@ -88,7 +88,7 @@ namespace YG
 #else
             if (infoYG.Leaderboards.enable)
             {
-                Message($"Get Leaderboard «{nameLB}»");
+                Message($"Get Leaderboard: {nameLB}");
 
                 LBData lb = null;
                 LBData[] LBs = new LBData[infoYG.Leaderboards.listLBSim.Length];
@@ -105,12 +105,9 @@ namespace YG
                         foreach (LBPlayerData playerData in lb.players)
                         {
                             if (playerData.name == InfoYG.ANONYMOUS)
-                            {
-                                playerData.photo = InfoYG.ANONYMOUS;
-                                continue;
-                            }
-
-                            if (playerData.photo == InfoYG.DEMO_IMAGE)
+                                playerData.photo = ServerInfo.saveInfo.anonymousImage;
+                            
+                            else if (playerData.photo == InfoYG.DEMO_IMAGE)
                                 playerData.photo = ServerInfo.saveInfo.playerImage;
                         }
                         break;

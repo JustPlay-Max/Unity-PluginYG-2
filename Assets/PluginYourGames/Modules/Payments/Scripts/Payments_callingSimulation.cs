@@ -29,7 +29,7 @@ namespace YG.Insides
 
             if (!YG2.infoYG.Payments.testBuyFail)
             {
-                YGInsides.OnPurchaseSuccess(id);
+                YG2.ReceiveSimulatedPurchase(id);
             }
             else
             {

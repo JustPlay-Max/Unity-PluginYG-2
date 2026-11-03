@@ -50,6 +50,41 @@ namespace YG
 
         [DllImport("__Internal")]
         private static extern void BuyPayments_js(string id);
+
+        [DllImport("__Internal")]
+        private static extern void GetPendingPurchases_js();
+        [DllImport("__Internal")]
+        private static extern void ConsumePurchaseByToken_js(string purchaseToken);
+
+        public void GetPendingPurchases()
+        {
+            if (PaymentsBackendYG.Enabled)
+            {
+                YG2.onGetPendingPurchasesFailed?.Invoke("Token API is available for client payments only; use the backend restore API for signed payments.");
+                return;
+            }
+#if UNITY_WEBGL && !UNITY_EDITOR
+            GetPendingPurchases_js();
+#else
+            YG2.onGetPendingPurchasesFailed?.Invoke("Yandex payments require a WebGL build.");
+#endif
+        }
+
+        public void ConsumePurchaseByToken(string purchaseToken)
+        {
+            if (PaymentsBackendYG.Enabled)
+            {
+                Debug.LogWarning("[PluginYG Payments] Token API is available for client payments only; use backend order confirmation for signed payments.");
+                YG2.onPurchaseConsumeFailed?.Invoke(purchaseToken);
+                return;
+            }
+#if UNITY_WEBGL && !UNITY_EDITOR
+            ConsumePurchaseByToken_js(purchaseToken);
+#else
+            YG2.onPurchaseConsumeFailed?.Invoke(purchaseToken);
+#endif
+        }
+
         public void BuyPayments(string id)
         {
             if (PaymentsBackendYG.Enabled)
@@ -238,6 +273,32 @@ namespace YG.Insides
 {
     public partial class YGSendMessage
     {
+        public void PurchaseReceived(string data)
+        {
+            try
+            {
+                var transaction = JsonUtility.FromJson<YG.Utils.Pay.PaymentTransaction>(data);
+                var product = YG2.PurchaseByID(transaction.productID);
+                if (product != null)
+                    product.consumed = false;
+                YG2.onPurchaseReceived?.Invoke(transaction);
+            }
+            finally
+            {
+                YG2.PauseGame(false);
+            }
+        }
+
+        public void PendingPurchasesReceived(string data)
+        {
+            var result = JsonUtility.FromJson<YG.Utils.Pay.PaymentTransactionList>(data);
+            YG2.onGetPendingPurchases?.Invoke(result.purchases ?? new YG.Utils.Pay.PaymentTransaction[0]);
+        }
+
+        public void PendingPurchasesFailed(string error) => YG2.onGetPendingPurchasesFailed?.Invoke(error);
+        public void PurchaseConsumed(string token) => YG2.onPurchaseConsumed?.Invoke(token);
+        public void PurchaseConsumeFailed(string token) => YG2.onPurchaseConsumeFailed?.Invoke(token);
+
         public void PaymentsEntries(string data)
         {
             PaymentsJsonYG.ApplyCatalog(data);
@@ -245,7 +306,9 @@ namespace YG.Insides
 
         public void OnPurchaseSuccess(string id)
         {
-            YG2.PurchaseByID(id).consumed = true;
+            var product = YG2.PurchaseByID(id);
+            if (product != null)
+                product.consumed = true;
             YGInsides.OnPurchaseSuccess(id);
         }
 

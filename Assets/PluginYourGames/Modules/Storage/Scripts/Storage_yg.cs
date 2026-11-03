@@ -66,6 +66,56 @@ namespace YG
             }
         }
 
+        /// <summary>Reports the progress of the recording. The platform’s cloud stores data while waiting for a response from the server..</summary>
+        public static void SaveProgress(Action<bool> completed)
+        {
+            if (completed == null)
+            {
+                SaveProgress();
+                return;
+            }
+
+            bool finished = false;
+            void Complete(bool success)
+            {
+                if (finished) return;
+                finished = true;
+                try { completed(success); }
+                catch (Exception e) { Debug.LogException(e); }
+            }
+
+            if (!_SDKEnabled)
+            {
+                Debug.LogError("[PluginYG Storage] SaveProgress requires initialized PluginYG2.");
+                Complete(false);
+                return;
+            }
+
+            try
+            {
+                saves.idSave++;
+#if UNITY_EDITOR
+                YGInsides.SaveEditor();
+                Complete(true);
+#else
+                if (infoYG.Storage.saveLocal && !YGInsides.SaveLocalWithResult())
+                {
+                    Complete(false);
+                    return;
+                }
+                if (infoYG.Storage.saveCloud)
+                    iPlatform.SaveCloud(Complete);
+                else
+                    Complete(infoYG.Storage.saveLocal);
+#endif
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[PluginYG Storage] Save failed: " + e.Message);
+                Complete(false);
+            }
+        }
+
         public static void SaveProgress()
         {
             if (!_SDKEnabled)
@@ -156,6 +206,15 @@ namespace YG.Insides
             }
         }
 #endif
+        public static bool SaveLocalWithResult()
+        {
+#if NJSON_STORAGE_YG2
+            return LocalStorage.TrySetKey(STORAGE_KEY, JsonConvert.SerializeObject(YG2.saves));
+#else
+            return LocalStorage.TrySetKey(STORAGE_KEY, JsonUtility.ToJson(YG2.saves));
+#endif
+        }
+
         public static void SaveLocal()
         {
             Message("Save Local");

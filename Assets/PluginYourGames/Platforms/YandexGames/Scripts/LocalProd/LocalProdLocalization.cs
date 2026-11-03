@@ -1,9 +1,11 @@
 #if UNITY_EDITOR
-namespace YG.Insides
+namespace YG.Localization
 {
-    public static class LocalProdLangs
+    public static class LocalProdLocalization
     {
 #if RU_YG2
+        public const string runLocalBuildInYandexGames = "Запустить локальную сборку в Яндекс Играх";
+        public const string enableAutorunAfterBuild = "Включить автозапуск после сборки";
         public const string header = "Локальный запуск в production";
         public const string gameIdTooltip = "ID черновика игры в консоли Яндекс Игр. Локальный WebGL-билд будет запущен в production-окружении этого черновика.";
         public const string portTooltip = "Порт сервера для локального запуска WebGL-билда через production-окружение Яндекс Игр. По умолчанию 8080. Измените, если этот порт занят.";
@@ -18,6 +20,8 @@ namespace YG.Insides
         public const string processNotStopped = "Не удалось остановить ранее запущенный proxy-сервер.";
         public const string launchInfo = "Запуск локального WebGL-билда через Yandex Games SDK Dev Proxy\nGame ID: {0}\nПуть к билду: {1}\nПорт: {2}\nCSP: {3}\nКоманда: {4}";
 #else
+        public const string runLocalBuildInYandexGames = "Run local build in YandexGames";
+        public const string enableAutorunAfterBuild = "Enable autorun after build";
         public const string header = "Local production launch";
         public const string gameIdTooltip = "The ID of a game draft in the Yandex Games Console. The local WebGL build will run in this draft's production environment.";
         public const string portTooltip = "Server port for running the local WebGL build in the Yandex Games production environment. The default is 8080. Change it if the port is in use.";

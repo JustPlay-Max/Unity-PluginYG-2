@@ -1,5 +1,14 @@
 var FileIO = {
 
+	TrySetKey_LocalStorage_js: function(key, value) {
+		try {
+			localStorage.setItem(UTF8ToString(key), UTF8ToString(value));
+			return 1;
+		} catch (e) {
+			console.warn('Save to Local Storage failed: ', e);
+			return 0;
+		}
+	},
 	SetKey_LocalStorage_js : function(key, value) {
 		try {
 			localStorage.setItem(UTF8ToString(key), UTF8ToString(value));

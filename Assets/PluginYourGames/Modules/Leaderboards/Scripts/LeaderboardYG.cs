@@ -21,7 +21,7 @@ namespace YG
 #if UNITY_EDITOR
         [Tooltip(Langs.t_maxQuantityPlayers)]
 #endif
-        public int maxQuantityPlayers = 20;
+        public int maxQuantityPlayers = 14;
 #if UNITY_EDITOR
         [Range(1, 20), Tooltip(Langs.t_quantityTop)]
 #endif
@@ -29,7 +29,7 @@ namespace YG
 #if UNITY_EDITOR
         [Range(1, 10), Tooltip(Langs.t_quantityAround)]
 #endif
-        public int quantityAround = 6;
+        public int quantityAround = 5;
 
         public enum UpdateLBMethod { Start, OnEnable, DoNotUpdate };
 #if UNITY_EDITOR

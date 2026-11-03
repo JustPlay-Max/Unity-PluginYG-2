@@ -6,8 +6,8 @@ namespace YG.Insides
 #if RU_YG2
         public const string t_nameLB = "Техническое название соревновательной таблицы";
         public const string t_maxQuantityPlayers = "Максимальное количество игроков в таблице";
-        public const string t_quantityTop = "Кол-во получения верхних топ игроков";
-        public const string t_quantityAround = "Кол-во получения верхних топ игроков";
+        public const string t_quantityTop = "Количество полученных верхних топ-игроков";
+        public const string t_quantityAround = "Количество полученных записей рядом с пользователем";
         public const string t_updateLBMethod = "Когда следует обновлять лидерборд?\nStart - Обновлять в методе Start.\nOnEnable - Обновлять при каждой активации объекта (в методе OnEnable)\nDoNotUpdate - Не обновлять лидерборд с помощью данного скрипта (подразоумивается, что метод обновления 'UpdateLB' вы будете запускать сами, когда вам потребуется.";
         public const string t_entriesText = "Перетащите компонент Text для записи описания таблицы, если вы не выбрали продвинутую таблицу (advanced)";
         public const string t_advanced = "Продвинутая таблица. Поддерживает подгрузку авата и конвертацию рекордов в тип Time. Подгружает все данные в отдельные элементы интерфейса.";
@@ -20,7 +20,7 @@ namespace YG.Insides
 #else
         public const string t_nameLB = "Technical name of the competition table";
         public const string t_maxQuantityPlayers = "The maximum number of players in the table";
-        public const string t_quantityTop = "Number of top players to receive";
+        public const string t_quantityTop = "The number of top‑tier players received";
         public const string t_quantityAround = "Number of records received near the user";
         public const string t_updateLBMethod = "When should the leaderboard be updated?\nStart - Update in the Start method.\nOnEnable - Update each time the object is activated (in the OnEnable method)\nDoNotUpdate - Do not update the leaderboard using this script (it is assumed that you will run the 'UpdateLB' update method yourself when you need it.";
         public const string t_entriesText = "Drag the Text component to write the table description if you have not selected the advanced table";

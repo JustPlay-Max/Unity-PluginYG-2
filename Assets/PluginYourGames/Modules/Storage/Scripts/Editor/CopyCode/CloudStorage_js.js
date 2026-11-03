@@ -1,16 +1,23 @@
 ﻿var cloudSaves = NO_DATA;
 
-function SaveCloud(jsonData, flush) {
-    if (player == null) {
-        console.error('CRASH Save Cloud: ', 'Didnt have time to load');
-        return;
-    }
+async function SaveCloud(jsonData, flush, requestID) {
+    let success = false;
     try {
-        player.setData({
+        if (player == null)
+            throw new Error('Player is not initialized');
+        await player.setData({
             saves: [jsonData],
         }, flush);
+        success = true;
     } catch (e) {
-        console.error('CRASH Save Cloud: ', e.message);
+        console.warn('Save Cloud failed: ', e);
+    }
+    if (requestID !== undefined) {
+        try {
+            YG2Instance('SetSaveCloudResult', requestID + '|' + (success ? '1' : '0'));
+        } catch (e) {
+            console.warn('Save Cloud callback failed: ', e);
+        }
     }
 }
 

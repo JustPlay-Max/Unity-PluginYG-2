@@ -5,6 +5,28 @@ namespace YG.Utils
 {
     public static class LocalStorage
     {
+#if PLATFORM_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern int TrySetKey_LocalStorage_js(string key, string value);
+#endif
+        public static bool TrySetKey(string key, string value)
+        {
+            try
+            {
+#if PLATFORM_WEBGL && !UNITY_EDITOR
+                return TrySetKey_LocalStorage_js(key, value) == 1;
+#else
+                SetKey(key, value);
+                return true;
+#endif
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("Save to local storage failed: " + e.Message);
+                return false;
+            }
+        }
+
 #if PLATFORM_WEBGL
         [DllImport("__Internal")]
         public static extern void SetKey_LocalStorage_js(string key, string value);

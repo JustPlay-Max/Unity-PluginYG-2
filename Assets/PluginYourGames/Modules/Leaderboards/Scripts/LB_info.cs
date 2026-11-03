@@ -22,7 +22,12 @@ namespace YG
 #if UNITY_EDITOR
             [NestedYG(nameof(enable))]
 #endif
-            public bool saveScoreAnonymousPlayers = true;
+#if RU_YG2
+            [Tooltip("Сохранять рекорд анонимных (незарегистрированных) пользователей?")]
+#else
+            [Tooltip("Maintain the record of anonymous (unregistered) users?")]
+#endif
+            public bool saveScoreAnonymousPlayers;
 
             // Simulation
 #if UNITY_EDITOR

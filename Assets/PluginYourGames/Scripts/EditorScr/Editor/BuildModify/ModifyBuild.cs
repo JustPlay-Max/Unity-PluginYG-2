@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +30,6 @@ namespace YG.EditorScr.BuildModify
         private const double FALLBACK_DELAY_SECONDS = 1.0d;
         private static int pendingBuildNumber = -1;
         private static List<string> pendingErrors = new List<string>();
-        private static string pendingOpenBuildPath = string.Empty;
         private enum CodeType { HeadNative, BodyNative, JS, Head, Body, Init0, Init1, Init2, Init, Start };
         public static event Action onModifyComplete = null;
 
@@ -208,13 +206,6 @@ namespace YG.EditorScr.BuildModify
 
             onModifyComplete?.Invoke();
 
-#if UNITY_EDITOR_WIN
-            if (!Application.isBatchMode && !string.IsNullOrEmpty(pendingOpenBuildPath))
-            {
-                Process.Start("explorer.exe", pendingOpenBuildPath.Replace("/", "\\"));
-                pendingOpenBuildPath = string.Empty;
-            }
-#endif
         }
 
         public static void ModifyIndex()
@@ -227,7 +218,6 @@ namespace YG.EditorScr.BuildModify
             }
             else
             {
-                pendingOpenBuildPath = buildPath;
                 ModifyIndex(buildPath);
             }
         }

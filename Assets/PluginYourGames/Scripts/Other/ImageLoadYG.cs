@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
 using System;
 
 namespace YG
@@ -21,12 +22,14 @@ namespace YG
         public RawImage rawImage;
         public Image spriteImage;
         public GameObject loadAnimObj;
-        [SerializeField] bool log;
+        [FormerlySerializedAs("log")]
+        public bool logError = true;
 
         public Action onTextureLoad;
 
         private struct LoadTextures { public string link; public Texture2D texture; }
         private static List<LoadTextures> saveTextures = new List<LoadTextures>();
+        private int loadVersion;
 
         private void Awake()
         {
@@ -44,7 +47,10 @@ namespace YG
         public void Load(string url)
         {
             if (string.IsNullOrEmpty(url) || url == "null")
+            {
+                ClearTexture();
                 return;
+            }
 
             Texture2D existingTexture = ExistingTexture(url);
             if (existingTexture)
@@ -69,6 +75,8 @@ namespace YG
 
         public void ClearTexture()
         {
+            loadVersion++;
+
             if (rawImage)
             {
                 rawImage.texture = null;
@@ -87,6 +95,8 @@ namespace YG
 
         IEnumerator LoadTexture(string url)
         {
+            int version = ++loadVersion;
+
             if (loadAnimObj)
                 loadAnimObj.SetActive(true);
 
@@ -94,11 +104,16 @@ namespace YG
             {
                 yield return webRequest.SendWebRequest();
 
-                if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
-                    webRequest.result == UnityWebRequest.Result.DataProcessingError)
+                // A newer load or an explicit texture change takes priority.
+                if (version != loadVersion) yield break;
+
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
-                    if (log)
-                        Debug.LogError("ImageLoadYG Error: " + webRequest.error);
+                    if (loadAnimObj)
+                        loadAnimObj.SetActive(false);
+
+                    if (logError)
+                        Debug.LogError($"ImageLoadYG [{GetInstanceID()}] Error: {url}, {webRequest.error}", this);
                 }
                 else
                 {
@@ -113,20 +128,26 @@ namespace YG
                         }
                         else
                         {
-                            SetTexture(handlerTexture.texture);
+                            Texture2D texture = handlerTexture.texture;
+                            
                             saveTextures.Add(new LoadTextures
                             {
                                 link = url,
-                                texture = handlerTexture.texture
+                                texture = texture
                             });
+                            SetTexture(texture);
                         }
                     }
+                    else if (logError)
+                        Debug.LogError($"ImageLoadYG [{GetInstanceID()}] Request succeeded without a completed texture: {url}", this);
                 }
             }
         }
 
         public void SetTexture(Texture2D texture)
         {
+            loadVersion++;
+
             if (rawImage)
             {
                 rawImage.texture = texture;
@@ -141,10 +162,9 @@ namespace YG
             }
 
             if (loadAnimObj)
-            {
                 loadAnimObj.SetActive(false);
-                onTextureLoad?.Invoke();
-            }
+
+            onTextureLoad?.Invoke();
         }
     }
 }

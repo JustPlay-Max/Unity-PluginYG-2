@@ -8,7 +8,7 @@ namespace YG
 
         private void Start()
         {
-            if (!consumed)
+            if ((YG2.infoYG.Payments.AutoConsume || YG.Insides.PaymentsBackendYG.Enabled) && !consumed)
             {
                 consumed = true;
                 YG2.ConsumePurchases();

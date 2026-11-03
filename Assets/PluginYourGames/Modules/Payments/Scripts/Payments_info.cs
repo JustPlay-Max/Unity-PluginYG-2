@@ -12,13 +12,25 @@ namespace YG
         [Serializable]
         public partial class PaymentsSettings
         {
+#if RU_YG2
+            [Tooltip("Автоматически подтверждать клиентские покупки Яндекс Игр после события выдачи. Отключите для ручной выдачи, сохранения и подтверждения по purchaseToken.")]
+#else
+            [Tooltip("Automatically consume Yandex Games client purchases after the reward event. Disable to grant, save and confirm manually by purchaseToken.")]
+#endif
+            public bool AutoConsume = true;
+
+            [HideInInspector]
             public bool useBackend;
+            [HideInInspector]
             [NestedYG(nameof(useBackend))]
             public string backendURL = string.Empty;
+            [HideInInspector]
             [NestedYG(nameof(useBackend))]
             public bool advancedBackend;
+            [HideInInspector]
             [NestedYG(nameof(useBackend), nameof(advancedBackend)), Min(1)]
             public int pollAttempts = 8;
+            [HideInInspector]
             [NestedYG(nameof(useBackend), nameof(advancedBackend)), Min(0.2f)]
             public float pollDelay = 1.5f;
 
@@ -26,9 +38,9 @@ namespace YG
             [HeaderYG(Langs.simulation, 5), Min(0)]
             public float durationPayPanel = 1;
 #if RU_YG2
-            [Tooltip("Проверка неудачной покупки. Консумирование в Unity Editor не симулируется!")]
+            [Tooltip("Проверка неудачной покупки. В Unity Editor доступна базовая симуляция ручного подтверждения по токену.")]
 #else
-            [Tooltip("Verification of a failed purchase. Consummation in Unity Editor is not simulated!")]
+            [Tooltip("Simulate a failed purchase. Unity Editor supports basic manual confirmation by token.")]
 #endif
             public bool testBuyFail;
 

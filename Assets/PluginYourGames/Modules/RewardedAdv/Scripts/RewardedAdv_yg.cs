@@ -29,7 +29,6 @@ namespace YG
                 if (string.IsNullOrEmpty(id)) id = "null";
 
                 YGInsides.currentRewardID = id;
-                onAdvNotification?.Invoke();
 #if !UNITY_EDITOR
                 Message("Rewarded Ad Show");
                 iPlatform.RewardedAdvShow(id);
@@ -65,10 +64,9 @@ namespace YG.Insides
         public static void CloseRewardedAdv()
         {
             YG2.nowRewardAdv = false;
-
+            YG2.PauseGame(false);
             YG2.onCloseRewardedAdv?.Invoke();
             YG2.onCloseAnyAdv?.Invoke();
-            YG2.PauseGame(false);
         }
 
         public static void RewardAdv(string id)
