@@ -43,10 +43,6 @@
 # Разрешить только следующие файлы
 !LICENSE
 !README.md
-!Docs/
-!Docs/PaymentsManualConsumption.md
-!Docs/PaymentsCustomImplementation.md
-!Docs/StorageSaveCallback.md
 !Tests/
 !Tests/Payments.test.cjs
 !Tests/Storage.test.cjs
@@ -86,11 +82,14 @@
 !Assets/WebGLTemplates/YandexGames/**
 
 # Запрещаем папки
+Docs/
 Assets/PluginYourGames/Example/Resources
 Assets/WebGLTemplates/YandexGames/Images
 
 # meta-files
 *.meta
+!Assets/PluginYourGames/Modules/Storage/Example/Scripts/CloudSaveFailureTestScene.cs.meta
+!Assets/PluginYourGames/Modules/Storage/Example/Scenes/CloudSaveFailureTest.unity.meta
 
 # OS
 .DS_Store

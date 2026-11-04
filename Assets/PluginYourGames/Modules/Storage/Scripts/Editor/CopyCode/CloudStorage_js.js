@@ -24,7 +24,7 @@ async function SaveCloud(jsonData, flush, requestID) {
 function LoadCloud() {
     return new Promise((resolve) => {
         if (ysdk == null) {
-            Final(NO_DATA);
+            Failed('Yandex Games SDK is not initialized');
             return;
         }
         try {
@@ -34,20 +34,25 @@ function LoadCloud() {
                 } else {
                     Final(NO_DATA);
                 }
-            }).catch(() => {
-                console.error('Load Cloud Error!');
-                Final(NO_DATA);
+            }).catch(e => {
+                console.error('Load Cloud Error!', e);
+                Failed(e && e.message ? e.message : String(e));
             });
         }
         catch (e) {
             console.error('CRASH Load saves Cloud: ', e.message);
-            Final(NO_DATA);
+            Failed(e && e.message ? e.message : String(e));
         }
 
         function Final(res) {
             cloudSaves = res;
             YG2Instance('SetLoadSaves', res);
             resolve(res);
+        }
+
+        function Failed(error) {
+            YG2Instance('LoadSavesFailed', error);
+            resolve(NO_DATA);
         }
     });
 }

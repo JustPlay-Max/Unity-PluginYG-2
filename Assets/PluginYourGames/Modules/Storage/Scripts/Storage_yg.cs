@@ -16,9 +16,14 @@ namespace YG
 
         private static bool isFirstSession;
 
+        internal static bool cloudLoadResolved;
+        internal static bool cloudLoadFailed;
+
         [InitYG]
         private static void InitStorage()
         {
+            cloudLoadResolved = !infoYG.Storage.saveCloud;
+            cloudLoadFailed = false;
 #if UNITY_EDITOR
             // Reset static for ECS
             saves = new SavesYG();
@@ -93,6 +98,14 @@ namespace YG
 
             try
             {
+#if !UNITY_EDITOR
+                if (infoYG.Storage.saveCloud && (!cloudLoadResolved || cloudLoadFailed))
+                {
+                    Debug.LogWarning("[PluginYG Storage] Save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
+                    Complete(false);
+                    return;
+                }
+#endif
                 saves.idSave++;
 #if UNITY_EDITOR
                 YGInsides.SaveEditor();
@@ -128,6 +141,14 @@ namespace YG
                 return;
             }
 
+#if !UNITY_EDITOR
+            if (infoYG.Storage.saveCloud && (!YG2.cloudLoadResolved || YG2.cloudLoadFailed))
+            {
+                Debug.LogWarning("[PluginYG Storage] Save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
+                return;
+            }
+#endif
+
             saves.idSave++;
 #if !UNITY_EDITOR
             if (infoYG.Storage.saveLocal)
@@ -139,6 +160,8 @@ namespace YG
             YGInsides.SaveEditor();
 #endif
         }
+
+        public static void LoadCloud() => YGInsides.LoadCloud(true);
     }
 }
 
@@ -247,13 +270,25 @@ namespace YG.Insides
 
         public static void SaveCloud(bool ignoreTimer = false)
         {
+#if !UNITY_EDITOR
+            if (infoYG.Storage.saveCloud && (!YG2.cloudLoadResolved || YG2.cloudLoadFailed))
+            {
+                Debug.LogWarning("[PluginYG Storage] Cloud save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
+                return;
+            }
+#endif
             Message("Save Cloud");
             iPlatform.SaveCloud();
         }
 
-        public static void LoadCloud()
+        public static void LoadCloud(bool forceReload = false)
         {
             Message("Load Cloud");
+            if (forceReload)
+            {
+                YG2.cloudLoadResolved = false;
+                YG2.cloudLoadFailed = false;
+            }
 #if !UNITY_EDITOR
             iPlatform.LoadCloud();
 #else
@@ -263,6 +298,26 @@ namespace YG.Insides
 
         public static void SetLoadSaves(string data)
         {
+            SetLoadSaves(data, true);
+        }
+
+        public static void SetLoadSavesFailed(string error)
+        {
+            YG2.cloudLoadResolved = true;
+            YG2.cloudLoadFailed = true;
+            Message("Cloud load failed: " + error);
+        }
+
+        public static void SetLoadSaves(string data, bool success)
+        {
+            YG2.cloudLoadResolved = true;
+            YG2.cloudLoadFailed = !success;
+            if (!success)
+            {
+                Message("Cloud load failed. Existing saves were left untouched.");
+                return;
+            }
+
             DataState cloudDataState = DataState.Exist;
             DataState localDataState = DataState.Exist;
             SavesYG cloudData = new SavesYG();
@@ -270,20 +325,22 @@ namespace YG.Insides
 
             if (data != InfoYG.NO_DATA && !string.IsNullOrEmpty(data))
             {
-#if YandexGamesPlatform_yg
-                data = data.Remove(0, 2);
-                data = data.Remove(data.Length - 2, 2);
-                data = data.Replace(@"\\\", '\u0002'.ToString());
-                data = data.Replace(@"\", "");
-                data = data.Replace('\u0002'.ToString(), @"\");
-#endif
                 try
                 {
+#if YandexGamesPlatform_yg
+                    data = data.Remove(0, 2);
+                    data = data.Remove(data.Length - 2, 2);
+                    data = data.Replace(@"\\\", '\u0002'.ToString());
+                    data = data.Replace(@"\", "");
+                    data = data.Replace('\u0002'.ToString(), @"\");
+#endif
 #if NJSON_STORAGE_YG2
                     cloudData = JsonConvert.DeserializeObject<SavesYG>(data);
 #else
                     cloudData = JsonUtility.FromJson<SavesYG>(data);
 #endif
+                    if (cloudData == null)
+                        cloudDataState = DataState.Broken;
                 }
                 catch (Exception e)
                 {
@@ -303,7 +360,11 @@ namespace YG.Insides
                 else
                 {
                     if (cloudDataState == DataState.Broken)
-                        Message("Load Cloud Broken! But we tried to restore and load cloud saves. Local saves are disabled.");
+                    {
+                        SetLoadSavesFailed("Cloud save data is invalid");
+                        Message("Load Cloud Broken! Local saves are disabled; existing game data was left untouched.");
+                        return;
+                    }
                     else Message("Load Cloud Complete! Local saves are disabled.");
 
                     YG2.saves = cloudData;
@@ -353,18 +414,15 @@ namespace YG.Insides
                 YG2.saves = localData;
                 Message("Load Local Complete! Cloud Data - " + cloudDataState);
             }
-            else if (cloudDataState == DataState.Broken ||
-                (cloudDataState == DataState.Broken && localDataState == DataState.Broken))
+            else if (cloudDataState == DataState.Broken)
             {
-                Message("Local Saves - " + localDataState);
-                Message("Cloud Saves - Broken! Data Recovering...");
-                YG2.SetDefaultSaves();
-#if NJSON_STORAGE_YG2
-                YG2.saves = JsonConvert.DeserializeObject<SavesYG>(data);
-#else
-                YG2.saves = JsonUtility.FromJson<SavesYG>(data);
-#endif
-                Message("Cloud Saves Partially Restored!");
+                if (localDataState != DataState.Exist)
+                {
+                    SetLoadSavesFailed("Cloud save data is invalid and no local save can recover it");
+                    return;
+                }
+                Message("Cloud Saves - Broken! Restored from local saves.");
+                YG2.saves = localData;
             }
             else if (localDataState == DataState.Broken)
             {
