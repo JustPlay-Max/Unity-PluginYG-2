@@ -65,7 +65,9 @@ namespace YG
         {
             if (!YG2.isSDKEnabled)
             {
-                YGInsides.SetLoadSaves(InitCloud_js());
+                string cachedData = InitCloud_js();
+                if (cachedData != YG.InfoYG.NO_DATA && !string.IsNullOrEmpty(cachedData))
+                    YGInsides.SetLoadSaves(cachedData);
             }
             else
             {
@@ -92,6 +94,7 @@ namespace YG.Insides
     {
         public void SetSaveCloudResult(string result) => PlatformYG2.CompleteCloudSave(result);
         public void SetLoadSaves(string data) => YGInsides.SetLoadSaves(data);
+        public void LoadSavesFailed(string error) => YGInsides.SetLoadSavesFailed(error);
     }
 }
 #endif
