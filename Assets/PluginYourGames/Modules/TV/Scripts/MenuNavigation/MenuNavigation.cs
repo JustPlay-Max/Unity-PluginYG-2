@@ -60,7 +60,13 @@ namespace YG.MenuNav
                 AddLayer(null);
 
                 if (usButton == null)
+#if UNITY_6000_5_OR_NEWER
+                    usButton = FindObjectsByType<Button>()
+                        .OrderBy(obj => obj.GetEntityId())
+                        .FirstOrDefault();
+#else
                     usButton = FindFirstObjectByType<Button>();
+#endif
 
                 if (usButton != null)
                     SelectButton(usButton);
@@ -148,7 +154,7 @@ namespace YG.MenuNav
 
         public void SelectFirstButton()
         {
-            Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
+            Button[] buttons = FindObjectsByType<Button>();
             usButton = buttons.FirstOrDefault(button => button.enabled);
             SelectButton(usButton);
         }
@@ -164,7 +170,7 @@ namespace YG.MenuNav
                 buttons = new List<Button>()
             };
 
-            Button[] allButtonsInScene = FindObjectsByType<Button>(FindObjectsSortMode.None);
+            Button[] allButtonsInScene = FindObjectsByType<Button>();
 
             foreach (Button button in allButtonsInScene)
             {

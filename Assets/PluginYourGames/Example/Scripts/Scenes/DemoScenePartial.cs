@@ -37,7 +37,7 @@ namespace YG.Example.DemoScene
 
         private void Start()
         {
-            EventSystem[] eventSystem = FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
+            EventSystem[] eventSystem = FindObjectsByType<EventSystem>();
 
             if (eventSystem.Length > 0)
             {

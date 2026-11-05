@@ -26,7 +26,7 @@ namespace YG.LanguageLegacy
             {
                 objectsTranlate.Clear();
 
-                foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include))
                 {
                     objectsTranlate.Add(obj.gameObject);
                 }

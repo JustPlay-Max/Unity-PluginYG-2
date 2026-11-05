@@ -111,9 +111,12 @@ namespace YG
                 {
                     if (loadAnimObj)
                         loadAnimObj.SetActive(false);
-
                     if (logError)
+#if UNITY_6_4_OR_NEWER || UNITY_6_5_OR_NEWER || UNITY_6000_6_OR_NEWER
+                        Debug.LogError($"ImageLoadYG [{GetEntityId()}] Error: {url}, {webRequest.error}", this);
+#else
                         Debug.LogError($"ImageLoadYG [{GetInstanceID()}] Error: {url}, {webRequest.error}", this);
+#endif
                 }
                 else
                 {
@@ -129,7 +132,7 @@ namespace YG
                         else
                         {
                             Texture2D texture = handlerTexture.texture;
-                            
+
                             saveTextures.Add(new LoadTextures
                             {
                                 link = url,
@@ -139,7 +142,11 @@ namespace YG
                         }
                     }
                     else if (logError)
+#if UNITY_6_4_OR_NEWER || UNITY_6_5_OR_NEWER || UNITY_6000_6_OR_NEWER
+                        Debug.LogError($"ImageLoadYG [{GetEntityId()}] Request succeeded without a completed texture: {url}", this);
+#else
                         Debug.LogError($"ImageLoadYG [{GetInstanceID()}] Request succeeded without a completed texture: {url}", this);
+#endif
                 }
             }
         }

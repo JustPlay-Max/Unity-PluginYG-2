@@ -28,7 +28,7 @@ namespace YG.LanguageLegacy
             {
                 objectsTranlate.Clear();
 
-                foreach (Text obj in SceneAsset.FindObjectsByType<Text>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                foreach (Text obj in SceneAsset.FindObjectsByType<Text>(FindObjectsInactive.Include))
                 {
                     objectsTranlate.Add(obj.gameObject);
                 }
@@ -38,7 +38,7 @@ namespace YG.LanguageLegacy
             {
                 objectsTranlate.Clear();
 
-                foreach (TMP_Text obj in SceneAsset.FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                foreach (TMP_Text obj in SceneAsset.FindObjectsByType<TMP_Text>(FindObjectsInactive.Include))
                 {
                     objectsTranlate.Add(obj.gameObject);
                 }
@@ -48,7 +48,7 @@ namespace YG.LanguageLegacy
             {
                 objectsTranlate.Clear();
 
-                foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include))
                 {
                     objectsTranlate.Add(obj.gameObject);
                 }
