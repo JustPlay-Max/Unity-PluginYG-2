@@ -113,17 +113,30 @@
         let syncInit = false;
         let isVisibility = true;
         let isPausedGame = false;
+        let unityFocused = false;
         const NO_DATA = 'no data';
 
         document.addEventListener('contextmenu', event => event.preventDefault());
-        document.addEventListener('visibilitychange', () => SetVisibility(!document.hidden));
-        window.addEventListener('blur', () => SetVisibility(false));
-        window.addEventListener('focus', () => SetVisibility(true));
+        document.addEventListener('visibilitychange', () => {
+            SetVisibility(!document.hidden);
+            SyncUnityFocus();
+        });
+        window.addEventListener('blur', () => {
+            unityFocused = false;
+            SetVisibility(false);
+        });
+        window.addEventListener('focus', () => {
+            unityFocused = ygGameInstance !== null;
+            SetVisibility(true);
+        });
+        canvas.addEventListener('blur', () => unityFocused = false);
+        canvas.addEventListener('focus', SyncUnityFocus);
 
         window.addEventListener('pointerdown', () => {
             FocusGame();
             SetVisibility(true);
         });
+        window.addEventListener('pointerdown', SyncUnityFocus, true);
 
         window.addEventListener('resize', () => FocusGame());
         document.addEventListener('fullscreenchange', () => FocusGame());
@@ -187,6 +200,18 @@
             });
         }
 
+        function SyncUnityFocus() {
+            if (ygGameInstance == null || unityFocused || document.hidden || !document.hasFocus()) return;
+            const active = document.activeElement;
+            if (active && (active.tagName === 'INPUT' ||
+                active.tagName === 'TEXTAREA' ||
+                active.isContentEditable
+            )) {
+                return;
+            }
+            window.dispatchEvent(new FocusEvent('focus'));
+        }
+
         function SetVisibility(visibility) {
             if (ysdk !== null && initGame === true && isVisibility !== visibility) {
                 isVisibility = visibility;
@@ -225,7 +250,9 @@
 
                     loadingCover.style.background = "";
                     loadingCover.style.display = "none";
+                    unityFocused = false;
                     FocusGame();
+                    SyncUnityFocus();
                     // Fill Background [Build Modify]
                 }).catch((message) => {
                     console.error(message);

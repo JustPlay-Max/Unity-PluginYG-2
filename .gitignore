@@ -88,8 +88,6 @@ Assets/WebGLTemplates/YandexGames/Images
 
 # meta-files
 *.meta
-!Assets/PluginYourGames/Modules/Storage/Example/Scripts/CloudSaveFailureTestScene.cs.meta
-!Assets/PluginYourGames/Modules/Storage/Example/Scenes/CloudSaveFailureTest.unity.meta
 
 # OS
 .DS_Store
