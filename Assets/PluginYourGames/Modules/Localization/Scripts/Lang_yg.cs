@@ -51,7 +51,7 @@ namespace YG
             lang = iPlatform.GetLanguage();
 #else
             string langSim = infoYG.Simulation.language;
-            if (langSim != null && langSim != "")
+            if (!string.IsNullOrEmpty(langSim))
                 lang = langSim;
 #endif
             lang = lang.ToLower();

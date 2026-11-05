@@ -1,5 +1,7 @@
 namespace YG
 {
+    using UnityEngine;
+    using YG.Utils;
 #if UNITY_WEBGL
     using System;
     using System.Runtime.InteropServices;
@@ -20,7 +22,7 @@ namespace YG
             YGInsides.FreeBuffer(ptr);
             return str;
 #else
-            return "en";
+            return SystemLanguageYG.GetLanguageCode(Application.systemLanguage);
 #endif
         }
     }
