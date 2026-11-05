@@ -11,6 +11,7 @@
 !Assets/PluginYourGames/Scripts/
 !Assets/PluginYourGames/Platforms/
 !Assets/PluginYourGames/Platforms/YandexGames/
+!Assets/PluginYourGames/Platforms/EmptyWebGL/
 !Assets/PluginYourGames/Modules/
 !Assets/PluginYourGames/Modules/Authorization/
 !Assets/PluginYourGames/Modules/AutoTranslateLangs/
@@ -38,6 +39,7 @@
 !Assets/PluginYourGames/Modules/TV/
 !Assets/WebGLTemplates/
 !Assets/WebGLTemplates/YandexGames/
+!Assets/WebGLTemplates/EmptyWebGL/
 
 
 # Разрешить только следующие файлы
@@ -55,6 +57,7 @@
 !Assets/PluginYourGames/Example/**
 !Assets/PluginYourGames/Scripts/**
 !Assets/PluginYourGames/Platforms/YandexGames/**
+!Assets/PluginYourGames/Platforms/EmptyWebGL/**
 !Assets/PluginYourGames/Modules/Authorization/**
 !Assets/PluginYourGames/Modules/AutoTranslateLangs/**
 !Assets/PluginYourGames/Modules/BannerAdv/**
@@ -80,11 +83,47 @@
 !Assets/PluginYourGames/Modules/Storage/**
 !Assets/PluginYourGames/Modules/TV/**
 !Assets/WebGLTemplates/YandexGames/**
+!Assets/WebGLTemplates/EmptyWebGL/**
 
 # Запрещаем папки
 Docs/
 Assets/PluginYourGames/Example/Resources
 Assets/WebGLTemplates/YandexGames/Images
+
+# Разрешаем .meta папок
+!Assets/PluginYourGames.meta
+!Assets/PluginYourGames/Example.meta
+!Assets/PluginYourGames/Scripts.meta
+!Assets/PluginYourGames/Platforms.meta
+!Assets/PluginYourGames/Platforms/YandexGames.meta
+!Assets/PluginYourGames/Platforms/EmptyWebGL.meta
+!Assets/PluginYourGames/Modules.meta
+!Assets/PluginYourGames/Modules/Authorization.meta
+!Assets/PluginYourGames/Modules/AutoTranslateLangs.meta
+!Assets/PluginYourGames/Modules/BannerAdv.meta
+!Assets/PluginYourGames/Modules/Bonuses.meta
+!Assets/PluginYourGames/Modules/Clipboard.meta
+!Assets/PluginYourGames/Modules/EnvirData.meta
+!Assets/PluginYourGames/Modules/Flags.meta
+!Assets/PluginYourGames/Modules/Fullscreen.meta
+!Assets/PluginYourGames/Modules/GameLabel.meta
+!Assets/PluginYourGames/Modules/InterstitialAdv.meta
+!Assets/PluginYourGames/Modules/Leaderboards.meta
+!Assets/PluginYourGames/Modules/Localization.meta
+!Assets/PluginYourGames/Modules/Metrica.meta
+!Assets/PluginYourGames/Modules/OpenURL.meta
+!Assets/PluginYourGames/Modules/Payments.meta
+!Assets/PluginYourGames/Modules/PlayerStats.meta
+!Assets/PluginYourGames/Modules/QuitGameEvent.meta
+!Assets/PluginYourGames/Modules/RedefinePlayerPrefs.meta
+!Assets/PluginYourGames/Modules/Review.meta
+!Assets/PluginYourGames/Modules/RewardedAdv.meta
+!Assets/PluginYourGames/Modules/ServerTime.meta
+!Assets/PluginYourGames/Modules/StickyAdv.meta
+!Assets/PluginYourGames/Modules/Storage.meta
+!Assets/PluginYourGames/Modules/TV.meta
+!Assets/WebGLTemplates/YandexGames.meta
+!Assets/WebGLTemplates/EmptyWebGL.meta
 
 # OS
 .DS_Store

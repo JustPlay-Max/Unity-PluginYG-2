@@ -1,0 +1,14 @@
+{
+    "name": "EmptyWebGLPlatform",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [ "XboxOne" ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
