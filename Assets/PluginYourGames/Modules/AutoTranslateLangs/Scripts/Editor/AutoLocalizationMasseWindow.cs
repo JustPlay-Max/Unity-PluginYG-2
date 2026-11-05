@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEditor.SceneManagement;
+
 #if TMP_YG2
 using TMPro;
 #endif
@@ -13,46 +14,25 @@ namespace YG.LanguageLegacy
     {
         [MenuItem("Tools/YG2/Auto Translate Langs/Auto Localization Masse")]
         public static void ShowWindow()
-        {
-            GetWindow<AutoLocalizationMasse>("Auto Localization Masse");
-        }
+            => GetWindow<AutoLocalizationMasse>("Auto Localization Masse");
 
-        Vector2 scrollPosition = Vector2.zero;
-        List<GameObject> objectsTranlate = new List<GameObject>();
+        Vector2 scrollPosition;
+        private readonly List<GameObject> objectsTranlate = new();
 
         private void OnGUI()
         {
+            Color defaultColor = GUI.backgroundColor;
+
             GUILayout.Space(10);
 
-            if (GUILayout.Button("Search for all objects on the scene by type TEXT (Legasy)", GUILayout.Height(30)))
-            {
-                objectsTranlate.Clear();
-
-                foreach (Text obj in SceneAsset.FindObjectsByType<Text>(FindObjectsInactive.Include))
-                {
-                    objectsTranlate.Add(obj.gameObject);
-                }
-            }
+            if (GUILayout.Button("Search for all objects on the scene by type TEXT (Legacy)", GUILayout.Height(30)))
+                AddObjectsToTranslate<Text>();
 #if TMP_YG2
             if (GUILayout.Button("Search for all objects on the scene by type TEXT_MESH_PRO", GUILayout.Height(30)))
-            {
-                objectsTranlate.Clear();
-
-                foreach (TMP_Text obj in SceneAsset.FindObjectsByType<TMP_Text>(FindObjectsInactive.Include))
-                {
-                    objectsTranlate.Add(obj.gameObject);
-                }
-            }
+                AddObjectsToTranslate<TMP_Text>();
 #endif
             if (GUILayout.Button("Search for all objects on the scene by type LANGUAGE_YG", GUILayout.Height(30)))
-            {
-                objectsTranlate.Clear();
-
-                foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include))
-                {
-                    objectsTranlate.Add(obj.gameObject);
-                }
-            }
+                AddObjectsToTranslate<LanguageYG>();
 
             GUILayout.BeginHorizontal();
 
@@ -67,6 +47,7 @@ namespace YG.LanguageLegacy
                         )
                     {
                         bool check = false;
+
                         for (int i = 0; i < objectsTranlate.Count; i++)
                             if (obj == objectsTranlate[i])
                                 check = true;
@@ -78,20 +59,11 @@ namespace YG.LanguageLegacy
             }
 
             if (GUILayout.Button("Remove selected from list", GUILayout.Height(22)))
-            {
                 foreach (GameObject obj in Selection.gameObjects)
-                {
                     objectsTranlate.Remove(obj);
-                }
-            }
 
-            if (objectsTranlate.Count > 0)
-            {
-                if (GUILayout.Button("Clear list", GUILayout.Height(22)))
-                {
-                    objectsTranlate.Clear();
-                }
-            }
+            if (GUILayout.Button("Clear list", GUILayout.Height(22)))
+                objectsTranlate.Clear();
 
             GUILayout.EndHorizontal();
 
@@ -116,17 +88,6 @@ namespace YG.LanguageLegacy
 
                 GUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("Remove component LanguageYG", GUILayout.Height(22)))
-                {
-                    foreach (GameObject obj in objectsTranlate)
-                    {
-                        LanguageYG scrAL = obj.GetComponent<LanguageYG>();
-
-                        if (scrAL)
-                            DestroyImmediate(scrAL);
-                    }
-                }
-
                 if (GUILayout.Button("Reserialize LanguageYG components", GUILayout.Height(22)))
                 {
                     foreach (GameObject obj in objectsTranlate)
@@ -138,6 +99,21 @@ namespace YG.LanguageLegacy
                     }
                 }
 
+                GUI.backgroundColor = Color.red;
+
+                if (GUILayout.Button("Remove component LanguageYG", GUILayout.Height(22)))
+                {
+                    foreach (GameObject obj in objectsTranlate)
+                    {
+                        LanguageYG scrAL = obj.GetComponent<LanguageYG>();
+
+                        if (scrAL)
+                            DestroyImmediate(scrAL);
+                    }
+                }
+
+                GUI.backgroundColor = defaultColor;
+
                 GUILayout.EndHorizontal();
             }
 
@@ -148,9 +124,7 @@ namespace YG.LanguageLegacy
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, true, GUILayout.Height(position.height - 190));
 
             for (int i = 0; i < objectsTranlate.Count; i++)
-            {
-                objectsTranlate[i] = (GameObject)EditorGUILayout.ObjectField($"{i + 1}. {objectsTranlate[i].name}", objectsTranlate[i], typeof(GameObject), false);
-            }
+                objectsTranlate[i] = (GameObject)EditorGUILayout.ObjectField($"{i + 1}. [{objectsTranlate[i].name}]", objectsTranlate[i], typeof(GameObject), false);
 
             if (objectsTranlate.Count > 10 && position.height < objectsTranlate.Count * 20.6f + 190)
                 GUILayout.EndScrollView();
@@ -160,6 +134,14 @@ namespace YG.LanguageLegacy
                 EditorUtility.SetDirty(objectsTranlate[0].gameObject);
                 EditorSceneManager.MarkSceneDirty(objectsTranlate[0].gameObject.scene);
             }
+        }
+
+        private void AddObjectsToTranslate<T>() where T : Component
+        {
+            objectsTranlate.Clear();
+
+            foreach (T component in SceneAsset.FindObjectsByType<T>(FindObjectsInactive.Include))
+                objectsTranlate.Add(component.gameObject);
         }
     }
 }
