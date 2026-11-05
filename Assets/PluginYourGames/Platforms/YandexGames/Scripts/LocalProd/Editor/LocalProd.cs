@@ -3,16 +3,17 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using UnityEditor;
 using YG.EditorScr.BuildModify;
 using YG.Insides;
 using YG.Localization;
-using Debug = UnityEngine.Debug;
 
 namespace YG.EditorScr
 {
+    using Debug = UnityEngine.Debug;
+    using Debug = UnityEngine.Debug;
+    
     [InitializeOnLoad]
     public static class LocalProd
     {
