@@ -86,9 +86,6 @@ Docs/
 Assets/PluginYourGames/Example/Resources
 Assets/WebGLTemplates/YandexGames/Images
 
-# meta-files
-*.meta
-
 # OS
 .DS_Store
 Thumbs.db
