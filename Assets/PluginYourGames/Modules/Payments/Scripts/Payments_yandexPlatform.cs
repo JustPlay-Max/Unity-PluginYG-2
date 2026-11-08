@@ -1,6 +1,7 @@
 #if YandexGamesPlatform_yg
 using System;
 using System.Runtime.InteropServices;
+using AOT;
 using UnityEngine;
 using YG.Insides;
 
