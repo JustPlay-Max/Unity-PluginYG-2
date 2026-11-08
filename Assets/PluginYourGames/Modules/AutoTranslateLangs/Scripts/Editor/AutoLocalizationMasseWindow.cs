@@ -139,8 +139,11 @@ namespace YG.LanguageLegacy
         private void AddObjectsToTranslate<T>() where T : Component
         {
             objectsTranlate.Clear();
-
+#if UNITY_2023_1_OR_NEWER
             foreach (T component in SceneAsset.FindObjectsByType<T>(FindObjectsInactive.Include))
+#else
+            foreach (T component in SceneAsset.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+#endif
                 objectsTranlate.Add(component.gameObject);
         }
     }
