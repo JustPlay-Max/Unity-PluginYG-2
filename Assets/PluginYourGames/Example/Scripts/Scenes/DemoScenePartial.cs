@@ -37,8 +37,11 @@ namespace YG.Example.DemoScene
 
         private void Start()
         {
+#if UNITY_2023_1_OR_NEWER
             EventSystem[] eventSystem = FindObjectsByType<EventSystem>();
-
+#else
+            EventSystem[] eventSystem = FindObjectsOfType<EventSystem>();
+#endif
             if (eventSystem.Length > 0)
             {
                 if (eventSystemObj == null)
