@@ -60,7 +60,7 @@ namespace YG.MenuNav
                 AddLayer(null);
 
                 if (usButton == null)
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
                     usButton = FindObjectsByType<Button>()
                         .OrderBy(obj => obj.GetEntityId())
                         .FirstOrDefault();
@@ -119,17 +119,11 @@ namespace YG.MenuNav
         private void OnKeyBack()
         {
             if (layers.Count > 1)
-            {
                 CloseWindow();
-            }
             else if (exitGameObj && YG2.envir.isTV)
-            {
                 OpenWindow(exitGameObj);
-            }
             else
-            {
                 OnBackButton.Invoke();
-            }
         }
 
         public void SelectButton(Button button)
@@ -154,7 +148,11 @@ namespace YG.MenuNav
 
         public void SelectFirstButton()
         {
+#if UNITY_2023_1_OR_NEWER
             Button[] buttons = FindObjectsByType<Button>();
+#else
+            Button[] buttons = FindObjectsOfType<Button>();
+#endif
             usButton = buttons.FirstOrDefault(button => button.enabled);
             SelectButton(usButton);
         }
@@ -169,9 +167,11 @@ namespace YG.MenuNav
                 layer = openLayerObj,
                 buttons = new List<Button>()
             };
-
+#if UNITY_2023_1_OR_NEWER
             Button[] allButtonsInScene = FindObjectsByType<Button>();
-
+#else
+            Button[] allButtonsInScene = FindObjectsOfType<Button>();
+#endif
             foreach (Button button in allButtonsInScene)
             {
                 if (button.enabled && button.navigation.mode != Navigation.Mode.None)
