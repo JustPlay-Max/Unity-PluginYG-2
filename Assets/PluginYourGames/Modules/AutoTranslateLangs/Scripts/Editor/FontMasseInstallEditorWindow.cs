@@ -26,7 +26,7 @@ namespace YG.LanguageLegacy
             {
                 objectsTranlate.Clear();
 
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_6_OR_NEWER
                 foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include))
 #else
                 foreach (LanguageYG obj in SceneAsset.FindObjectsByType<LanguageYG>(FindObjectsInactive.Include, FindObjectsSortMode.None))
