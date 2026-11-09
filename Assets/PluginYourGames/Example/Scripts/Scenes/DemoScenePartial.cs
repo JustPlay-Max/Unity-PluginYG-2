@@ -37,8 +37,10 @@ namespace YG.Example.DemoScene
 
         private void Start()
         {
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_6_OR_NEWER
             EventSystem[] eventSystem = FindObjectsByType<EventSystem>();
+#elif UNITY_2023_1_OR_NEWER
+            EventSystem[] eventSystem = FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
 #else
             EventSystem[] eventSystem = FindObjectsOfType<EventSystem>();
 #endif
