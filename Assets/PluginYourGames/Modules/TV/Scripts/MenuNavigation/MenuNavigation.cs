@@ -60,14 +60,17 @@ namespace YG.MenuNav
                 AddLayer(null);
 
                 if (usButton == null)
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_6_OR_NEWER
                     usButton = FindObjectsByType<Button>()
                         .OrderBy(obj => obj.GetEntityId())
                         .FirstOrDefault();
+#elif UNITY_2023_1_OR_NEWER
+                    usButton = FindObjectsByType<Button>(FindObjectsSortMode.None)
+                            .OrderBy(obj => obj.GetEntityId())
+                            .FirstOrDefault();
 #else
                     usButton = FindFirstObjectByType<Button>();
 #endif
-
                 if (usButton != null)
                     SelectButton(usButton);
             }
@@ -148,8 +151,10 @@ namespace YG.MenuNav
 
         public void SelectFirstButton()
         {
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_6_OR_NEWER
             Button[] buttons = FindObjectsByType<Button>();
+#elif UNITY_2023_1_OR_NEWER
+            Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 #else
             Button[] buttons = FindObjectsOfType<Button>();
 #endif
@@ -167,8 +172,10 @@ namespace YG.MenuNav
                 layer = openLayerObj,
                 buttons = new List<Button>()
             };
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_6_OR_NEWER
             Button[] allButtonsInScene = FindObjectsByType<Button>();
+#elif UNITY_2023_1_OR_NEWER
+            Button[] allButtonsInScene = FindObjectsByType<Button>(FindObjectsSortMode.None);
 #else
             Button[] allButtonsInScene = FindObjectsOfType<Button>();
 #endif
