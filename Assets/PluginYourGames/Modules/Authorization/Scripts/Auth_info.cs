@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 using YG.Insides;
 
+#if UNITY_EDITOR
+using YG.Translations;
+#endif
+
 namespace YG
 {
     public partial class InfoYG
@@ -21,7 +25,7 @@ namespace YG
             public string uniqueID = "000";
             public string playerPhoto = DEMO_IMAGE;
 
-            [Tooltip(Langs.t_payingStatus)]
+            [Tooltip(AuthorizationTranslations.PayingStatusTooltip)]
             public YG2.PayingStatus payingStatus;
 #endif
 

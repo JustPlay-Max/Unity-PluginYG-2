@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using YG.Insides;
 using YG.Utils.LB;
 using System.Collections.Generic;
+using YG.Translations;
+
 
 #if Localization_yg
 using YG.Utils.Lang;
@@ -15,59 +17,59 @@ namespace YG
     public class LeaderboardYG : MonoBehaviour
     {
 #if UNITY_EDITOR
-        [Tooltip(Langs.t_nameLB)]
+        [Tooltip(LeaderboardsTranslations.NameLBTooltip)]
 #endif
         public string nameLB;
 #if UNITY_EDITOR
-        [Tooltip(Langs.t_maxQuantityPlayers)]
+        [Tooltip(LeaderboardsTranslations.MaxQuantityPlayersTooltip)]
 #endif
         public int maxQuantityPlayers = 14;
 #if UNITY_EDITOR
-        [Range(1, 20), Tooltip(Langs.t_quantityTop)]
+        [Range(1, 20), Tooltip(LeaderboardsTranslations.QuantityTopTooltip)]
 #endif
         public int quantityTop = 3;
 #if UNITY_EDITOR
-        [Range(1, 10), Tooltip(Langs.t_quantityAround)]
+        [Range(1, 10), Tooltip(LeaderboardsTranslations.QuantityAroundTooltip)]
 #endif
         public int quantityAround = 5;
 
         public enum UpdateLBMethod { Start, OnEnable, DoNotUpdate };
 #if UNITY_EDITOR
-        [Tooltip(Langs.t_updateLBMethod)]
+        [Tooltip(LeaderboardsTranslations.UpdateLBMethodTooltip)]
 #endif
         public UpdateLBMethod updateLBMethod = UpdateLBMethod.OnEnable;
 #if UNITY_EDITOR
-        [Tooltip(Langs.t_entriesText)]
+        [Tooltip(LeaderboardsTranslations.EntriesTextTooltip)]
 #endif
         public Text entriesText;
 #if UNITY_EDITOR
-        [Tooltip(Langs.t_advanced)]
+        [Tooltip(LeaderboardsTranslations.AdvancedTooltip)]
 #endif
         public bool advanced;
 #if UNITY_EDITOR
-        [NestedYG(nameof(advanced)), Tooltip(Langs.t_rootSpawnPlayersData)]
+        [NestedYG(nameof(advanced)), Tooltip(LeaderboardsTranslations.RootSpawnPlayersDataTooltip)]
 #endif
         public Transform rootSpawnPlayersData;
 #if UNITY_EDITOR
-        [NestedYG(nameof(advanced)), Tooltip(Langs.t_playerDataPrefab)]
+        [NestedYG(nameof(advanced)), Tooltip(LeaderboardsTranslations.PlayerDataPrefabTooltip)]
 #endif
         public GameObject playerDataPrefab;
 
         public enum PlayerPhoto { NonePhoto, Small, Medium, Large };
 #if UNITY_EDITOR
-        [NestedYG(nameof(advanced)), Tooltip(Langs.t_playerPhoto)]
+        [NestedYG(nameof(advanced)), Tooltip(LeaderboardsTranslations.PlayerPhotoTooltip)]
 #endif
         public PlayerPhoto playerPhoto = PlayerPhoto.Small;
 #if UNITY_EDITOR
-        [NestedYG(nameof(advanced)), Tooltip(Langs.t_isHiddenPlayerPhoto)]
+        [NestedYG(nameof(advanced)), Tooltip(LeaderboardsTranslations.IsHiddenPlayerPhotoTooltip)]
 #endif
         public Sprite isHiddenPlayerPhoto;
 #if UNITY_EDITOR
-        [NestedYG(nameof(advanced)), Tooltip(Langs.t_timeTypeConvert)]
+        [NestedYG(nameof(advanced)), Tooltip(LeaderboardsTranslations.TimeTypeConvertTooltip)]
 #endif
         public bool timeTypeConvert;
 #if UNITY_EDITOR
-        [NestedYG("timeTypeConvert"), Range(0, 3), Tooltip(Langs.t_decimalSize)]
+        [NestedYG("timeTypeConvert"), Range(0, 3), Tooltip(LeaderboardsTranslations.DecimalSizeTooltip)]
 #endif
         public int decimalSize = 1;
 

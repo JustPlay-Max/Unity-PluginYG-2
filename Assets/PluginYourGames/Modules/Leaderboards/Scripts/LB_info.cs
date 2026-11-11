@@ -2,6 +2,7 @@
 using UnityEngine;
 using YG.Insides;
 using YG.Utils.LB;
+using YG.Translations;
 
 namespace YG
 {
@@ -12,21 +13,13 @@ namespace YG
         [Serializable]
         public partial class LeaderboardsSettings
         {
-#if RU_YG2
-            [Tooltip("Вкл/Выкл лидерборды")]
-#else
-            [Tooltip("On/Off Leaderboards")]
-#endif
+            [Tooltip(LeaderboardsTranslations.EnableTooltip)]
             [Space(5)]
             public bool enable = true;
 #if UNITY_EDITOR
             [NestedYG(nameof(enable))]
 #endif
-#if RU_YG2
-            [Tooltip("Сохранять рекорд анонимных (незарегистрированных) пользователей?")]
-#else
-            [Tooltip("Maintain the record of anonymous (unregistered) users?")]
-#endif
+            [Tooltip(LeaderboardsTranslations.SaveScoreAnonymousPlayersTooltip)]
             public bool saveScoreAnonymousPlayers;
 
             // Simulation

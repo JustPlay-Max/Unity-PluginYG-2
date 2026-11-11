@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using YG.Utils;
+using YG.Translations;
 
 namespace YG
 {
@@ -32,7 +33,7 @@ namespace YG
         {
             if (!_SDKEnabled)
             {
-                Debug.LogError("State cannot be load. The SDK has not been initialized yet!");
+                Debug.LogError(PlayerStatsTranslations.LoadStateErrorMsg);
                 return 0;
             }
 
@@ -44,12 +45,11 @@ namespace YG
 
         public static Dictionary<string, int> GetAllStats() => playerStats;
 
-
         public static void SetState(string key, int value)
         {
             if (!_SDKEnabled)
             {
-                Debug.LogError("State cannot be saved. The SDK has not been initialized yet!");
+                Debug.LogError(PlayerStatsTranslations.SaveStateErrorMsg);
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace YG
         {
             if (!_SDKEnabled)
             {
-                Debug.LogError("State cannot be saved. The SDK has not been initialized yet!");
+                Debug.LogError(PlayerStatsTranslations.SaveStateErrorMsg);
                 return;
             }
 

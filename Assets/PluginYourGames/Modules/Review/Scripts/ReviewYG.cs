@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using YG.Translations;
 
 namespace YG
 {
     public class ReviewYG : MonoBehaviour
     {
-#if RU_YG2
-        [Tooltip("Обновлять информацию при каждой активации объекта (в OnEnable)?")]
-#else
-        [Tooltip("Update information every time an object is activated (in OnEnable)?")]
-#endif
+        [Tooltip(ReviewTranslations.UpdateDataOnEnableTooltip)]
         public bool updateDataOnEnable;
+
         [Space(15)]
         public UnityEvent ReviewAvailable;
         public UnityEvent ReviewNotAvailable;

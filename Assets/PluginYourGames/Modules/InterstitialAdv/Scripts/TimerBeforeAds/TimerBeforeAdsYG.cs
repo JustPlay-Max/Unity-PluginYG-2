@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using YG.Localization;
+using YG.Translations;
 
 namespace YG
 {
@@ -9,10 +9,10 @@ namespace YG
     {
         private const float TimeBetweenSetActiveObject = 1.0f;
 
-        [Tooltip(InterstitialAdvLocalization.SecondsPanelObject)]
+        [Tooltip(InterstitialAdvTranslations.SecondsPanelObject)]
         [SerializeField] private GameObject secondsPanelObject;
 
-        [Tooltip(InterstitialAdvLocalization.SecondObjects)]
+        [Tooltip(InterstitialAdvTranslations.SecondObjects)]
         [SerializeField] private GameObject[] secondObjects;
 
         [Space(20)]

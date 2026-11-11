@@ -3,6 +3,11 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using System;
 using System.Net;
+
+#if UNITY_EDITOR
+using YG.Translations;
+#endif
+
 #if NJSON_YG2
 using Newtonsoft.Json.Linq;
 #endif
@@ -359,10 +364,10 @@ namespace YG.LanguageLegacy
             }
 #else
 #if RU_YG2
-            Debug.LogError($"Для авто локализации требуется импортировать пакет Newtonsoft JSON. Сделать это можно в настройках {InfoYG.NAME_PLUGIN}.");
+            Debug.LogError($"{AutoTranslateLangsTranslations.NjsonNeedImportErrorMsg} {InfoYG.NAME_PLUGIN}.");
 #else
-            Debug.LogError($"For auto localization, you need to import the Newtonsoft JSON package. You can do this in the settings {InfoYG.NAME_PLUGIN}.");
- #endif
+            Debug.LogError($"{AutoTranslateLangsTranslations.NjsonNeedImportErrorMsg} {InfoYG.NAME_PLUGIN}.");
+#endif
             return text;
 #endif
         }

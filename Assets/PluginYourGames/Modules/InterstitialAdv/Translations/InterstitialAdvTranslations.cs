@@ -1,6 +1,6 @@
-namespace YG.Localization
+namespace YG.Translations
 {
-        public class InterstitialAdvLocalization
+        public class InterstitialAdvTranslations
         {
 #if RU_YG2
                 public const string SecondsPanelObject = "Объект таймера перед показом рекламы. Он будет активироваться и деактивироваться в нужное время.";

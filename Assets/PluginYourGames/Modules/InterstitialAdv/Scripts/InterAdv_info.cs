@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using YG.Insides;
-using YG.Localization;
+using YG.Translations;
 
 namespace YG
 {
@@ -12,13 +12,13 @@ namespace YG
         [Serializable]
         public partial class InterstitialAdvSettings
         {
-            [Tooltip(InterstitialAdvLocalization.ShowFirstAdv)]
+            [Tooltip(InterstitialAdvTranslations.ShowFirstAdv)]
             public bool showFirstAdv;
 
-            [Tooltip(InterstitialAdvLocalization.InterAdvInterval)]
+            [Tooltip(InterstitialAdvTranslations.InterAdvInterval)]
             [Min(0)] public int interAdvInterval = 60;
 
-            [Tooltip(InterstitialAdvLocalization.PostponeCallByFail)]
+            [Tooltip(InterstitialAdvTranslations.PostponeCallByFail)]
             public bool postponeCallByFail;
 
 #if UNITY_EDITOR
