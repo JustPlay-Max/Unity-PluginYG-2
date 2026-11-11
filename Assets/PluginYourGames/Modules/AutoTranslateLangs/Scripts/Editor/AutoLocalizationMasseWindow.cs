@@ -57,10 +57,10 @@ namespace YG.LanguageLegacy
 
                         if (_textLegacySearch)
                             AddObjectsToTranslate<Text>();
-
+#if TMP_YG2
                         if (_tmpSearch)
                             AddObjectsToTranslate<TMP_Text>();
-
+#endif
                         if (_languageYgSearch)
                             AddObjectsToTranslate<LanguageYG>();
                     }
