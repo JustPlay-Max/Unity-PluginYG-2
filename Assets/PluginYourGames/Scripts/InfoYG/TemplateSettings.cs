@@ -12,19 +12,6 @@ namespace YG
         public partial class TemplatesSettings
         {
 #if UNITY_EDITOR
-            public enum LogoImgFormat
-            {
-                [InspectorName("No Logo")] No,
-                PNG, JPG, GIF
-            }
-            public enum BackgroundImageFormat
-            {
-                [InspectorName("Gradient")] Gradient,
-                [InspectorName("Player Settings")] Unity,
-                [InspectorName("No Background")] No,
-                PNG, JPG, GIF
-            }
-
             [Serializable]
             public class Gradient
             {
@@ -98,6 +85,25 @@ namespace YG
             [Tooltip(Langs.t_developerBuild)]
 #endif
             public bool developerBuild;
+
+            public enum LogoImgFormat : byte
+            {
+                [InspectorName("No Logo")]
+                No = 0,
+                PNG,
+                JPG,
+                GIF
+            }
+
+            public enum BackgroundImageFormat : byte
+            {
+                [InspectorName("Gradient")] Gradient = 0,
+                [InspectorName("Player Settings")] Unity,
+                [InspectorName("No Background")] No,
+                PNG,
+                JPG,
+                GIF
+            }
         }
     }
 }
