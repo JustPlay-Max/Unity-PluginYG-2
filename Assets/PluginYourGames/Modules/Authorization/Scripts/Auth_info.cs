@@ -13,9 +13,8 @@ namespace YG
         public AuthorizationSettings Authorization;
 
         [Serializable]
-        public partial class AuthorizationSettings
+        public class AuthorizationSettings
         {
-            public enum PlayerPhotoSize : byte { small = 0, medium, large };
             public PlayerPhotoSize playerPhotoSize = PlayerPhotoSize.medium;
 
 #if UNITY_EDITOR
@@ -30,15 +29,20 @@ namespace YG
 #endif
 
             public string GetPlayerPhotoSize()
-            {
-                return playerPhotoSize switch
+                => playerPhotoSize switch
                 {
                     PlayerPhotoSize.small => "small",
                     PlayerPhotoSize.medium => "medium",
                     PlayerPhotoSize.large => "large",
                     _ => null
                 };
-            }
+
+            public enum PlayerPhotoSize : byte
+            {
+                small = 0,
+                medium,
+                large
+            };
         }
     }
 }
