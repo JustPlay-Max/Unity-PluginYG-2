@@ -27,7 +27,7 @@ mergeInto(LibraryManager.library, {
                 invokeCallback(buffer);
             },
             error => {
-                console.error("Ошибка получения текста из буфера обмена: ", error);
+                console.error("Failed to read text from the clipboard: ", error);
                 invokeCallback(0); // возвращаем null при ошибке
             }
         );
@@ -43,8 +43,8 @@ mergeInto(LibraryManager.library, {
         }
         else {
             navigator.clipboard.writeText(UTF8ToString(text))
-                .then(() => console.log("Текст скопирован в буфер обмена"))
-                .catch(error => console.error("Ошибка при копировании текста в буфер обмена: ", error));
+                .then(() => console.log("Text copied to the clipboard"))
+                .catch(error => console.error("Failed to copy text to the clipboard: ", error));
         }
     }
 });

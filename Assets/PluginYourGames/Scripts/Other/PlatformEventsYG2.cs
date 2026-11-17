@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,7 +15,7 @@ namespace YG.Insides
             OnEnable,
             OnDisable,
 #if RU_YG2
-            [InspectorName("Вручную (метод ExecuteEvent)")]
+            [InspectorName("Р’СЂСѓС‡РЅСѓСЋ (РјРµС‚РѕРґ ExecuteEvent)")]
 #else
             [InspectorName("Manual (method ExecuteEvent)")]
 #endif
@@ -26,13 +26,13 @@ namespace YG.Insides
         public enum ExecuteMode
         {
 #if RU_YG2
-            [InspectorName("Выполнять только у выбранных платформ")]
+            [InspectorName("Р’С‹РїРѕР»РЅСЏС‚СЊ С‚РѕР»СЊРєРѕ Сѓ РІС‹Р±СЂР°РЅРЅС‹С… РїР»Р°С‚С„РѕСЂРј")]
 #else
             [InspectorName("Run only on selected platforms")]
 #endif
             Selected,
 #if RU_YG2
-            [InspectorName("Игнорировать выбранные платформы (выполнять у тех, которых нет в списке)")]
+            [InspectorName("РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ РїР»Р°С‚С„РѕСЂРјС‹ (РІС‹РїРѕР»РЅСЏС‚СЊ Сѓ С‚РµС…, РєРѕС‚РѕСЂС‹С… РЅРµС‚ РІ СЃРїРёСЃРєРµ)")]
 #else
             [InspectorName("Ignore selected platforms (perform on those that are not in the list)")]
 #endif

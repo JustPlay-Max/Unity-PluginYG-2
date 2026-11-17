@@ -29,7 +29,7 @@ namespace YG
 
         public static bool nowInterAdv;
         public static bool nowRewardAdv;
-        public static Action onOpenAnyAdv, onCloseAnyAdv, onErrorAnyAdv;
+        public static Action onAdvNotification, onOpenAnyAdv, onCloseAnyAdv, onErrorAnyAdv;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
@@ -41,6 +41,7 @@ namespace YG
             nowInterAdv = false;
             nowRewardAdv = false;
             onGetSDKData = null;
+            onAdvNotification = null;
             onOpenAnyAdv = null;
             onCloseAnyAdv = null;
             onErrorAnyAdv = null;

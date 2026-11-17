@@ -32,7 +32,7 @@ namespace YG
                 Message("Set Leaderboard: " + score);
                 iPlatform.SetLeaderboard(nameLB, score, extraData);
 #else
-                Message($"Set Leaderboard �{nameLB}�: {score}");
+                Message($"Set Leaderboard «{nameLB}»: {score}");
 #endif
             }
         }

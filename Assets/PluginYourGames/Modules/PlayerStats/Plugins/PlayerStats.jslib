@@ -14,5 +14,13 @@ mergeInto(LibraryManager.library,
 	
 	SetStats_js: function (jsonStats) {
         SetStats(UTF8ToString(jsonStats));
+    },
+
+    SetStatsWithCallback_js: function (jsonStats, requestID) {
+        SetStats(UTF8ToString(jsonStats), requestID);
+    },
+
+    IncrementStat_js: function (key, value, requestID) {
+        IncrementStat(UTF8ToString(key), value, requestID);
     }
 });

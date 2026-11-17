@@ -29,6 +29,7 @@ namespace YG
                 if (string.IsNullOrEmpty(id)) id = "null";
 
                 YGInsides.currentRewardID = id;
+                onAdvNotification?.Invoke();
 #if !UNITY_EDITOR
                 Message("Rewarded Ad Show");
                 iPlatform.RewardedAdvShow(id);

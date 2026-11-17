@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEditor;
 
 namespace YG.EditorScr
@@ -16,7 +16,7 @@ namespace YG.EditorScr
         protected virtual void OnEnable()
         {
 #if RU_YG2
-            m_AddButonContent = EditorGUIUtility.TrTextContent("Добавить новый тип события");
+            m_AddButonContent = EditorGUIUtility.TrTextContent("Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Р№ С‚РёРї СЃРѕР±С‹С‚РёСЏ");
 #else
             m_AddButonContent = EditorGUIUtility.TrTextContent("Add New Event Type");
 #endif

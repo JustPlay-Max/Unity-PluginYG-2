@@ -91,6 +91,7 @@ namespace YG
 
             if (!nowAdsShow && isTimerAdvCompleted)
             {
+                onAdvNotification?.Invoke();
 #if UNITY_EDITOR
                 if (infoYG.Simulation.testFailAds)
                 {

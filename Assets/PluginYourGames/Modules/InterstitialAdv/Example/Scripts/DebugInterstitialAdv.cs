@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 
 namespace YG.Example
@@ -10,7 +10,7 @@ namespace YG.Example
         private void Update()
         {
 #if RU_YG2
-            string translate = "Таймер до рекламы: ";
+            string translate = "РўР°Р№РјРµСЂ РґРѕ СЂРµРєР»Р°РјС‹: ";
 #else
             string translate = "Timer before adv: ";
 #endif
