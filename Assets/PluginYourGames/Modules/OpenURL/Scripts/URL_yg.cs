@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 using YG.Utils.OpenURL;
+using YG.Translations;
 
 namespace YG
 {
@@ -59,13 +60,10 @@ namespace YG
             {
                 OpenURL(url);
             }
-            catch (Exception error)
+            catch (Exception e)
             {
-#if RU_YG2
-                Debug.LogError("Первый способ перехода по ссылке не удался! Ошибка:\n" + error + "\nВместо первого метода попробуем вызвать второй метод 'Application.OpenURL'");
-#else
-                Debug.LogError("The first method of following the link failed! Error:\n" + error + "\nInstead of the first method, let's try to call the second method 'Application.OpenURL'");
-#endif
+                Debug.LogError($"{OpenUrlTranslations.OnUrlErrorMsg} {e}");
+
                 Application.OpenURL(url);
             }
         }

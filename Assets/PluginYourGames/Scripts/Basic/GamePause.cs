@@ -8,51 +8,20 @@ namespace YG
         public static Action<bool> onPauseGame;
         private static bool pauseGame;
         public static bool isPauseGame { get => pauseGame; }
-#if !UNITY_EDITOR && InterstitialAdv_yg && YandexGamesPlatform_yg
-        private static bool firstPauseGameForInterAdvEvent;
-        private static bool firstPauseGameForInterAdvEventComplete;
-#endif
+        
         public static void PauseGame(bool pause, bool editTimeScale, bool editAudioPause, bool editCursor, bool editEventSystem)
         {
-            if (pause == pauseGame)
-                return;
-
-#if !UNITY_EDITOR && InterstitialAdv_yg && YandexGamesPlatform_yg
-            if (!firstPauseGameForInterAdvEventComplete)
-            {
-                if (!firstPauseGameForInterAdvEvent && pause)
-                {
-                    if (Time.unscaledTime < 5)
-                    {
-                        firstPauseGameForInterAdvEvent = true;
-                        Insides.YGInsides.OpenInterAdv();
-                        return;
-                    }
-                    else firstPauseGameForInterAdvEventComplete = true;
-                }
-
-                if (firstPauseGameForInterAdvEvent && !pause)
-                {
-                    firstPauseGameForInterAdvEventComplete = true;
-                    Insides.YGInsides.CloseInterAdv();
-                    return;
-                }
-            }
-#endif
-            if (pause)
-            {
+            if (pause == pauseGame) return;
+            
+            if (pause) 
                 GameplayStop(true);
-            }
             else
             {
-                if (nowAdsShow)
-                    return;
-
+                if (nowAdsShow) return;
                 GameplayStart(true);
             }
 
             pauseGame = pause;
-            onPauseGame?.Invoke(pause);
 
             if (infoYG.Basic.autoPauseGame)
             {
@@ -74,6 +43,8 @@ namespace YG
                         PauseGameYG.inst.PauseDisabled();
                 }
             }
+
+            onPauseGame?.Invoke(pause);
         }
         public static void PauseGame(bool pause) => PauseGame(pause, infoYG.Basic.editTimeScale, true, true, infoYG.Basic.editEventSystem);
         public static void PauseGameNoEditEventSystem(bool pause) => PauseGame(pause, true, true, true, false);

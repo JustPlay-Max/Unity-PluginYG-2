@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 namespace YG.Example
 {
@@ -19,11 +19,11 @@ namespace YG.Example
                     {
                         if (clipboardText != null)
                         {
-                            Debug.Log("Текст из буфера обмена: " + clipboardText);
+                            Debug.Log("РўРµРєСЃС‚ РёР· Р±СѓС„РµСЂР° РѕР±РјРµРЅР°: " + clipboardText);
                         }
                         else
                         {
-                            Debug.LogError("Буфер обмена пуст или произошла ошибка");
+                            Debug.LogError("Р‘СѓС„РµСЂ РѕР±РјРµРЅР° РїСѓСЃС‚ РёР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°");
                         }
                     });
                 }

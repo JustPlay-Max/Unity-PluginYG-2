@@ -86,8 +86,13 @@ namespace YG.Example.DemoScene
 
         private Transform RootPartialsGrid()
         {
+#if UNITY_6000_6_OR_NEWER
+            DemoScenePartial[] rootPartialsCandidates = FindObjectsByType<DemoScenePartial>();
+#elif UNITY_2023_1_OR_NEWER
             DemoScenePartial[] rootPartialsCandidates = FindObjectsByType<DemoScenePartial>(FindObjectsSortMode.None);
-
+#else
+            DemoScenePartial[] rootPartialsCandidates = FindObjectsOfType<DemoScenePartial>();
+#endif
             for (int i = 0; i < rootPartialsCandidates.Length; i++)
             {
                 if (rootPartialsCandidates[i].rootPartialsGrid)

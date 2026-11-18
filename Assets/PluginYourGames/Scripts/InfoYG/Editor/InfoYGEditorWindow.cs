@@ -1,15 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using YG.Insides;
+using YG.EditorScr.BuildModify;
+
 namespace YG.EditorScr
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using UnityEditor;
-    using UnityEngine;
-    using YG.Insides;
-    using YG.EditorScr.BuildModify;
-
     public class InfoYGEditorWindow : EditorWindow
     {
         private InfoYG scr;
@@ -229,7 +229,7 @@ namespace YG.EditorScr
 
             versionButtonText += ")";
 
-            if (GUILayout.Button(versionButtonText, buttonStyle, GUILayout.Height(23)))
+            if (GUILayout.Button(versionButtonText, buttonStyle))
                 VersionControlWindow.ShowWindow();
 
             GUILayout.EndVertical();
@@ -243,7 +243,7 @@ namespace YG.EditorScr
             GUIStyle styleHeader2 = TextStyles.Gray();
             styleHeader2.fontSize = 11;
             styleHeader2.fontStyle = FontStyle.Bold;
-            
+
             if (iconPluginYG2)
             {
                 GUILayout.Space(20);

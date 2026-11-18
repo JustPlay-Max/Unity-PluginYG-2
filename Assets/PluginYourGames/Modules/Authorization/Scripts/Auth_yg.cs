@@ -6,8 +6,7 @@ namespace YG
 {
     public partial class YG2
     {
-        public static PlayerData player = new PlayerData();
-        public enum PayingStatus : byte { Paying = 0, PartiallyPaying, NotPaying, Unknown };
+        public static PlayerData player = new();
 
         public class PlayerData
         {
@@ -60,6 +59,14 @@ namespace YG
         {
             iPlatform.OpenAuthDialog();
         }
+
+        public enum PayingStatus : byte
+        {
+            Paying = 0,
+            PartiallyPaying,
+            NotPaying,
+            Unknown
+        };
     }
 }
 

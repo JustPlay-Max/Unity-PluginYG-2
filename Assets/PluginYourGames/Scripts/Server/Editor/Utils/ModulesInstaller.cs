@@ -130,8 +130,11 @@ namespace YG.EditorScr
                         AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
                     }
                 }
-
+#if UNITY_6000_6_OR_NEWER
+                UnityEditor.AssetPackage.Package.Import(downloadPath, false);
+#else
                 AssetDatabase.ImportPackage(downloadPath, false);
+#endif
                 File.Delete(downloadPath);
                 onDownloadProcess?.Invoke(false);
 

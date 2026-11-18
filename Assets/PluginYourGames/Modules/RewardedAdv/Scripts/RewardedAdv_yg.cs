@@ -65,10 +65,9 @@ namespace YG.Insides
         public static void CloseRewardedAdv()
         {
             YG2.nowRewardAdv = false;
-
+            YG2.PauseGame(false);
             YG2.onCloseRewardedAdv?.Invoke();
             YG2.onCloseAnyAdv?.Invoke();
-            YG2.PauseGame(false);
         }
 
         public static void RewardAdv(string id)

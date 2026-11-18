@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -8,8 +8,8 @@ namespace YG.Example
     {
         public Text textExample;
 
-        // Пример Unity событий, на которые можно подписать,
-        // например, открытие уведомление о успешности совершения покупки
+        // РџСЂРёРјРµСЂ Unity СЃРѕР±С‹С‚РёР№, РЅР° РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РЅРѕ РїРѕРґРїРёСЃР°С‚СЊ,
+        // РЅР°РїСЂРёРјРµСЂ, РѕС‚РєСЂС‹С‚РёРµ СѓРІРµРґРѕРјР»РµРЅРёРµ РѕР± СѓСЃРїРµС€РЅРѕСЃС‚Рё СЃРѕРІРµСЂС€РµРЅРёСЏ РїРѕРєСѓРїРєРё
         public UnityEvent successPurchased;
         public UnityEvent failedPurchased;
 
@@ -31,7 +31,7 @@ namespace YG.Example
 
             textExample.text = "Success purchase - " + id;
 
-            // Ваш код для обработки покупки. Например:
+            // Р’Р°С€ РєРѕРґ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё РїРѕРєСѓРїРєРё. РќР°РїСЂРёРјРµСЂ:
 
             //string coinsKey = "coins";
             //int coins = YG2.GetState(coinsKey);

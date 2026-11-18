@@ -12,14 +12,23 @@ namespace YG.Example
         public Text getInputName;
         public Text getInputValue;
 
-        private void Start()
+        private void OnEnable()
         {
+            YG2.onGetSDKData += UpdateDrawStats;
+            YG2.onStatsChanged += UpdateDrawStats;
             if (YG2.isSDKEnabled)
                 UpdateDrawStats();
         }
 
+        private void OnDisable()
+        {
+            YG2.onGetSDKData -= UpdateDrawStats;
+            YG2.onStatsChanged -= UpdateDrawStats;
+        }
+
         private void UpdateDrawStats()
         {
+            if (!YG2.isSDKEnabled) return;
             Dictionary<string, int> stats = YG2.GetAllStats();
             string formattedText = string.Empty;
 
@@ -37,35 +46,29 @@ namespace YG.Example
 
         public void SetState()
         {
-            YG2.SetState(setInputName.text, int.Parse(setInputValue.text));
-            UpdateDrawStats();
+            YG2.SetState(setInputName.GetComponentInParent<InputField>().text,
+                int.Parse(setInputValue.GetComponentInParent<InputField>().text));
+        }
+
+        public void IncrementState()
+        {
+            YG2.IncrementState(setInputName.GetComponentInParent<InputField>().text,
+                int.Parse(setInputValue.GetComponentInParent<InputField>().text));
         }
 
         public void GetState()
         {
-            getInputValue.text = YG2.GetState(getInputName.text).ToString();
+            // У дочернего Text длинная строка может содержать только видимую часть ввода.
+            string key = getInputName.GetComponentInParent<InputField>().text;
+            getInputValue.text = YG2.GetState(key).ToString();
         }
 
         public void DeleteAllStats()
         {
             Dictionary<string, int> newStats = new Dictionary<string, int>();
             YG2.SetAllStats(newStats);
-            UpdateDrawStats();
         }
 
-        public void LoadStats()
-        {
-            YG2.onGetSDKData += OnGetSDKData;
-            YG2.LoadStats();
-
-            void OnGetSDKData()
-            {
-                YG2.onGetSDKData -= OnGetSDKData;
-
-                Dictionary<string, int> allStats = YG2.GetAllStats();
-                string jsonStr = YG.Utils.JsonYG.SerializeDictionary(allStats);
-                Debug.Log(jsonStr);
-            }
-        }
+        public void LoadStats() => YG2.LoadStats();
     }
 }

@@ -6,6 +6,7 @@ namespace YG
     using System.Runtime.InteropServices;
 #endif
     using YG.Insides;
+    using YG.Utils;
 
     public partial interface IPlatformsYG2
     {
@@ -21,8 +22,9 @@ namespace YG
             YGInsides.FreeBuffer(ptr);
             YG2.envir = JsonUtility.FromJson<YG2.EnvirData>(jsonString);
 #else
-            YG2.envir.language = "en";
-            YG2.envir.browserLang = "en";
+            string language = SystemLanguageYG.GetLanguageCode(Application.systemLanguage);
+            YG2.envir.language = language;
+            YG2.envir.browserLang = language;
 
             if (Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld)
             {

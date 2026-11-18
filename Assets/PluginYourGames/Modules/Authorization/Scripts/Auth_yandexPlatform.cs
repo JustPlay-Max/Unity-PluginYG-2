@@ -1,4 +1,5 @@
 ﻿#if YandexGamesPlatform_yg
+
 using UnityEngine;
 using System.Runtime.InteropServices;
 
@@ -105,7 +106,7 @@ namespace YG.Insides
                 "not_paying" => YG2.PayingStatus.NotPaying,
                 _ => YG2.PayingStatus.Unknown
             };
-            
+
 #if UNITY_EDITOR
             YG2.GetDataInvoke();
 #endif
@@ -113,4 +114,5 @@ namespace YG.Insides
         }
     }
 }
+
 #endif

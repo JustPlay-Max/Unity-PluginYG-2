@@ -136,9 +136,6 @@ namespace YG.Insides
         public static void CloseInterAdv(string wasShown)
         {
             YG2.nowInterAdv = false;
-            YG2.onCloseInterAdv?.Invoke();
-            YG2.onCloseInterAdvWasShow?.Invoke(wasShown == "true");
-            YG2.onCloseAnyAdv?.Invoke();
 
             if (wasShown == "true")
             {
@@ -166,6 +163,9 @@ namespace YG.Insides
                 }
             }
             YG2.PauseGame(false);
+            YG2.onCloseInterAdv?.Invoke();
+            YG2.onCloseInterAdvWasShow?.Invoke(wasShown == "true");
+            YG2.onCloseAnyAdv?.Invoke();
         }
         public static void CloseInterAdv(bool wasShown)
         {

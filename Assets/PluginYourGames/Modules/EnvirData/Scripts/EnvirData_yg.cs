@@ -89,8 +89,7 @@
                     break;
             }
 
-            if (infoYG.Simulation.language != "" &&
-                infoYG.Simulation.language != null)
+            if (!string.IsNullOrEmpty(infoYG.Simulation.language))
                 envir.language = infoYG.Simulation.language;
 
             GetDataInvoke();

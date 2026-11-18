@@ -30,6 +30,7 @@ namespace YG
         public MonoBehaviour[] topPlayerActivityComponents = new MonoBehaviour[0];
         public MonoBehaviour[] currentPlayerActivityComponents = new MonoBehaviour[0];
 
+        [Serializable]
         public class Data
         {
             public string rank;

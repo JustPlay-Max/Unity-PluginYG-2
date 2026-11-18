@@ -16,13 +16,13 @@ namespace YG.EditorScr
         public const string SELECT_MODULES_KEY = "SelectModuleToggle_YG2";
         public const PrefsList.StoreType SELECT_MODULES_STORE = PrefsList.StoreType.PluginPrefs;
         private const string TAB_KEY = "YG2_VersionControl_Tab";
-        private enum TabSection { Modules = 0, Platforms = 1, Tools = 2 }
+        private const float RowHeight = 26f;
+        private const float ButtonsHeight = 26f;
         private static TabSection currentTab = TabSection.Modules;
 
-        public static bool isOpenWindow { get => instance; }
+        public static bool isOpenWindow => instance;
         public static VersionControlWindow instance;
 
-        private float rowHeight = 20f;
         private static VersionControlWindow window;
         private static List<Module> modulesAll = new List<Module>();
         private static List<Module> modules = new List<Module>();
@@ -143,7 +143,7 @@ namespace YG.EditorScr
 
             allowUpdateStyle = HasAnyUpdatesAll() ? GreenButtonStyle() : ButtonStyle();
 
-            if (GUILayout.Button(Langs.changelog, allowUpdateStyle, GUILayout.Width(150)))
+            if (GUILayout.Button(Langs.changelog, allowUpdateStyle, GUILayout.Width(130)))
             {
                 DocumentationEditor.HelpMenuItem();
             }
@@ -186,12 +186,12 @@ namespace YG.EditorScr
             using (new GUILayout.HorizontalScope(YGEditorStyles.box))
             {
                 GUILayout.Space(columnWidth_Toggle);
-                GUILayout.Label(Langs.name, labelStyleOrange, GUILayout.Width(columnWidth_Name - 6), GUILayout.Height(rowHeight));
-                GUILayout.Label(Langs.projectVersion, labelStyleOrange, GUILayout.Width(columnWidth_ProjectVersion), GUILayout.Height(rowHeight));
-                GUILayout.Label(Langs.latestVersion, labelStyleOrange, GUILayout.Width(columnWidth_LatestVersion), GUILayout.Height(rowHeight));
+                GUILayout.Label(Langs.name, labelStyleOrange, GUILayout.Width(columnWidth_Name - 6), GUILayout.Height(RowHeight));
+                GUILayout.Label(Langs.projectVersion, labelStyleOrange, GUILayout.Width(columnWidth_ProjectVersion), GUILayout.Height(RowHeight));
+                GUILayout.Label(Langs.latestVersion, labelStyleOrange, GUILayout.Width(columnWidth_LatestVersion), GUILayout.Height(RowHeight));
                 GUIStyle headerCenter = TextStyles.Header();
                 headerCenter.alignment = TextAnchor.MiddleCenter;
-                GUILayout.Label(Langs.control, headerCenter, GUILayout.Width(columnWidth_Control), GUILayout.Height(rowHeight));
+                GUILayout.Label(Langs.control, headerCenter, GUILayout.Width(columnWidth_Control), GUILayout.Height(RowHeight));
             }
 
             using (var scroll = new EditorGUILayout.ScrollViewScope(scrollPosition))
@@ -257,7 +257,7 @@ namespace YG.EditorScr
                         }
 
                         // Toggle Select
-                        rect = GUILayoutUtility.GetRect(new GUIContent("Toggles"), GUIStyle.none, GUILayout.Width(columnWidth_Toggle), GUILayout.Height(rowHeight));
+                        rect = GUILayoutUtility.GetRect(new GUIContent("Toggles"), GUIStyle.none, GUILayout.Width(columnWidth_Toggle), GUILayout.Height(RowHeight));
 
                         if (isSelectPanel)
                         {
@@ -307,7 +307,7 @@ namespace YG.EditorScr
                         }
 
                         // Name
-                        rect = GUILayoutUtility.GetRect(new GUIContent(module.nameModule), GUIStyle.none, GUILayout.Width(columnWidth_Name), GUILayout.Height(rowHeight));
+                        rect = GUILayoutUtility.GetRect(new GUIContent(module.nameModule), GUIStyle.none, GUILayout.Width(columnWidth_Name), GUILayout.Height(RowHeight));
                         GUIStyle labelStyleName;
 
                         if (isSelectPanel)
@@ -362,7 +362,7 @@ namespace YG.EditorScr
                         }
 
                         // Project version
-                        rect = GUILayoutUtility.GetRect(new GUIContent(projectVersionStr), GUIStyle.none, GUILayout.Width(columnWidth_ProjectVersion), GUILayout.Height(rowHeight));
+                        rect = GUILayoutUtility.GetRect(new GUIContent(projectVersionStr), GUIStyle.none, GUILayout.Width(columnWidth_ProjectVersion), GUILayout.Height(RowHeight));
 
                         if (isSelectPanel)
                         {
@@ -423,7 +423,7 @@ namespace YG.EditorScr
                         }
 
                         // Latest version
-                        rect = GUILayoutUtility.GetRect(new GUIContent(lastVersionStr), GUIStyle.none, GUILayout.Width(columnWidth_LatestVersion), GUILayout.Height(rowHeight));
+                        rect = GUILayoutUtility.GetRect(new GUIContent(lastVersionStr), GUIStyle.none, GUILayout.Width(columnWidth_LatestVersion), GUILayout.Height(RowHeight));
 
                         if (isSelectPanel)
                         {
@@ -501,7 +501,7 @@ namespace YG.EditorScr
                         }
 
                         // Control
-                        rect = GUILayoutUtility.GetRect(new GUIContent("Control"), GUIStyle.none, GUILayout.Width(columnWidth_Control / 1.5f), GUILayout.Height(rowHeight));
+                        rect = GUILayoutUtility.GetRect(new GUIContent("Control"), GUIStyle.none, GUILayout.Width(columnWidth_Control / 1.5f), GUILayout.Height(RowHeight));
                         btnRectC = new Rect(rect.x, rect.y, 125, rect.height);
 
                         if (!cloudComplete)
@@ -580,7 +580,7 @@ namespace YG.EditorScr
                                     }
                                 }
 
-                                rect = GUILayoutUtility.GetRect(new GUIContent("Doc"), GUIStyle.none, GUILayout.Width(columnWidth_Control / 3 - 10), GUILayout.Height(rowHeight));
+                                rect = GUILayoutUtility.GetRect(new GUIContent("Doc"), GUIStyle.none, GUILayout.Width(columnWidth_Control / 3 - 10), GUILayout.Height(RowHeight));
 
                                 if (isSelectPanel)
                                 { }
@@ -793,7 +793,7 @@ namespace YG.EditorScr
                     style.focused.textColor = TextStyles.colorGreen;
             }
 
-            Rect r = GUILayoutUtility.GetRect(140, 22, style);
+            Rect r = GUILayoutUtility.GetRect(140, ButtonsHeight, style);
             bool hover = r.Contains(Event.current.mousePosition);
 
             Color prevBg = GUI.backgroundColor;
@@ -1003,6 +1003,13 @@ namespace YG.EditorScr
             }
 
             return false;
+        }
+
+        private enum TabSection : byte
+        {
+            Modules = 0,
+            Platforms = 1,
+            Tools = 2
         }
     }
 }

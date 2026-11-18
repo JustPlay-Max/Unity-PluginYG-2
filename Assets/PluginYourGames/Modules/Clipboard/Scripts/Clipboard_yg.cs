@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
+
 #if PLATFORM_WEBGL
+using AOT;
 using System.Runtime.InteropServices;
 #endif
 

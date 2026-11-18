@@ -2,39 +2,29 @@
 using UnityEngine.Events;
 using YG.Insides;
 using YG.Utils;
+using YG.Translations;
 
 namespace YG
 {
     public class GameLabelYG : MonoBehaviour
     {
-#if RU_YG2
-        [HeaderYG("Заполнить")]
-        [Tooltip("Объект (отключённая кнопка или текст), который будет сообщать о том, что ярлык не поддерживается. Данный объект можно не указывать, тогда, если ярлык не будет поддерживаться - ничего не будет отображаться.")]
-#else
-        [Header("Serialize")]
-        [Tooltip("An object (disabled button or text) that will indicate that the shortcut is not supported. This object can be omitted, then if the shortcut is not supported, nothing will be displayed.")]
-#endif
-        public GameObject notSupported;
-#if RU_YG2
-        [Tooltip("Объект (отключённая кнопка или текст), который будет сообщать о том, что ярлык уже установлен. Данный объект можно не указывать, тогда, если ярлык уже установлен - ничего не будет отображаться.")]
-#else
-        [Tooltip("An object (a disabled button or text) that will indicate that the shortcut has already been installed. This object can be omitted, then if the shortcut is already installed, nothing will be displayed.")]
-#endif
-        public GameObject done;
-#if RU_YG2
-        [Tooltip("Объект с кнопкой, которая будет предлагать установить ярлык на рабочий стол (возможно, за вознаграждение). При клике на кнопку необходимо запускать метод GameLabelShowDialog через данный скрипт или через EventsYG2 скрипт.")]
-#else
-        [Tooltip("An object with a button that will offer to install a shortcut on the desktop (possibly for a fee). When clicking on the button, you need to run the GameLabelShowDialog method through this script or through the EventsYG2 script.")]
-#endif
-        public GameObject showDialog;
-#if RU_YG2
-        [HeaderYG("События")]
-#else
-        [HeaderYG("Events")]
-#endif
+        [Header(GameLabelTranslations.SerializeHeader)]
         [Space(5)]
-        public UnityEvent onPromptSuccess;
-        public UnityEvent onPromptFail;
+        [Tooltip(GameLabelTranslations.NotSupportedTooltip)]
+        public GameObject notSupported;
+
+
+        [Tooltip(GameLabelTranslations.DoneTooltip)]
+        public GameObject done;
+
+        [Tooltip(GameLabelTranslations.ShowDialogTooltip)]
+        public GameObject showDialog;
+
+        [HeaderYG(GameLabelTranslations.EventsHeader)]
+        [Space(5)]
+        [SerializeField] private UnityEvent onPromptSuccess;
+        [Space(5)]
+        [SerializeField] private UnityEvent onPromptFail;
 
         private void Awake()
         {

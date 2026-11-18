@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using YG.Translations;
 
 namespace YG
 {
@@ -10,12 +11,12 @@ namespace YG
         [Serializable]
         public partial class LocalizationSettings
         {
-            public enum SetLangMod
+            public enum SetLangMod : byte
             {
 #if RU_YG2
                 [InspectorName("Только при первом запуске")]
 #endif
-                FirstLaunchOnly,
+                FirstLaunchOnly = 0,
 #if RU_YG2
                 [InspectorName("При каждом запуске")]
 #endif
@@ -25,11 +26,8 @@ namespace YG
 #endif
                 DoNotChangeLanguageStartup
             };
-#if RU_YG2
-            [Tooltip("Менять язык игры в соответствии с языком платформы:\n\n •  First LaunchOnly - только при первом запуске игры.\n\n •  Every Game Launch - каждый раз при запуске игры.\n\n •  Do Not Change Language Startup - не менять язык при запуске игры.")]
-#else
-            [Tooltip("Change the language of the game according to the language of the platform:\n\n • First LaunchOnly - only at the first launch of the game.\n\n • Every Game Launch - every time the game is launched.\n\n • Do Not Change Language Startup - do not change the language when starting the game.")]
-#endif
+
+            [Tooltip(LocalizationTranslations.SetLanguageModTooltip)]
             [Space(5)]
             public SetLangMod setLanguageMod = SetLangMod.EveryGameLaunch;
         }

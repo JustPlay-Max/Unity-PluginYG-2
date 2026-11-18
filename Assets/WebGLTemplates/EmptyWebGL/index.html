@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        canvas:focus {
+            outline: none;
+        }
+
+        html, body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            height: 100%;
+        }
+    </style>
+
+    <!-- Additional head modules -->
+
+</head>
+<body class="{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}">
+
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
+        <div id="unity-loading-bar">
+            <div id="unity-logo"><img src="Images/logo.png"></div>
+            <div id="unity-progress-bar-empty" style="display: none;">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Additional body modules -->
+
+    <script>
+        const hideFullScreenButton = "";
+        const buildUrl = "Build";
+        const loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+        const config = {
+            dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+            frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+            codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+            #if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+            #endif
+        #if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+            #endif
+        streamingAssetsUrl: "StreamingAssets",
+            companyName: "{{{ COMPANY_NAME }}}",
+            productName: "{{{ PRODUCT_NAME }}}",
+            productVersion: "{{{ PRODUCT_VERSION }}}"
+        };
+
+        const container = document.querySelector("#unity-container");
+        const canvas = document.querySelector("#unity-canvas");
+        const loadingCover = document.querySelector("#loading-cover");
+        const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+        const progressBarFull = document.querySelector("#unity-progress-bar-full");
+        const spinner = document.querySelector('.spinner');
+
+        const canFullscreen = (function () {
+            for (const key of [
+                'exitFullscreen',
+                'webkitExitFullscreen',
+                'webkitCancelFullScreen',
+                'mozCancelFullScreen',
+                'msExitFullscreen',
+            ]) {
+                if (key in document) {
+                    return true;
+                }
+            }
+            return false;
+        }());
+
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            container.className = "unity-mobile";
+            //config.devicePixelRatio = 1;
+        }
+
+        // The background image when loading the game. When building a build, the code changes depending on the project settings.
+#if BACKGROUND_FILENAME
+        var backgroundUnity = "url('" + buildUrl + "/{{{ BACKGROUND_FILENAME.replace(/'/g, '%27') }}}') center / cover";
+#endif
+        loadingCover.style.background = "url('Images/background.png') center / cover";
+        loadingCover.style.display = "";
+
+        let StartUnityInstance;
+        let ygGameInstance = null;
+        let initGame = false;
+        let syncInit = false;
+        let isVisibility = true;
+        let isPausedGame = false;
+        const NO_DATA = 'no data';
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('visibilitychange', () => SetVisibility(!document.hidden));
+        window.addEventListener('blur', () => SetVisibility(false));
+        window.addEventListener('focus', () => SetVisibility(true));
+
+        window.addEventListener('pointerdown', () => {
+            FocusGame();
+            SetVisibility(true);
+        });
+
+        const oRequestPointerLock = Element.prototype.requestPointerLock;
+        Element.prototype.requestPointerLock = async function hkRequestPointerLock(...args) {
+            try {
+                (args[0] ||= {}).unadjustedMovement = true;
+                await oRequestPointerLock.apply(this, args);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        function InstallBlurFocusBlocker() {
+            if (!('onblur' in document)) return;
+            if (window.blurFocusHandlersInstalled) return;
+
+            window.addEventListener('blur', function () {
+                let blockerButton = document.createElement('button');
+                blockerButton.style.position = 'fixed';
+                blockerButton.style.top = '0';
+                blockerButton.style.left = '0';
+                blockerButton.style.width = '100%';
+                blockerButton.style.height = '100%';
+                blockerButton.style.zIndex = '9999';
+                blockerButton.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                blockerButton.style.border = 'none';
+                blockerButton.style.cursor = 'default';
+
+                document.body.appendChild(blockerButton);
+
+                function removeBlocker() {
+                    if (blockerButton && blockerButton.parentNode) {
+                        blockerButton.parentNode.removeChild(blockerButton);
+                    }
+                    window.removeEventListener('focus', removeBlocker);
+                }
+
+                window.addEventListener('focus', removeBlocker);
+            });
+
+            window.blurFocusHandlersInstalled = true;
+        }
+
+        function FocusGame() {
+            if (!isPausedGame) canvas.focus();
+        }
+
+        function SetVisibility(visibility) {
+            if (initGame === true && isVisibility !== visibility) {
+                isVisibility = visibility;
+                if (!visibility) {
+                    YG2Instance('SetFocusWindowGame', 'false');
+                }
+                else {
+                    YG2Instance('SetFocusWindowGame', 'true');
+                }
+            }
+        }
+
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            StartUnityInstance = function () {
+                createUnityInstance(canvas, config, (progress) => {
+                    spinner.style.display = "none";
+                    progressBarEmpty.style.display = "";
+                    const adjustedProgress = Math.max(progress, 0.05);
+                    progressBarFull.style.width = `${100 * adjustedProgress}%`;
+                }).then((unityInstance) => {
+                    ygGameInstance = unityInstance;
+                    loadingCover.style.background = "";
+                    loadingCover.style.display = "none";
+					InitGame();
+                    // Fill Background [Build Modify]
+                }).catch((message) => {
+                    console.error(message);
+                });
+            };
+            
+            InstallBlurFocusBlocker();
+            InitSDK();
+        };
+
+        function StartUnityInstance_IfUnloaded() {
+            if (spinner.style.display !== "none")
+                StartUnityInstance();
+        }
+
+        function YG2Instance(method) {
+            if (ygGameInstance == null)
+                return;
+
+            if (!initGame) {
+                setTimeout(function () {
+                    if (ygGameInstance)
+                        ygGameInstance.SendMessage('YG2Instance', method);
+                }, 100);
+            }
+            else {
+                ygGameInstance.SendMessage('YG2Instance', method);
+            }
+                
+        }
+        function YG2Instance(method, arg) {
+            if (ygGameInstance == null)
+                return;
+
+            if (!initGame) {
+                setTimeout(function () {
+                    ygGameInstance.SendMessage('YG2Instance', method, arg);
+                }, 100);
+            }
+            else {
+                ygGameInstance.SendMessage('YG2Instance', method, arg);
+            }
+        }
+
+        function LogStyledMessage(message, style) {
+            console.log('%c' + message, style);
+        }
+        function LogStyledMessage(message) {
+            console.log('%c' + message, 'color: #FFDF73; background-color: #454545');
+        }
+
+        async function InitSDK() {
+            try {
+			
+                // Additional init0 modules
+
+                // Additional init1 modules
+
+                // Additional init2 modules
+
+                // Additional init modules
+
+                if (ygGameInstance != null)
+                    ygGameInstance.SendMessage('YG2Instance', 'InitSDKComplete');
+
+                LogStyledMessage('Initialization Success');
+
+            } catch (e) {
+                console.error('CRASH Initialization SDK: ', e);
+            }
+
+            StartUnityInstance_IfUnloaded();
+        }
+
+        function InitGame() {
+            initGame = true;
+
+            // Additional start modules
+        }
+
+        // Additional script modules
+
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>

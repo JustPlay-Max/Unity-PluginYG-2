@@ -1,5 +1,5 @@
-// YGEditorStyles.cs
-// Безопасная работа со стилями во время перекомпиляции/без активного GUI skin
+п»ї// YGEditorStyles.cs
+// Р‘РµР·РѕРїР°СЃРЅР°СЏ СЂР°Р±РѕС‚Р° СЃРѕ СЃС‚РёР»СЏРјРё РІРѕ РІСЂРµРјСЏ РїРµСЂРµРєРѕРјРїРёР»СЏС†РёРё/Р±РµР· Р°РєС‚РёРІРЅРѕРіРѕ GUI skin
 
 namespace YG.EditorScr
 {
@@ -10,7 +10,7 @@ namespace YG.EditorScr
     [InitializeOnLoad]
     public static class YGEditorStyles
     {
-        // кэш
+        // РєСЌС€
         private static GUIStyle _selectable;
         private static GUIStyle _deselectable;
         private static GUIStyle _box;
@@ -20,7 +20,7 @@ namespace YG.EditorScr
         private static GUIStyle _debutton;
         private static GUIStyle _warning;
 
-        // безопасная проверка, можно ли строить стили на базе EditorStyles/GUIskin
+        // Р±РµР·РѕРїР°СЃРЅР°СЏ РїСЂРѕРІРµСЂРєР°, РјРѕР¶РЅРѕ Р»Рё СЃС‚СЂРѕРёС‚СЊ СЃС‚РёР»Рё РЅР° Р±Р°Р·Рµ EditorStyles/GUIskin
         static bool CanBuildGUI =>
             GUI.skin != null &&
             Event.current != null &&
@@ -53,7 +53,7 @@ namespace YG.EditorScr
             _warning = null;
         }
 
-        // универсальный безопасный геттер
+        // СѓРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ Р±РµР·РѕРїР°СЃРЅС‹Р№ РіРµС‚С‚РµСЂ
         static GUIStyle GetOrMake(ref GUIStyle cache, System.Func<GUIStyle> factory)
         {
             if (cache != null) return cache;
@@ -61,7 +61,7 @@ namespace YG.EditorScr
             return cache;
         }
 
-        // публичные стили
+        // РїСѓР±Р»РёС‡РЅС‹Рµ СЃС‚РёР»Рё
         public static GUIStyle selectable => GetOrMake(ref _selectable, Selectable);
         public static GUIStyle deselectable => GetOrMake(ref _deselectable, Deselectable);
         public static GUIStyle box => GetOrMake(ref _box, Box);
@@ -71,13 +71,13 @@ namespace YG.EditorScr
         public static GUIStyle button => GetOrMake(ref _button, Button);
         public static GUIStyle debutton => GetOrMake(ref _debutton, Debutton);
 
-        // фабрика безопасного базового helpBox
+        // С„Р°Р±СЂРёРєР° Р±РµР·РѕРїР°СЃРЅРѕРіРѕ Р±Р°Р·РѕРІРѕРіРѕ helpBox
         static GUIStyle BaseHelpBox()
         {
             return (GUI.skin != null ? new GUIStyle(EditorStyles.helpBox) : new GUIStyle());
         }
 
-        // фабрики стилей
+        // С„Р°Р±СЂРёРєРё СЃС‚РёР»РµР№
         public static GUIStyle Selectable()
         {
             var style = BaseHelpBox();
@@ -174,7 +174,7 @@ namespace YG.EditorScr
 
         public static GUIStyle Button()
         {
-            // для лайт-скина отдаём системную кнопку, для про — кастом
+            // РґР»СЏ Р»Р°Р№С‚-СЃРєРёРЅР° РѕС‚РґР°С‘Рј СЃРёСЃС‚РµРјРЅСѓСЋ РєРЅРѕРїРєСѓ, РґР»СЏ РїСЂРѕ вЂ” РєР°СЃС‚РѕРј
             if (!(GUI.skin != null && EditorGUIUtility.isProSkin))
                 return new GUIStyle(GUI.skin != null ? GUI.skin.button : new GUIStyle());
 
@@ -209,7 +209,7 @@ namespace YG.EditorScr
             return style;
         }
 
-        // генерация текстур (с флагами, чтобы не плодить ресурсы между reload)
+        // РіРµРЅРµСЂР°С†РёСЏ С‚РµРєСЃС‚СѓСЂ (СЃ С„Р»Р°РіР°РјРё, С‡С‚РѕР±С‹ РЅРµ РїР»РѕРґРёС‚СЊ СЂРµСЃСѓСЂСЃС‹ РјРµР¶РґСѓ reload)
         private static Texture2D MakeTex(Color col)
         {
             var result = new Texture2D(1, 1, TextureFormat.ARGB32, false)
