@@ -45,9 +45,6 @@
 # Разрешить только следующие файлы
 !LICENSE
 !README.md
-!Tests/
-!Tests/Payments.test.cjs
-!Tests/Storage.test.cjs
 !Assets/PluginYourGames/Manual EN PluginYG2.pdf
 !Assets/PluginYourGames/Manual RU PluginYG2.pdf
 !Assets/PluginYourGames/Third-Party Notices.txt
@@ -87,6 +84,7 @@
 
 # Запрещаем папки
 Docs/
+Tests/
 Assets/PluginYourGames/Example/Resources
 Assets/WebGLTemplates/YandexGames/Images
 
