@@ -24,6 +24,15 @@ namespace YG
         {
             cloudLoadResolved = !infoYG.Storage.saveCloud;
             cloudLoadFailed = false;
+#if YandexGamesPlatform_yg
+            if (infoYG.Storage.saveCloud)
+            {
+                // The initial load can run before PluginYG2 is ready. Retry it on the first
+                // onGetSDKData invocation after StartInit enables the SDK.
+                YG2.onGetSDKData -= RetryPendingCloudLoadAfterInit;
+                YG2.onGetSDKData += RetryPendingCloudLoadAfterInit;
+            }
+#endif
 #if UNITY_EDITOR
             // Reset static for ECS
             saves = new SavesYG();
@@ -43,6 +52,20 @@ namespace YG
             }
 #endif
         }
+
+#if YandexGamesPlatform_yg
+        private static void RetryPendingCloudLoadAfterInit()
+        {
+            if (!YG2.isSDKEnabled)
+                return;
+
+            YG2.onGetSDKData -= RetryPendingCloudLoadAfterInit;
+            if (!infoYG.Storage.saveCloud || YG2.cloudLoadResolved)
+                return;
+
+            YGInsides.LoadCloud(true);
+        }
+#endif
 
         [StartYG]
         private static void OnDefaultSaves()
