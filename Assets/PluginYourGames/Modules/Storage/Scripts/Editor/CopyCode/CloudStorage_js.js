@@ -1,4 +1,10 @@
-﻿var cloudSaves = NO_DATA;
+﻿let initialCloudLoadResult = '';
+let awaitingInitialCloudLoad = false;
+
+function GetInitialCloudLoadResult() {
+    awaitingInitialCloudLoad = initialCloudLoadResult === '';
+    return initialCloudLoadResult;
+}
 
 async function SaveCloud(jsonData, flush, requestID) {
     let success = false;
@@ -21,38 +27,30 @@ async function SaveCloud(jsonData, flush, requestID) {
     }
 }
 
-function LoadCloud() {
-    return new Promise((resolve) => {
-        if (ysdk == null) {
-            Failed('Yandex Games SDK is not initialized');
+async function LoadCloud(reload = false) {
+    if (reload)
+        awaitingInitialCloudLoad = false;
+
+    let success = false;
+    let result;
+    try {
+        if (ysdk == null)
+            throw new Error('Yandex Games SDK is not initialized');
+        const data = await player.getData(["saves"]);
+        result = data.saves ? JSON.stringify(data.saves) : NO_DATA;
+        success = true;
+    } catch (e) {
+        console.error('Load Cloud Error!', e);
+        result = e && e.message ? e.message : String(e);
+    }
+
+    if (!reload) {
+        initialCloudLoadResult = (success ? '1' : '0') + result;
+        // Unity normally consumes the preload from the cache during initialization.
+        if (!awaitingInitialCloudLoad)
             return;
-        }
-        try {
-            player.getData(["saves"]).then(data => {
-                if (data.saves) {
-                    Final(JSON.stringify(data.saves));
-                } else {
-                    Final(NO_DATA);
-                }
-            }).catch(e => {
-                console.error('Load Cloud Error!', e);
-                Failed(e && e.message ? e.message : String(e));
-            });
-        }
-        catch (e) {
-            console.error('CRASH Load saves Cloud: ', e.message);
-            Failed(e && e.message ? e.message : String(e));
-        }
+        awaitingInitialCloudLoad = false;
+    }
 
-        function Final(res) {
-            cloudSaves = res;
-            YG2Instance('SetLoadSaves', res);
-            resolve(res);
-        }
-
-        function Failed(error) {
-            YG2Instance('LoadSavesFailed', error);
-            resolve(NO_DATA);
-        }
-    });
+    YG2Instance(success ? 'SetLoadSaves' : 'LoadSavesFailed', result);
 }

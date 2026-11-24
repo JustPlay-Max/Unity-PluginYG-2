@@ -12,6 +12,8 @@ namespace YG
 {
     public partial class PlatformYG2 : IPlatformsYG2
     {
+        public bool WaitForCloudLoadBeforeSaving => true;
+
         private static readonly Dictionary<int, Action<bool>> cloudSaveCallbacks = new Dictionary<int, Action<bool>>();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -59,20 +61,25 @@ namespace YG
         private static extern string InitCloud_js();
 
         [DllImport("__Internal")]
-        private static extern string LoadCloud_js();
+        private static extern void LoadCloud_js();
 
         public void LoadCloud()
         {
-            if (!YG2.isSDKEnabled)
-            {
-                string cachedData = InitCloud_js();
-                if (cachedData != YG.InfoYG.NO_DATA && !string.IsNullOrEmpty(cachedData))
-                    YGInsides.SetLoadSaves(cachedData);
-            }
-            else
+            if (YG2.isSDKEnabled)
             {
                 LoadCloud_js();
+                return;
             }
+
+            string result = InitCloud_js();
+            if (string.IsNullOrEmpty(result))
+                return;
+
+            // The first character is the status. The rest is the save payload or the error.
+            if (result[0] == '1')
+                YGInsides.SetLoadSaves(result.Substring(1));
+            else
+                YGInsides.SetLoadSavesFailed(result.Substring(1));
         }
 
         [DllImport("__Internal")]

@@ -2,7 +2,7 @@ mergeInto(LibraryManager.library,
 {
 	InitCloud_js: function()
 	{
-		var returnStr = cloudSaves;
+		var returnStr = GetInitialCloudLoadResult();
 		var bufferSize = lengthBytesUTF8(returnStr) + 1;
 		var buffer = _malloc(bufferSize);
 		stringToUTF8(returnStr, buffer, bufferSize);
@@ -10,7 +10,7 @@ mergeInto(LibraryManager.library,
 	},
 	
 	LoadCloud_js: function () {
-        LoadCloud();
+        LoadCloud(true);
     },	
 
 	SaveCloudWithCallback_js: function (jsonData, requestID)
