@@ -4,6 +4,9 @@ namespace YG
 {
     public partial interface IPlatformsYG2
     {
+        // Enable only when LoadCloud reports its result through SetLoadSaves or SetLoadSavesFailed.
+        bool WaitForCloudLoadBeforeSaving => false;
+
         void SaveCloud(System.Action<bool> completed)
         {
 #if PLATFORM_WEBGL

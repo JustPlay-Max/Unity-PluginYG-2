@@ -24,15 +24,6 @@ namespace YG
         {
             cloudLoadResolved = !infoYG.Storage.saveCloud;
             cloudLoadFailed = false;
-#if YandexGamesPlatform_yg
-            if (infoYG.Storage.saveCloud)
-            {
-                // The initial load can run before PluginYG2 is ready. Retry it on the first
-                // onGetSDKData invocation after StartInit enables the SDK.
-                YG2.onGetSDKData -= RetryPendingCloudLoadAfterInit;
-                YG2.onGetSDKData += RetryPendingCloudLoadAfterInit;
-            }
-#endif
 #if UNITY_EDITOR
             // Reset static for ECS
             saves = new SavesYG();
@@ -52,20 +43,6 @@ namespace YG
             }
 #endif
         }
-
-#if YandexGamesPlatform_yg
-        private static void RetryPendingCloudLoadAfterInit()
-        {
-            if (!YG2.isSDKEnabled)
-                return;
-
-            YG2.onGetSDKData -= RetryPendingCloudLoadAfterInit;
-            if (!infoYG.Storage.saveCloud || YG2.cloudLoadResolved)
-                return;
-
-            YGInsides.LoadCloud(true);
-        }
-#endif
 
         [StartYG]
         private static void OnDefaultSaves()
@@ -121,14 +98,11 @@ namespace YG
 
             try
             {
-#if !UNITY_EDITOR
-                if (infoYG.Storage.saveCloud && (!cloudLoadResolved || cloudLoadFailed))
+                if (YGInsides.IsSaveBlockedByCloudLoad())
                 {
-                    Debug.LogWarning("[PluginYG Storage] Save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
                     Complete(false);
                     return;
                 }
-#endif
                 saves.idSave++;
 #if UNITY_EDITOR
                 YGInsides.SaveEditor();
@@ -164,13 +138,8 @@ namespace YG
                 return;
             }
 
-#if !UNITY_EDITOR
-            if (infoYG.Storage.saveCloud && (!YG2.cloudLoadResolved || YG2.cloudLoadFailed))
-            {
-                Debug.LogWarning("[PluginYG Storage] Save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
+            if (YGInsides.IsSaveBlockedByCloudLoad())
                 return;
-            }
-#endif
 
             saves.idSave++;
 #if !UNITY_EDITOR
@@ -291,15 +260,24 @@ namespace YG.Insides
             }
         }
 
-        public static void SaveCloud(bool ignoreTimer = false)
+        internal static bool IsSaveBlockedByCloudLoad()
         {
 #if !UNITY_EDITOR
-            if (infoYG.Storage.saveCloud && (!YG2.cloudLoadResolved || YG2.cloudLoadFailed))
+            if (infoYG.Storage.saveCloud && iPlatform.WaitForCloudLoadBeforeSaving &&
+                (!YG2.cloudLoadResolved || YG2.cloudLoadFailed))
             {
-                Debug.LogWarning("[PluginYG Storage] Cloud save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
-                return;
+                Debug.LogWarning("[PluginYG Storage] Save blocked until cloud saves load successfully. Retry with YG2.LoadCloud().");
+                return true;
             }
 #endif
+            return false;
+        }
+
+        public static void SaveCloud(bool ignoreTimer = false)
+        {
+            if (IsSaveBlockedByCloudLoad())
+                return;
+
             Message("Save Cloud");
             iPlatform.SaveCloud();
         }
